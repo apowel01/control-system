@@ -58,3 +58,12 @@ double get_break_tempurature(int breakPadNumber) {
   return 999999999;
 
 }
+
+/*
+ * return temperature of given motor
+ * Does sensor refer to a pin? 
+ * What is the relationship between sensor and motor in terms of data?
+ */
+int get_motor_heat (int sensor, int motor) {
+	return 1000;
+}
