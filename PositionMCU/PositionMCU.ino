@@ -27,11 +27,11 @@
 // distance between reflective tape in feet
 #define COUNTER_TICK_DISTANCE 100 
 
-//String array denoting requestType, could add laserCount, etc...
+//String array denoting requestType, this must match exactly with the list on the PI
 const String requestType[] = {"HALL_POSITION", "LASER_POSITION", "STRIPE_COUNT", "PERCENT_ERROR", "VELOCITY", "ACCELERATION", "RESET"};
 
 //keeps track of request type so different data can be sent in the future
-volatile String request;
+String request;
 
 // pin for laser sensor interrupt
 int laserSensorPin = 2;
@@ -164,7 +164,7 @@ int update_velocity(float deltaTime, int deltaPosition)
  */
 int update_acceleration(float deltaTime, float deltaVelocity)
 {
-	return deltaVelocity/deltaTime
+	return deltaVelocity/deltaTime;
 }
 
 /*
@@ -180,6 +180,7 @@ double get_position_error()
 
 // callback for sending data
 void send_data(){
+	// based on what type of data the pi requested send the appropriate value
       if(request == "HALL_POSITION") {
         Wire.write(get_hall_position());
         

@@ -10,7 +10,7 @@ address = None
 #could use enum in the future, but this seems to work ok
 #add other types to the list, index reperesents the 
 #I2C code
-requestType = ["HALL_POSITION", "LASER_POSITION", "STRIPE_COUNT", "PERCENT_ERROR", "VELOCITY", "ACCELERATION", "RESET"]
+positionRequestType = ["HALL_POSITION", "LASER_POSITION", "STRIPE_COUNT", "PERCENT_ERROR", "VELOCITY", "ACCELERATION", "RESET"]
 
 
 def writeRequest(request):
@@ -18,7 +18,7 @@ def writeRequest(request):
     with smbus2.SMBusWrapper(1) as bus:
         # Write a byte to address, offset 0
         #not sure what offset means, but will look into it
-        bus.write_byte_data(address, 0, request)
+        bus.write_byte_data(address, request, 0)
 
 def readNumber():
     #this is another way to read from I2C using smbus2
@@ -41,7 +41,7 @@ while True:
     
     #sends a request to the RPI
     writeRequest(request)
-    print( "RPI: Hi Arduino, I sent you a " + requestType[request] + " request")
+    print( "RPI: Hi Arduino, I sent you a " + positionRequestType[request] + " request")
 
     #reads data sent from Arduino (arduino will reset the Hall Count after a request)
     number = readNumber()
