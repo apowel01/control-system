@@ -10,7 +10,7 @@ address = None
 #could use enum in the future, but this seems to work ok
 #add other types to the list, index reperesents the 
 #I2C code
-requestType = ["HALL_POSITION", "LASER_POSITION", "PERCENT_ERROR", "RESET"]
+requestType = ["HALL_POSITION", "LASER_POSITION", "STRIPE_COUNT", "PERCENT_ERROR", "VELOCITY", "ACCELERATION", "RESET"]
 
 
 def writeRequest(request):
@@ -37,7 +37,7 @@ while True:
         address = 0x05
 
     #get request Type from console input
-    request = int(input("Select 0 for hall position, 1 for laser position, 2 for error, 3 to reset position MCU: "))
+    request = int(input("Select 0 for hall position, 1 for laser position, 2 for stirpe count, 3 for percent error of laser sensor, 4 for velocity, 5 for acceleration, 6 to reset position MCU: "))
     
     #sends a request to the RPI
     writeRequest(request)

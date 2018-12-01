@@ -28,7 +28,7 @@
 #define COUNTER_TICK_DISTANCE 100 
 
 //String array denoting requestType, could add laserCount, etc...
-const String requestType[] = {"HALL_POSITION", "LASER_POSITION", "PERCENT_ERROR", "RESET"};
+const String requestType[] = {"HALL_POSITION", "LASER_POSITION", "STRIPE_COUNT", "PERCENT_ERROR", "VELOCITY", "ACCELERATION", "RESET"};
 
 //keeps track of request type so different data can be sent in the future
 volatile String request;
@@ -53,11 +53,28 @@ volatile int totalTicksCounter = 0;
 
 int number = 0;
 
+float oldTime = millis();
+float oldPositon = 0;
+
+int velocity = 0;
+int acceleration = 0;
+
 /*
  * Main loop
  */
 void loop() {
   Serial.println("Laser: " + (String)totalTicksLaser + " - Counter: " + (String)totalTicksCounter); // print the total ticks for debug
+
+  float deltaTime = millis() - oldTime; // getting delta time since last loop call
+  float deltaPosition = get_hall_position() - oldPositon; // getting delta position since last loop call
+
+  int oldVelocity = velocity; // store velocity from last tick
+  
+  update_velocity(deltaTime, deltaPosition); // get new velocity
+  update_acceleration(deltaTime, velocity - oldVelocity); // get new acceleration using velocity from last tick and the new velocity we just found
+
+  oldTime = millis(); // set current time to old time for next tick
+  oldPositon = get_hall_position(); // set current position to old position for next tick
 
   delay(1000);
 }
@@ -134,6 +151,21 @@ void reset_count()
   totalTicksCounter = 0;
   totalTicksLaser = 0;
 }
+/*
+ * Pod velocity estimation in centimeters per second 
+ */
+int update_velocity(float deltaTime, int deltaPosition)
+{
+	return deltaPosition/deltaTime;
+}
+
+/*
+ * Pod acceleration estimation in centimeters per second squared
+ */
+int update_acceleration(float deltaTime, float deltaVelocity)
+{
+	return deltaVelocity/deltaTime
+}
 
 /*
  * returns thee percentage error of the laser sensors compared to the hall sensors as a deciamal
@@ -154,9 +186,18 @@ void send_data(){
       } else if(request == "LASER_POSITION") {
         Wire.write(get_laser_position());
         
+      } else if(request == "STRIPE_COUNT") {
+      	Wire.write(totalTicksLaser);
+
       } else if(request  == "PERCENT_ERROR") {
         Wire.write((int)(get_position_error()*100));
         
+      } else if(request  == "VELOCITY") {
+      	Wire.write(velocity);
+
+      } else if(request  == "ACCELERATION") {
+      	Wire.write(acceleration);
+
       } else if(request == "RESET") {
         reset_count();
         Wire.write("0");
