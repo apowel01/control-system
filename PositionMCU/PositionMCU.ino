@@ -15,26 +15,29 @@
 //defines the slave address of the uno
 #define SLAVE_ADDRESS 0x04
 
+// TODO: dont forget to remove this with the other code if/when we determine it is not needed
 //adjust this delay as needed (hopefully none once we hood it up and test)
 #define COUNTER_DELAY 100 // wait this amount of time after each interupt
 
-// wait this amount of time after each interupt
-#define LASER_DELAY 1000 
+// distance to wait before re-activating laser sensor after it sees a band
+//     this way we dont risk double counting a band
+#define LASER_DELAY_DISTANCE 5000
 
-// distance between reflective tape in feet
-#define LASER_TICK_DISTANCE 100 
+// distance between reflective tape in cetimeters
+#define LASER_TICK_DISTANCE 3048 // num_feet * 30.48
 
-// distance between reflective tape in feet
-#define COUNTER_TICK_DISTANCE 100 
+// distance the pod travels between ticks on the final hall counter
+//     TODO: replace this value once we know wheel size.
+#define COUNTER_TICK_DISTANCE 100 // TODO find what this value should be
 
-//String array denoting requestType, this must match exactly with the list on the PI
+// String array denoting requestType, THIS MUST EXACTLY MATCH WHAT IS ON THE PI
 const String requestType[] = {"HALL_POSITION", "LASER_POSITION", "STRIPE_COUNT", "PERCENT_ERROR", "VELOCITY", "ACCELERATION", "RESET"};
 
 //keeps track of request type so different data can be sent in the future
 String request;
 
 // pin for laser sensor interrupt
-int laserSensorPin = 2;
+const int laserSensorPin = 2;
 
 //sets the counter Sensor pin
 const int counterSensorPin = 3; 
@@ -42,16 +45,17 @@ const int counterSensorPin = 3;
 //timer to make sure we dont get too many signals
 volatile double counterTime = millis();
 
-// timer to prevent the interrupt from being called mulltiple times per strip.
-volatile double laserTime = millis(); 
+// holds the distance the pod has gone since the last successfull laser interupt to ensure the pod has traveled far enough that a band will not be double counted
+volatile double laserDistanceDelta = 0; 
 
-// the number of ticks the pod has traveled
+// the number of bands the pod has traveled past
 volatile int totalTicksLaser = 0;
 
-// the number of ticks the pod has traveled
+// the number of ticks on the final hall counter the pod has traveled
 volatile int totalTicksCounter = 0;
 
-int number = 0;
+// the distance as measured by the hall sensors and verified with the laser sensors
+volatile int totalCounterDistance = 0;
 
 float oldTime = millis();
 float oldPositon = 0;
@@ -63,20 +67,40 @@ int acceleration = 0;
  * Main loop
  */
 void loop() {
+
+  // TODO: comment this when testing is done
   Serial.println("Laser: " + (String)totalTicksLaser + " - Counter: " + (String)totalTicksCounter); // print the total ticks for debug
 
-  float deltaTime = millis() - oldTime; // getting delta time since last loop call
-  float deltaPosition = get_hall_position() - oldPositon; // getting delta position since last loop call
+  // TODO: we could use a running average for velocity and acceleration if the data is inconsistant
 
-  int oldVelocity = velocity; // store velocity from last tick
+  // getting delta time since last loop call
+  float deltaTime = millis() - oldTime; 
   
-  update_velocity(deltaTime, deltaPosition); // get new velocity
-  update_acceleration(deltaTime, velocity - oldVelocity); // get new acceleration using velocity from last tick and the new velocity we just found
+  // getting delta position since last loop call
+  float deltaPosition = get_hall_position() - oldPositon;
 
-  oldTime = millis(); // set current time to old time for next tick
-  oldPositon = get_hall_position(); // set current position to old position for next tick
+  // store velocity from last tick
+  int oldVelocity = velocity;
+  
+  // get new velocity
+  update_velocity(deltaTime, deltaPosition);
 
-  delay(1000);
+  // get new acceleration using velocity from last tick and the new velocity we just found
+  update_acceleration(deltaTime, velocity - oldVelocity);
+
+  // set current time to old time for next tick
+  oldTime = millis();
+
+  // set current position to old position for next tick
+  oldPositon = get_hall_position();
+
+
+  // change laser distace delta by hall position distance delta this means that laserDistanceDelta will hold  the distance the pod has traveled
+  // 	since the laser sensor interupt last triggered.
+  laserDistanceDelta += deltaPosition;
+
+  // just used to slow things down for testing
+  // delay(1000);
 }
 
 /*
@@ -87,8 +111,12 @@ void loop() {
 void counter_isr() {
   if(counterTime + COUNTER_DELAY < millis()) // pause for laserDelay number of millis after interrupt is triggered
   {
-    //Serial.println("Interrupt");
+  	// TODO: after ensuring the delay is no longer needed remove it
     totalTicksCounter++; // increment number of ticks since the last check
+
+    // increment pod distance be the didtance the pod travlels in one hall counter tick
+    totalCounterDistance += COUNTER_TICK_DISTANCE;
+    
     counterTime = millis();
   }
 }
@@ -101,11 +129,16 @@ void counter_isr() {
  *  a reflective strip.
  */
 void laser_isr() {
-  if(laserTime + LASER_DELAY < millis()) // pause for laserDelay number of millis after interrupt is triggered
+  // ensures the pod has traveled far enough to not get a double reading from a reflective strip
+  if(laserDistanceDelta > LASER_DELAY_DISTANCE) 
   {
-    //Serial.println("Interrupt");
-    totalTicksLaser++; // increment number of ticks since the last check
-    laserTime = millis();
+    // increment number of ticks since the last check
+    totalTicksLaser++;
+    laserDistanceDelta = 0;
+
+    // reset the counter distance based off strips which we assume to be accurate
+    // TODO: we could add a check here to make sure we haven't missed a band
+    totalCounterDistance = get_laser_position();
   }
 }
 
@@ -115,8 +148,8 @@ void laser_isr() {
 void counter_setup()
 {
   pinMode(counterSensorPin, INPUT_PULLUP);
-  // TODO: determine if this should be FALLING or LOW
-  attachInterrupt(digitalPinToInterrupt(counterSensorPin), counter_isr, FALLING); // trigger interrupt when signal from laser falls to 0
+  // TODO: determine if this should be FALLING RISING LOW or HIGH based on testing
+  attachInterrupt(digitalPinToInterrupt(counterSensorPin), counter_isr, RISING); // trigger interrupt when signal from laser falls to 0
 }
 
 /*
@@ -125,7 +158,7 @@ void counter_setup()
 void laser_setup()
 {
   pinMode(laserSensorPin, INPUT_PULLUP);
-  // TODO: determine if this should be FALLING or LOW
+  
   attachInterrupt(digitalPinToInterrupt(laserSensorPin), laser_isr, FALLING); // trigger interrupt when signal from laser falls to 0
 }
 
@@ -142,7 +175,7 @@ int get_laser_position()
  */
 int get_hall_position()
 {
-  return totalTicksCounter * COUNTER_TICK_DISTANCE;
+  return totalCounterDistance;
 }
 
 //resets count when an I2C signal is encountered by 
@@ -194,10 +227,10 @@ void send_data(){
         Wire.write((int)(get_position_error()*100));
         
       } else if(request  == "VELOCITY") {
-      	Wire.write(velocity);
+      	Wire.write(velocity); // most recent instantaneous velocity
 
       } else if(request  == "ACCELERATION") {
-      	Wire.write(acceleration);
+      	Wire.write(acceleration); // most recent instantaneous acceleration
 
       } else if(request == "RESET") {
         reset_count();

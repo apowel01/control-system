@@ -6,12 +6,11 @@ import time
 #plugged into on the Raspberry PI
 address = None
 
-#list of Strings used to denote request types
+#list of Strings used to denote request types for position MCU
 #could use enum in the future, but this seems to work ok
 #add other types to the list, index reperesents the 
 #I2C code
 positionRequestType = ["HALL_POSITION", "LASER_POSITION", "STRIPE_COUNT", "PERCENT_ERROR", "VELOCITY", "ACCELERATION", "RESET"]
-
 
 def writeRequest(request):
     #this is another way to write to bus using smbus2
