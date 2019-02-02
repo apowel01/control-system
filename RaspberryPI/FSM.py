@@ -60,6 +60,7 @@ while true:
     if launchSignalReady: #prepare to launch signal
     	state = 2
    
+	#External Messages
   if (startup):  # when startup signal recieved
   	state=7
   
