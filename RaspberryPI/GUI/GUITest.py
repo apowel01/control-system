@@ -34,19 +34,19 @@ class ThreadClass(QThread):
 			self.displayData()
 
 			if(ser.in_waiting >0):
-        		line = ser.readline()
-        		value = int(line)
-        		if(readMode == 3):
-        			readMode = 0;
-        		else if(readMode == 0):
-        			self.voltage = value
-        			readMode += 1
-        		else if(readMode == 1):
-        			self.current = value
-        			readMode += 1
-        		else if(raadMode == 2):
-        			self.tempurature = value
-        			readMode += 1
+				line = ser.readline()
+				value = int(line)
+				if(readMode == 3):
+					readMode = 0;
+				elif(readMode == 0):
+					self.voltage = value
+					readMode += 1
+				elif(readMode == 1):
+					self.current = value
+					readMode += 1
+				elif(raadMode == 2):
+					self.tempurature = value
+					readMode += 1
 
 			time.sleep(1)
 
