@@ -4,6 +4,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QCoreApplication, QObject, QRunnable, QThread, QThreadPool, pyqtSignal
 import sys
 import time
+import serial
 
 class ThreadClass(QThread):
 	
@@ -22,6 +23,7 @@ class ThreadClass(QThread):
 
 	def run(self):
 		self.running = True
+		readMode = 3;
 		#currentTime = time();
 		
 		while(self.running):
@@ -30,6 +32,22 @@ class ThreadClass(QThread):
 			#print(delta)
 			self.updateData()
 			self.displayData()
+
+			if(ser.in_waiting >0):
+        		line = ser.readline()
+        		value = int(line)
+        		if(readMode == 3):
+        			readMode = 0;
+        		else if(readMode == 0):
+        			self.voltage = value
+        			readMode += 1
+        		else if(readMode == 1):
+        			self.current = value
+        			readMode += 1
+        		else if(raadMode == 2):
+        			self.tempurature = value
+        			readMode += 1
+
 			time.sleep(1)
 
 
@@ -45,6 +63,9 @@ class ThreadClass(QThread):
 class QthreadApp(QWidget):
 
 	def __init__(self, parent=None):
+
+		ser = serial.Serial('/dev/ttyUSB0', 9600)
+
 		QWidget.__init__(self, parent)
 		w = 800; h = 480
 
@@ -52,7 +73,8 @@ class QthreadApp(QWidget):
 		self.setMinimumWidth(w)
 		self.setMinimumHeight(h)
 
-		font = QFont("Times", 16, QFont.Bold)
+		font = QtGui.QFont()
+		font.setPointSize(16)
 
 		hlayout = QHBoxLayout()
 
@@ -77,6 +99,11 @@ class QthreadApp(QWidget):
 		currentLabel.setFont(font)
 		tempuratureLabel.setFont(font)
 		speedLabel.setFont(font)
+
+		self.voltageValue.setFont(font)
+		self.currentValue.setFont(font)
+		self.tempuratureValue.setFont(font)
+		self.speedValue.setFont(font)
 
 		podStatsLayout.addWidget(voltageLabel)
 		podStatsLayout.addWidget(self.voltageValue)
@@ -111,6 +138,8 @@ class QthreadApp(QWidget):
 	
 	def sliderChanged(self, value):
 		self.speedValue.setText(str(value))
+
+		ser.write(b'%d', value);
 		
 
 
