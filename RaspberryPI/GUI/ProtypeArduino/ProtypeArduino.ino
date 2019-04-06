@@ -7,7 +7,7 @@
 Adafruit_ADS1115 ads1115;  //ADC object
 Servo motor;  //Motor Object
 double disp_lastTime = 0;
-double disp_sampleTime = 800;    //How frequent you want to display data  (1000 = 1 second)
+double disp_sampleTime = 10;    //How frequent you want to display data  (1000 = 1 second)
 String inString = "";            // string to hold input
 int tempPin = 1;
 int voltagePin = 2;
@@ -18,7 +18,6 @@ double Rbig = 130000;
 float FSR = .256;                // FSR = Full Scale Range of ADC input
 int motor_out_HIGH = 110;        // Max Motor Servo output
 int motor_out_LOW = 57;          // Min Motor Servo Output
-int tottle;
 //----------------------------------------------------------------------------------------------------
 void setup() 
 {
@@ -37,14 +36,14 @@ void setup()
 void loop() 
 {
   int throttle;
-  float voltage;
-  float current;
-  float temp;
+  float voltage = 0.0;
+  float current = 0.0;
+  float temp = 0.0;
   float power;
  
   while (Serial.available() > 0) 
   {
-    tottle = readSerial();
+    throttle = readSerial();
   }
   voltage = (analogRead(voltagePin) / 1023.0)*5*((Rsmall + Rbig)/Rsmall) * 1.0255;
   
@@ -54,11 +53,11 @@ void loop()
   temp = temp_acq();  
   if (voltage < 10)
   {
-    tottle = 0;
+    throttle = 0;
   }
-  motor_output(tottle);  
+  motor_output(throttle);  
   
-  Display(voltage, current, power, temp, tottle);
+  Display(voltage, current, power, temp, throttle);
 }
 //----------------------------------------------------------------------------------------------------
 void motor_output(int throttle)     // Function not currently used
@@ -136,24 +135,24 @@ void Display(float voltage, float current, float power, float temp, int throttle
    unsigned long disp_timeChange = (disp_now - disp_lastTime);
    
    if(disp_timeChange>=disp_sampleTime) {
-    Serial.println("---------------------");
-    Serial.println();
-    Serial.print("Voltage = ");
-    Serial.print(voltage);
-    Serial.println("V");
-    Serial.print("Current = ");
-    Serial.print(current);
-    Serial.println("A");
-    Serial.print("Power = ");
-    Serial.print(power);
-    Serial.println("W");
-    Serial.print("Temp = ");
-    Serial.print(temp);
-    Serial.println("F");
-    Serial.print("Throttle = ");
-    Serial.print(throttle);
-    Serial.println("%");
-    Serial.println();
+    //Serial.println("---------------------");
+    //Serial.println();
+    //Serial.print("Voltage = ");
+    Serial.println(voltage);
+    //Serial.println("V");
+    //Serial.print("Current = ");
+    Serial.println(current);
+    //Serial.println("A");
+    //Serial.print("Power = ");
+    //Serial.println(power);
+    //Serial.println("W");
+    //Serial.print("Temp = ");
+    Serial.println(temp);
+    //Serial.println("F");
+    //Serial.print("Throttle = ");
+    //Serial.println(throttle);
+    //Serial.println("%");
+    //Serial.println();
     disp_lastTime = disp_now;
    } else {
    }
