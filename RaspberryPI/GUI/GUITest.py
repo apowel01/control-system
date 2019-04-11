@@ -5,6 +5,9 @@ from PyQt5.QtCore import QCoreApplication, QObject, QRunnable, QThread, QThreadP
 import sys
 import time
 import serial
+import random 
+motorSpeed=0
+speedChanged=True
 
 class ThreadClass(QThread):
     
@@ -38,19 +41,18 @@ class ThreadClass(QThread):
             # sends data to GUI
             self.displayData()
 
-            if(ser.in_waiting >0):
+            if(ser.in_waiting >0):         
             	# read lines from arduino sequentialy and updates data
                 line = ser.readline()[:-3]
                 try:
-                	print(line)
-	                value = float(line)
-	                if(readMode == 0):
+                    value = float(line)
+                    if(readMode == 0):
 	                    self.voltage = value
 	                    readMode += 1
-	                elif(readMode == 1):
+                    elif(readMode == 1):
 	                    self.current = value
 	                    readMode += 1
-	                elif(readMode == 2):
+                    elif(readMode == 2):
 	                    self.tempurature = value
 	                    readMode = 0
 
@@ -62,21 +64,31 @@ class ThreadClass(QThread):
 
 
     def updateData(self):
-        self.speed += 1
+        global motorSpeed
+        global speedChanged
+
+        if speedChanged:
+            print("speed, ", motorSpeed)
+            ser.write((b'%d\n' % motorSpeed));
+            speedChanged = False
+        else:
+            print("not sending")
 
     def displayData(self):
         self.sigVoltage.emit(self.voltage)
         self.sigCurrent.emit(self.current)
         self.sigTempurature.emit(self.tempurature)
         #self.sigSpeed.emit(self.speed)
+        # print(self.speed)
+        
 
 class QthreadApp(QWidget):
-
     def __init__(self, parent=None):
         global ser
-    	# init serial connection to PI
-        ser = serial.Serial('/dev/ttyACM0', 9600)
 
+    	# init serial connection to PI
+        # ser = serial.Serial('/dev/ttyACM0', 9600)
+        ser = serial.Serial('COM14', 9600)
         QWidget.__init__(self, parent)
         
         # sets up GUI
@@ -148,19 +160,25 @@ class QthreadApp(QWidget):
 
     def updateCurrent(self, value):
         self.currentValue.setText(str(value))
+        
+
     
     def updateTempurature(self, value):
         self.tempuratureValue.setText(str(value))
     
     def sliderChanged(self, value):
         self.speedValue.setText(str(value))
+        global motorSpeed
+        global speedChanged
+
+        speedChanged = True
+        motorSpeed = int(value)
         # send data to arduino when the slider is changed
-        ser.write((b'%d\n' % int(value)));
+        # ser.write((b'%d\n' % int(value)));
         
 
 
 def main():
-
     app = QApplication(sys.argv)
     myApp = QthreadApp()
     myApp.show()
