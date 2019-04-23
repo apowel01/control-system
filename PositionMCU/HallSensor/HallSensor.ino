@@ -3,12 +3,12 @@ const int pin22 = 22;
 const int pin24 = 24;
 const int pin26 = 26;
 const int pin28 = 26;
-
-const int interruptPin = 49;
-
-const int interruptPin2 = 49;
+const int interruptPin = 2;
 
 volatile int counter = 0;
+float revolutions;
+
+
 
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.
@@ -23,25 +23,22 @@ void setup() {
   digitalWrite(pin24, LOW);
   digitalWrite(pin26, LOW);
   digitalWrite(pin28, LOW);
-
-  pinMode(interruptPin2, INPUT);
   
-//  pinMode(interruptPin, INPUT_PULLUP);
-//  attachInterrupt(digitalPinToInterrupt(interruptPin), tick, CHANGE);
+  pinMode(interruptPin, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(interruptPin), tick, CHANGE);
 }
 
 
 void loop() {
   digitalWrite(pin3, HIGH);
-  Serial.println(digitalRead(interruptPin2));
-  delay(100);
+//  Serial.println(digitalRead(interruptPin2));
+  delay(60);
   digitalWrite(pin3, LOW);
-  Serial.println(digitalRead(interruptPin2));
-  delay(100);
-  
+  delay(60);
+  revolutions = counter/14;
+  Serial.println(revolutions);
 }
 
 void tick() {
   counter = counter + 1;
-  Serial.println(counter);
 }
