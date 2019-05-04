@@ -14,6 +14,10 @@ def initialize():
     print("I have initalized")
     return
 
+def power_off():
+    print("I am powering off")
+    pass
+
 def safe_to_approach_check():
     print("I am checking if I am safe to apprach")
     print("velocity = " + str(config["velocity"]))
@@ -26,9 +30,22 @@ def safe_to_approach_check():
 
 def motors_off():
     print("I am turning off power to the motors")
+    motor1.off()
+    motor2.off()
+    motor3.off()
+    motor4.off()
+    motor5.off()
+    motor6.off()
 
 def brakes_off():
     print("I am disengaging the brakes")
+    brake1.disengage()
+    brake2.disengage()
+    brake3.disengage()
+    brake4.disengage()
+    brake5.disengage()
+    brake6.disengage()
+
 
 def main():
     state = state_dict["start_up"] # start in start_up state (1)
@@ -62,7 +79,9 @@ def main():
         # SAFE TO APPROACH
         elif state == state_dict["safe_to_approach"]:
             print("****SAFE TO APPROACH****")
-            # print("I am in state safe to approach")
+                # are the brakes ON?
+                # is there power supplied to the motors?
+                # are we moving?
             launch = input("Prepare to launch? (True/False) ")
             if launch == "True":
                 state = state_dict["prepare_to_launch"]
@@ -74,6 +93,7 @@ def main():
         elif state == state_dict["prepare_to_launch"]:
             print("****PREPARE TO LAUNCH****")
             # print("WARNING: I am preparing to launch!")
+            
             state = state_dict["ready_to_launch"]
         #    sys.exit()
 
@@ -104,10 +124,11 @@ def main():
         elif state == state_dict["braking"]:
             print("****BRAKING****")
             brakes_full_stop()
-
-        elif state == state_dict["full_stop"]:
-            print("****FULL STOP****")
-            pass
+            if velocity == 0:
+                state = state_dict["safe_to_approach"]
+            else:
+                fault = True
+                state = state_dict["fault"]
 
         elif state == state_dict["crawling"]:
             print("****CRAWLING****")
@@ -115,13 +136,21 @@ def main():
 
         elif state == state_dict["power_off"]:
             print("****POWER OFF****")
+            power_off()
             pass
+
+        else:
+            state = state_dict["fault"] # should never reach this state
 
     else:
         while fault == True:
             if state == state_dict["fault_braking"]:
                 # if fault_braking_done ==
-                pass
+                brakes_full_stop()
+                if velocity == 0:
+                    state = state_dict["fault_stop"]
+                else:
+                    state = state_dict["fault_braking"]
 
             elif state == state_dict["fault_stop"]:
                 pass
@@ -142,6 +171,9 @@ def main():
         elif config["velocity"] == 0:
             # attempt to reach safe to approach conditions
             print("FAULT: but at least I'm not moving")
+        else:
+            state = state_dict["fault_diagnostic"]
+    # end eventually, please
     loop += 1
     if loop >= 100:
         sys.exit()

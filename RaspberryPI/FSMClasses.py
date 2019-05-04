@@ -30,6 +30,9 @@ class motor(object):
         self.v = v
         self.temp = temp
 
+    def on(self):
+        pass
+
     def get_current(self):
         pass
 
@@ -37,6 +40,9 @@ class motor(object):
         pass
 
     def get_temp(self):
+        pass
+
+    def off(self):
         pass
 
 class battery(object):
