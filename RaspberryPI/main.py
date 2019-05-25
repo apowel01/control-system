@@ -1,65 +1,41 @@
+#### The FSM for the Raspberry Pi Control System ####
 import FSMClasses
 from FSMConfig import config
 from time import sleep
-import sys
-sys.path.append('../')
-import interupt_test.ino
-import HealthMCU
-#### The FSM for the Raspberry Pi Control System ####
-    # Author: Amberley Powell
-    # Last edited by: Amberley Powell
-    # Date created: ???
-    # Date last edited: 4/27/2019
+import can
+import piplates.RELAYplate as RELAY
+import brakes
+import motors
+
+# Used for the relay
+relayAddr = 0
+# The relay code assumes our motors are on relays 1-6, 7 unused
+bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
+msg = can.Messages(arbitration_id=0x000, data=[0], extended_id=False)
+bus.send(msg)
 
 # power on the pod systems into start up state
-def initialize():
+def initialize_pod():
     # check communication with VITAL sensors // MCUs
+    motors.create_motors()     # create motors
+    brakes.create_brakes()     # create brake objects
+
     print("I have initalized")
-    return
 
 # power off protocol
 def power_off():
     print("I am powering off")
+    # power off stuff
+    motors.motors_off()
 
 # determine if pod is safe to approach
 def safe_to_approach_check():
     print("I am checking if I am safe to apprach")
-    velocity = 0
-    print("velocity = " + str(velocity))
     # velocity test
-    if velocity == 0:
-        return True
-    else:
-        fault = True
-        state = state_dict["fault"]
-        return False
+
     # power to motor test
-#    for motor in motors:
-###        else:
-    #        return False
 
     # power to brakes test
-
-# power off the motors
-def motors_off():
-    print("I am turning off power to the motors")
-    motor1.off()
-    motor2.off()
-    motor3.off()
-    motor4.off()
-    motor5.off()
-    motor6.off()
-
-# disengage all brakes
-def brakes_off():
-    print("I am disengaging the brakes")
-    brake1.disengage()
-    brake2.disengage()
-    brake3.disengage()
-    brake4.disengage()
-    brake5.disengage()
-    brake6.disengage()
-
 
 def main():
     state = state_dict["start_up"] # start in start_up state (1)
@@ -71,7 +47,7 @@ def main():
         if state == state_dict["start_up"]:
             print("****START UP****")
             previousState = state
-            initialize() # power on sequence
+            initialize_pod() # power on sequence
             state = state_dict["system_diagnostic"] # always move to system diagnositc state from start up
 
         # SYSTEM DIAGNOSTIC
@@ -84,8 +60,7 @@ def main():
             #     print("I am just starting up")
 
             # determine if the pod is safe to approach
-            safeToApproach = safe_to_approach_check() # is it safe??
-            if safeToApproach == True:
+            if health.safe_to_approach_check() == True:
                 state = state_dict["safe_to_approach"]
             else: # if not safe to approach, move to fault state
                 fault = True
@@ -123,7 +98,6 @@ def main():
             while distance < stop_distance:
                 accelerate()
             state = state_dict["coasting"] # once we are done accelerating
-
 
         elif state == state_dict["coasting"]:
             print("****COASTING****")
