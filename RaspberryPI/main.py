@@ -1,7 +1,10 @@
-from FSMClasses import state_dict
+import FSMClasses
 from FSMConfig import config
 from time import sleep
 import sys
+sys.path.append('../')
+import interupt_test.ino
+import HealthMCU
 #### The FSM for the Raspberry Pi Control System ####
     # Author: Amberley Powell
     # Last edited by: Amberley Powell
@@ -14,20 +17,30 @@ def initialize():
     print("I have initalized")
     return
 
+# power off protocol
 def power_off():
     print("I am powering off")
-    pass
 
+# determine if pod is safe to approach
 def safe_to_approach_check():
     print("I am checking if I am safe to apprach")
-    print("velocity = " + str(config["velocity"]))
+    velocity = 0
+    print("velocity = " + str(velocity))
+    # velocity test
     if velocity == 0:
         return True
     else:
         fault = True
         state = state_dict["fault"]
         return False
+    # power to motor test
+#    for motor in motors:
+###        else:
+    #        return False
 
+    # power to brakes test
+
+# power off the motors
 def motors_off():
     print("I am turning off power to the motors")
     motor1.off()
@@ -37,6 +50,7 @@ def motors_off():
     motor5.off()
     motor6.off()
 
+# disengage all brakes
 def brakes_off():
     print("I am disengaging the brakes")
     brake1.disengage()
@@ -69,19 +83,17 @@ def main():
             # else:
             #     print("I am just starting up")
 
+            # determine if the pod is safe to approach
             safeToApproach = safe_to_approach_check() # is it safe??
             if safeToApproach == True:
                 state = state_dict["safe_to_approach"]
-            else:
+            else: # if not safe to approach, move to fault state
                 fault = True
                 state = state_dict["Fault"]
 
         # SAFE TO APPROACH
         elif state == state_dict["safe_to_approach"]:
             print("****SAFE TO APPROACH****")
-                # are the brakes ON?
-                # is there power supplied to the motors?
-                # are we moving?
             launch = input("Prepare to launch? (True/False) ")
             if launch == "True":
                 state = state_dict["prepare_to_launch"]
@@ -93,7 +105,7 @@ def main():
         elif state == state_dict["prepare_to_launch"]:
             print("****PREPARE TO LAUNCH****")
             # print("WARNING: I am preparing to launch!")
-            
+
             state = state_dict["ready_to_launch"]
         #    sys.exit()
 

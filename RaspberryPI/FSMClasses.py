@@ -4,6 +4,9 @@
 # Last modified by:
 # Date last modified:
 # Notes:
+import sys
+sys.path.append('../')
+import HealthMCU
 
 state_dict = {"start_up" : 1,
               "system_diagnostic" : 2,
@@ -27,10 +30,10 @@ class motor(object):
 
     def __init__(self, addr, i=0, v=0, temp=0):
         self.i = i
-        self.v = v
+        self.v = HealthMCU.get_motor_voltage()
         self.temp = temp
 
-    def on(self):
+    def power_on(self):
         pass
 
     def get_current(self):
@@ -42,7 +45,10 @@ class motor(object):
     def get_temp(self):
         pass
 
-    def off(self):
+    def power_on_check(self):
+        pass
+
+    def power_off(self):
         pass
 
 class battery(object):
@@ -63,21 +69,25 @@ class battery(object):
         pass
 
 class brake(object):
-    # All brake pads on pod
+    # All brake pads on pod (12?)
 
     def __init__(self, addr, temp=0):
         self.i = i
         self.v = v
-        self.temp = temp
+        self.temp = self.get_temp()
 
     def get_temp(self):
-        pass
+        interupt_test.get_break_tempurature()
+        return
 
 class wheel(object):
     # just for tracking RPM
 
     def __init__(self,addr,rpm=0):
-        self.rpm = rpm
+        self.rpm = self.get_rpm()
+
+    def get_rpm(self):
+        return get_rpm() # placeholder function
 
 class contractor(object):
     # need more info on this
