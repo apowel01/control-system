@@ -9,19 +9,19 @@ def create_motors():
 
 def motors_on():
     print("I am turning off power to the motors")
-    motor1.on()
-    motor2.on()
-    motor3.on()
-    motor4.on()
-    motor5.on()
-    mootr6.on()
+    motor1.power_on()
+    motor2.power_on()
+    motor3.power_on()
+    motor4.power_on()
+    motor5.power_on()
+    mootr6.power_on()
 
 # power off the motors
 def motors_off():
     print("I am turning off power to the motors")
-    motor1.off()
-    motor2.off()
-    motor3.off()
-    motor4.off()
-    motor5.off()
-    motor6.off()
+    motor1.power_off()
+    motor2.power_off()
+    motor3.power_off()
+    motor4.power_off()
+    motor5.power_off()
+    motor6.power_off()

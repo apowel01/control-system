@@ -36,9 +36,9 @@ class motor(object):
     # Holds attribute information for all motor objects
 
     def __init__(self, addr, i=0, v=0, temp=0):
-        self.i = i
+        self.i = HealthMCU.get_motor_current()
         self.v = HealthMCU.get_motor_voltage()
-        self.temp = temp
+        self.heat = HealthMCU.get_motor_heat()
 
     def power_on(self):
 

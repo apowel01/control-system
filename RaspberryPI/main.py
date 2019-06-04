@@ -7,19 +7,16 @@ import piplates.RELAYplate as RELAY
 import brakes
 import motors
 
-# Used for the relay
-relayAddr = 0
-# The relay code assumes our motors are on relays 1-6, 7 unused
-bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
-msg = can.Messages(arbitration_id=0x000, data=[0], extended_id=False)
-bus.send(msg)
+# let the pod coast
+def coast():
+    pass
 
 # power on the pod systems into start up state
 def initialize_pod():
     # check communication with vital sensors and MCUs
     motors.create_motors()     # create motors
     brakes.create_brakes()     # create brake objects
-
+    # initialize other peripherals
     print("I have initalized")
 
 # power off protocol
@@ -31,35 +28,30 @@ def power_off():
 # determine if pod is safe to approach
 def safe_to_approach_check():
     print("I am checking if I am safe to apprach")
-    # velocity test
+    # by default, safe to approach is false
+    SAFE_TO_APPROACH = False
+    # TODO: velocity test
 
-    # power to motor test
+    # TODO: power to motor test
 
-    # power to brakes test
+    # TODO: power to brakes test
+
+    return SAFE_TO_APPROACH
 
 def main():
-    state = state_dict["start_up"] # start in start_up state (1)
-    previousState = -1
+    state = state_dict["start_up"] # start in start_up state
     fault = False
 
     while state != state_dict["fault"]: # check for fault condition
         # START UP STATE
         if state == state_dict["start_up"]:
             print("****START UP****")
-            previousState = state
             initialize_pod() # power on sequence
             state = state_dict["system_diagnostic"] # always move to system diagnositc state from start up
 
         # SYSTEM DIAGNOSTIC
         elif state == state_dict["system_diagnostic"]:
             print("****SYSTEM DIAGNOSTIC****")
-            # print("I am in the System Diagnostic State")
-            # if previousState == 0:
-            #     print("WARNING: I came from the FAULT state")
-            # else:
-            #     print("I am just starting up")
-
-            # determine if the pod is safe to approach
             if health.safe_to_approach_check() == True:
                 state = state_dict["safe_to_approach"]
             else: # if not safe to approach, move to fault state
@@ -69,7 +61,7 @@ def main():
         # SAFE TO APPROACH
         elif state == state_dict["safe_to_approach"]:
             print("****SAFE TO APPROACH****")
-            launch = input("Prepare to launch? (True/False) ")
+            launch = input("Prepare to launch? (True/False) ") #TODO: connect to GUI
             if launch == "True":
                 state = state_dict["prepare_to_launch"]
             else:
@@ -79,33 +71,30 @@ def main():
         # PREPARE TO LAUNCH
         elif state == state_dict["prepare_to_launch"]:
             print("****PREPARE TO LAUNCH****")
-            # print("WARNING: I am preparing to launch!")
-
+            # what do we do here?
             state = state_dict["ready_to_launch"]
-        #    sys.exit()
 
         elif state == state_dict["ready_to_launch"]:
             print("****READY TO LAUNCH****")
             ready_to_launch = input("Are you sure you want to launch? (True/False) ")
             if ready_to_launch == "True":
-                # print("I am launching")
                 state = state_dict["launching"]
             else:
-                state = state_dict["safe_to_approach"]
+                state = state_dict["system_diagnostic"]
 
         elif state == state_dict["launching"]:
             print("****LAUNCHING****")
-            while distance < stop_distance:
+            while distance < FSMConfig.stop_distance: #TODO: add stop distance threshold
                 accelerate()
             state = state_dict["coasting"] # once we are done accelerating
 
         elif state == state_dict["coasting"]:
             print("****COASTING****")
-            # let momentum travel us forwards
-            motors_off() # make sure to cut power to motors
-            brakes_off() # disengage breaks
+            motors_off() # cut power to motors
+            brakes_off() # disengage brakes
             while distance <= coast_distance:
-                print(velocity)
+                # keep coasting
+                coast()
 
         elif state == state_dict["braking"]:
             print("****BRAKING****")
