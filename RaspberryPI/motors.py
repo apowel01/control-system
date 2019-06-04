@@ -1,5 +1,4 @@
 # for all functions called by FSM pertaining to the motors (1-6)
-
 def create_motors():
     motor1 = motor()
     motor2 = motor()

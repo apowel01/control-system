@@ -16,7 +16,7 @@ bus.send(msg)
 
 # power on the pod systems into start up state
 def initialize_pod():
-    # check communication with VITAL sensors // MCUs
+    # check communication with vital sensors and MCUs
     motors.create_motors()     # create motors
     brakes.create_brakes()     # create brake objects
 

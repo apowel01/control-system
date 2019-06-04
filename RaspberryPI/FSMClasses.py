@@ -25,6 +25,13 @@ state_dict = {"start_up" : 1,
               "fault_diagnostic" : 14,
               "purgatory" : 15}
 
+# Used for the relay
+relayAddr = 0
+# The relay code assumes our motors are on relays 1-6, 7 unused
+bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
+msg = can.Messages(arbitration_id=0x000, data=[0], extended_id=False)
+bus.send(msg)
+
 class motor(object):
     # Holds attribute information for all motor objects
 
@@ -34,6 +41,7 @@ class motor(object):
         self.temp = temp
 
     def power_on(self):
+
         pass
 
     def get_current(self):
