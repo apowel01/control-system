@@ -121,7 +121,7 @@ async def async_read_CAN(bus):
     reader = can.AsyncBufferedReader()
 
     listeners = [
-            print_message, 
+            print_message,
             reader
     ]
 
@@ -133,7 +133,7 @@ async def async_read_CAN(bus):
         if !(msg.arbitration_id in ids):
             break
         msgtype = ids[msg.arbitration_id]
-        parseData(msg, msgtype)
+        #parseData(msg, msgtype)
 
     notifier.stop()
     can0.shutdown()
@@ -143,4 +143,3 @@ loop = asyncio.get_event_loop()
 # Run until main coroutine finishes
 loop.run_until_complete(async_read_CAN)
 loop.close()
-

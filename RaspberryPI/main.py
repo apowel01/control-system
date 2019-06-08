@@ -16,13 +16,14 @@ def initialize_pod():
     # check communication with vital sensors and MCUs
     motors.create_motors()     # create motors
     brakes.create_brakes()     # create brake objects
-    # initialize other peripherals
+    # TODO: initialize other peripherals
     print("I have initalized")
 
 # power off protocol
 def power_off():
     print("I am powering off")
     # power off stuff
+    # CAN bus ID 0x000 should kill power to all nodes??
     motors.motors_off()
 
 # determine if pod is safe to approach
@@ -40,9 +41,9 @@ def safe_to_approach_check():
 
 def main():
     state = state_dict["start_up"] # start in start_up state
-    fault = False
+    fault = False # initally not in a fault state
 
-    while state != state_dict["fault"]: # check for fault condition
+    while state != state_dict["fault"]: # check for fault state transition
         # START UP STATE
         if state == state_dict["start_up"]:
             print("****START UP****")
