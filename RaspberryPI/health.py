@@ -50,7 +50,7 @@ def motors_off():
 
 # check if power is applied to motors
 def motor_power_is_on():
-
+    pass
 #### BRAKE HEALTH FUNCTIONS ####
 
 def create_brakes():
