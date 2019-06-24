@@ -5,10 +5,14 @@ def safe_to_approach_check():
     print("I am checking if I am safe to apprach")
     tmp_safe = False
     # velocity test
-    if health.velocity != 0:
-        return tmp_safe
+    print("TODO: Check that velocity == 0")
+    # -- Old (usable?) code
+    # if health.velocity != 0:
+    #     return tmp_safe
+    # --
 
     # power to motor test
+    print("TODO: Ensure motor power is on")
     if motor_power_is_on == True:
         return
 

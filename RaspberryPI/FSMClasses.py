@@ -7,30 +7,34 @@
 import sys
 sys.path.append('../')
 # import HealthMCU # I think this refers to the health.py file
-import health
-import can
+import health # A bunch of random helper functions (of dubious use)
+import can # CAN bus library
+import piplates.RELAYplate as relay # PiPlates relay library
 
-state_dict = {
-	"start_up" : 1,
-	"system_diagnostic" : 2,
-	"safe_to_approach" : 3,
+states = {
+	"start_up" : 7,
+	"system_diagnostic" : 15,
+	"safe_to_approach" : 1,
 	"prepare_to_launch" : 4,
-	"ready_to_launch" : 5,
-	"launching" : 6,
-	"coasting" : 7,
-	"braking" : 8,
+	"ready_to_launch" : 2,
+	"launching" : 3,
+	"coasting" : 4,
+	"braking" : 5,
 	"full_stop" : 9,
-	"crawling" : 10,
+	"crawling" : 6,
 	"power_off" : 11,
 	"fault" : 0,
 	"fault_braking" : 12,
 	"fault_stop" : 13,
-	"fault_diagnostic" : 14,
-	"purgatory" : 15
+	"fault_diagnostic" : 14
 	}
 
-# Used for the relay
-relayAddr = 0
+# Relay plate options
+relay_addr = 0 # Address of relay plate (0-7, set by jumper on plate)
+brake_engage_rel_1 = 1 # Relay number for brake engage solenoid 1
+brake_engage_rel_2 = 2 # Relay number for brake engage solenoid 1
+brake_disengage_rel = 3 # Relay number for brake disengage solenoid
+
 # The relay code assumes our motors are on relays 1-6, 7 unused
 bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
 msg = can.Message(arbitration_id=0x000, data=[0], extended_id=False)
@@ -81,16 +85,61 @@ class battery(object):
 				pass
 
 class brake(object):
-		# All brake pads on pod (12?)
+	def __init__(self, temp=0):
+		# self.temp = self.get_temp()
+		pass
 
-		def __init__(self, addr, temp=0):
-				self.i = i
-				self.v = v
-				self.temp = self.get_temp()
+	# Returns the value of the bit at the given position (for status function)
+	def get_bit(self,val,ind):
+		return ((val&(1<<ind)) != 0)
 
-		def get_temp(self):
-				interupt_test.get_break_tempurature()
-				return
+	# Would probably return temperature of the brake pads?
+	def get_temp(self):
+		# interupt_test.get_break_tempurature()
+		# return
+		pass
+
+	# Returns the status of the brakes (engaged, disengaged, unexpected)
+	def status(self):
+		relay_state = relay.relaySTATE(relay_addr) # Get the relay status
+
+		# Check to see if engaged
+		if (self.get_bit(relay_state, brake_engage_rel_1 - 1) and self.get_bit(relay_state, brake_engage_rel_2 - 1)):
+			# Brakes are actually engaged
+			print("@TODO: Add state machine feedback!")
+			return "engaged"
+		# Check to see if disengaged
+		elif self.get_bit(relay_state, brake_disengage_rel - 1):
+			# Brakes are actually disengaged
+			print("@TODO: Add state machine feedback!")
+			return "disengaged"
+		# Something else is going on... probably not a good thing
+		else:
+			# Brakes are in an unexpected configuration
+			print("@TODO: Add state machine feedback!")
+			return "unexpected"
+
+	# Engages brakes by de-energizing "disengage solenoid" and energizing "engage solenoids"
+	def engage(self):
+		try:
+			relay.relayON(relay_addr, brake_engage_rel_1) # Energize "engage solenoid 1"
+			relay.relayON(relay_addr, brake_engage_rel_2) # Energize "engage solenoid 1"
+			relay.relayOFF(relay_addr, brake_disengage_rel) # De-energize "disengage solenoid"
+		except:
+			print("****BRAKING ERROR****")
+
+		print("@TODO: Add state machine fault under exception!")
+
+	# Disengages brakes by energizing "disengage solenoid" and de-energizing "engage solenoids"
+	def disengage(self):
+		try:
+			relay.relayOFF(relay_addr, brake_engage_rel_1) # Energize "engage solenoid 1"
+			relay.relayOFF(relay_addr, brake_engage_rel_2) # Energize "engage solenoid 1"
+			relay.relayON(relay_addr, brake_disengage_rel) # De-energize "disengage solenoid"
+		except:
+			print("****BRAKING ERROR****")
+
+		print("@TODO: Add state machine fault under exception!")
 
 class wheel(object):
 		# just for tracking RPM
@@ -101,7 +150,7 @@ class wheel(object):
 		def get_rpm(self):
 				return get_rpm() # placeholder function
 
-class contractor(object):
+class contactor(object):
 		# need more info on this
 		def __init__(self, addr, placeholder=0):
 				self.placeholder = placeholder
