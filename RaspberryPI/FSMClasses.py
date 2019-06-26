@@ -27,6 +27,10 @@ class State(object):
 
 		self.entry() # Run entry code
 
+	# Function the state performs
+	def do(self):
+		pass
+
 	# Handle events that are delegated to this State.
 	def trigger(self, event):
 		pass
@@ -49,12 +53,26 @@ class Fault(State):
 	def entry(self):
 		# Re-initialize systems
 		import systems # Import systems classes
+
 		global brakes # Grab the global brakes variable
+		global motors # Grab the global motors variable
+		global batteries # Grab the global batteries variable
+		global tensioners # Grab the global tensioners variable
 
 		try:
-			brakes = systems.brake() # Instantiate a braking object
-			brakes.engage() # Engage the brakes
-		except:
+			brakes = self.systems.brake() # Instantiates a braking object
+			motors = self.systems.motor() # Instantiates a motor object and sets throttle to 0
+			batteries = self.systems.battery() # Instantiates a battery object and disables packs
+			tensioners = self.systems.tensioner() # Instantiates a tensioner object and disables them
+
+			brakes.engage() # Engage brakes
+			batteries.disable() # Disable batteries
+			motors.setThrottle(0) # Set motor throttle to 0
+			tensioners.disable() # Disengage tensioners
+
+		except Exception as e:
+			# If above doesn't work, fault
+			print("Caught exception: {}".format(e))
 			raise
 
 	# Transition to Safe to Approach
@@ -68,7 +86,18 @@ class Fault(State):
 class SafeToApproach(State):
 
 	def entry(self):
-		pass
+		global brakes # Grab the global brakes variable
+		global motors # Grab the global motors variable
+		global batteries # Grab the global batteries variable
+		global tensioners # Grab the global tensioners variable
+
+		try:
+			brakes.engage()
+			motors.setThrottle(0)
+			batteries.disable()
+			tensioners.disable()
+		except:
+			return Fault()
 
 	# Transition to Crawling
 	def trigger(self, event):
@@ -81,10 +110,16 @@ class SafeToApproach(State):
 class ReadyToLaunch(State):
 
 	def entry(self):
-		global brakes
+		global brakes # Grab the global brakes variable
+		global motors # Grab the global motors variable
+		global batteries # Grab the global batteries variable
+		global tensioners # Grab the global tensioners variable
 
 		try:
 			brakes.engage()
+			motors.setThrottle(0)
+			batteries.disable()
+			tensioners.disable()
 		except:
 			return Fault()
 
@@ -99,12 +134,19 @@ class ReadyToLaunch(State):
 class Launching(State):
 
 	def entry(self):
-		global brakes
+		global brakes # Grab the global brakes variable
+		global motors # Grab the global motors variable
+		global batteries # Grab the global batteries variable
+		global tensioners # Grab the global tensioners variable
 
 		try:
-			brakes.disengage()
+			brakes.disengage() # Disengage batteries
+			batteries.enable() # Enables batteries
+			tensioners.enable() # Engages tensioners
+			motors.setThrottle(100) # Set motors to 100%
 		except:
 			return Fault()
+
 
 	# Transition to next state
 	def trigger(self, event):
@@ -117,11 +159,26 @@ class Launching(State):
 
 		return self
 
+	# Checks telemetry to ensure we're go for launch
+	def goForLaunch(self):
+		global brakes # Grab the global brakes variable
+
 # State 4: Coasting
 class Coasting(State):
 
 	def entry(self):
-		pass
+		global brakes # Grab the global brakes variable
+		global motors # Grab the global motors variable
+		global batteries # Grab the global batteries variable
+		global tensioners # Grab the global tensioners variable
+
+		try:
+			brakes.disengage() # Disengage batteries
+			batteries.enable() # Enables batteries
+			tensioners.enable() # Engages tensioners
+			motors.setThrottle(0) # Set motors to 0%
+		except:
+			return Fault()
 
 	# Transition to Braking
 	def trigger(self, event):
@@ -134,7 +191,18 @@ class Coasting(State):
 class Braking(State):
 
 	def entry(self):
-		pass
+		global brakes # Grab the global brakes variable
+		global motors # Grab the global motors variable
+		global batteries # Grab the global batteries variable
+		global tensioners # Grab the global tensioners variable
+
+		try:
+			brakes.engage() # Disengage batteries
+			batteries.enable() # Enables batteries
+			tensioners.enable() # Engages tensioners
+			motors.setThrottle(0) # Set motors to 0%
+		except:
+			return Fault()
 
 	# Transition to next state
 	def trigger(self, event):
@@ -151,7 +219,18 @@ class Braking(State):
 class Crawling(State):
 
 	def entry(self):
-		pass
+		global brakes # Grab the global brakes variable
+		global motors # Grab the global motors variable
+		global batteries # Grab the global batteries variable
+		global tensioners # Grab the global tensioners variable
+
+		try:
+			brakes.disengage() # Disengage batteries
+			batteries.enable() # Enables batteries
+			tensioners.enable() # Engages tensioners
+			motors.setSpeed(10) # Set speed
+		except:
+			return Fault()
 
 	# Transition to Braking
 	def trigger(self, event):
@@ -162,17 +241,26 @@ class Crawling(State):
 
 # State 7: Startup
 class Startup(State):
+	import systems # Import systems classes
 
 	def entry(self):
 		# Initialize systems
-		import systems # Import systems classes
 		global brakes # Grab the global brakes variable
+		global motors # Grab the global motors variable
+		global batteries # Grab the global batteries variable
+		global tensioners # Grab the global tensioners variable
 
 		try:
-			brakes = systems.brake() # Instantiate a braking object
-			brakes.engage() # Engage the brakes
-		except:
+			brakes = self.systems.brake() # Instantiates a braking object
+			motors = self.systems.motor() # Instantiates a motor object and sets throttle to 0
+			batteries = self.systems.battery() # Instantiates a battery object and disables packs
+			tensioners = self.systems.tensioner() # Instantiates a tensioner object and disables them
+
+			brakes.engage() # Engage brakes
+
+		except Exception as e:
 			# If above doesn't work, fault
+			print("Caught exception: {}".format(e))
 			return Fault()
 
 	# Transition to Ready to Launch

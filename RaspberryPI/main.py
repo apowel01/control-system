@@ -8,3 +8,8 @@ pod = FSM()
 
 # pod.trigger('ready_to_launch')
 # pod.trigger('launching')
+# pod.trigger('coasting')
+# pod.trigger('braking')
+# pod.trigger('crawling')
+# pod.trigger('braking')
+# pod.trigger('safe_to_approach')
