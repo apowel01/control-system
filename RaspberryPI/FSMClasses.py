@@ -1,156 +1,183 @@
-# Hold variable classes for FSM
-# Created by: Amberley Powell
-# Date Created: 3/28/2019
-# Last modified by:
-# Date last modified:
-# Notes:
-import sys
-sys.path.append('../')
-# import HealthMCU # I think this refers to the health.py file
-import health # A bunch of random helper functions (of dubious use)
-import can # CAN bus library
-import piplates.RELAYplate as relay # PiPlates relay library
+# Classes necessary for doing the state machine
 
-states = {
-	"start_up" : 7,
-	"system_diagnostic" : 15,
-	"safe_to_approach" : 1,
-	"prepare_to_launch" : 4,
-	"ready_to_launch" : 2,
-	"launching" : 3,
-	"coasting" : 4,
-	"braking" : 5,
-	"full_stop" : 9,
-	"crawling" : 6,
-	"power_off" : 11,
-	"fault" : 0,
-	"fault_braking" : 12,
-	"fault_stop" : 13,
-	"fault_diagnostic" : 14
-	}
+# Primary state machine
+class FSM(object):
 
-# Relay plate options
-relay_addr = 0 # Address of relay plate (0-7, set by jumper on plate)
-brake_engage_rel_1 = 1 # Relay number for brake engage solenoid 1
-brake_engage_rel_2 = 2 # Relay number for brake engage solenoid 1
-brake_disengage_rel = 3 # Relay number for brake disengage solenoid
+	# Initialize the components.
+	def __init__(self):
+		# Start with a default state.
+		self.state = Startup()
 
-# The relay code assumes our motors are on relays 1-6, 7 unused
-bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
-msg = can.Message(arbitration_id=0x000, data=[0], extended_id=False)
-bus.send(msg)
+	def trigger(self, event):
+		"""
+		This is the bread and butter of the state machine. Incoming events are
+		delegated to the given states which then handle the event. The result is
+		then assigned as the new state.
+		"""
 
-class motor(object):
-		# Holds attribute information for all motor objects
+		# The next state will be the result of the trigger function.
+		self.state = self.state.trigger(event)
 
-		def __init__(self, addr, i=0, v=0, temp=0):
-				self.i = HealthMCU.get_motor_current()
-				self.v = HealthMCU.get_motor_voltage()
-				self.heat = HealthMCU.get_motor_heat()
+# Base class for states
+class State(object):
 
-		def power_on(self):
+	# Code which runs when first entering state
+	def __init__(self):
+		print('Processing current state: {}'.format(str(self)))
 
-				pass
+		self.entry() # Run entry code
 
-		def get_current(self):
-				pass
-
-		def get_voltage(self):
-				pass
-
-		def get_temp(self):
-				pass
-
-		def power_on_check(self):
-				pass
-
-		def power_off(self):
-				pass
-
-class battery(object):
-		# Holds attribute information for all battery objects
-
-		def __init__(self, addr, i=0, v=0, temp=0):
-				self.i = i
-				self.v = v
-				self.temp = temp
-
-		def get_current(self):
-				pass
-
-		def get_voltage(self):
-				pass
-
-		def get_temp(self):
-				pass
-
-class brake(object):
-	def __init__(self, temp=0):
-		# self.temp = self.get_temp()
+	# Handle events that are delegated to this State.
+	def trigger(self, event):
 		pass
 
-	# Returns the value of the bit at the given position (for status function)
-	def get_bit(self,val,ind):
-		return ((val&(1<<ind)) != 0)
-
-	# Would probably return temperature of the brake pads?
-	def get_temp(self):
-		# interupt_test.get_break_tempurature()
-		# return
+	# Perform entry tasks for state
+	def entry(self):
 		pass
 
-	# Returns the status of the brakes (engaged, disengaged, unexpected)
-	def status(self):
-		relay_state = relay.relaySTATE(relay_addr) # Get the relay status
+	# Leverages the __str__ method to describe the State.
+	def __repr__(self):
+		return self.__str__()
 
-		# Check to see if engaged
-		if (self.get_bit(relay_state, brake_engage_rel_1 - 1) and self.get_bit(relay_state, brake_engage_rel_2 - 1)):
-			# Brakes are actually engaged
-			print("@TODO: Add state machine feedback!")
-			return "engaged"
-		# Check to see if disengaged
-		elif self.get_bit(relay_state, brake_disengage_rel - 1):
-			# Brakes are actually disengaged
-			print("@TODO: Add state machine feedback!")
-			return "disengaged"
-		# Something else is going on... probably not a good thing
-		else:
-			# Brakes are in an unexpected configuration
-			print("@TODO: Add state machine feedback!")
-			return "unexpected"
+	# Returns the name of the State.
+	def __str__(self):
+		return self.__class__.__name__
 
-	# Engages brakes by de-energizing "disengage solenoid" and energizing "engage solenoids"
-	def engage(self):
+# State 0: Fault
+class Fault(State):
+
+	def entry(self):
+		# Re-initialize systems
+		import systems # Import systems classes
+		global brakes # Grab the global brakes variable
+
 		try:
-			relay.relayON(relay_addr, brake_engage_rel_1) # Energize "engage solenoid 1"
-			relay.relayON(relay_addr, brake_engage_rel_2) # Energize "engage solenoid 1"
-			relay.relayOFF(relay_addr, brake_disengage_rel) # De-energize "disengage solenoid"
+			brakes = systems.brake() # Instantiate a braking object
+			brakes.engage() # Engage the brakes
 		except:
-			print("****BRAKING ERROR****")
+			raise
 
-		print("@TODO: Add state machine fault under exception!")
+	# Transition to Safe to Approach
+	def trigger(self, event):
+		if event == 'safe_to_approach':
+			return SafeToApproach()
+	
+		return self
 
-	# Disengages brakes by energizing "disengage solenoid" and de-energizing "engage solenoids"
-	def disengage(self):
+# State 1: Safe to Approach
+class SafeToApproach(State):
+
+	def entry(self):
+		pass
+
+	# Transition to Crawling
+	def trigger(self, event):
+		if event == 'crawling':
+			return Crawling()
+
+		return self
+
+# State 2: Ready to Launch
+class ReadyToLaunch(State):
+
+	def entry(self):
+		global brakes
+
 		try:
-			relay.relayOFF(relay_addr, brake_engage_rel_1) # Energize "engage solenoid 1"
-			relay.relayOFF(relay_addr, brake_engage_rel_2) # Energize "engage solenoid 1"
-			relay.relayON(relay_addr, brake_disengage_rel) # De-energize "disengage solenoid"
+			brakes.engage()
 		except:
-			print("****BRAKING ERROR****")
+			return Fault()
 
-		print("@TODO: Add state machine fault under exception!")
+	# Transition to Launching
+	def trigger(self, event):
+		if event == 'launching':
+			return Launching()
 
-class wheel(object):
-		# just for tracking RPM
+		return self
 
-		def __init__(self,addr,rpm=0):
-				self.rpm = self.get_rpm()
+# State 3: Launching
+class Launching(State):
 
-		def get_rpm(self):
-				return get_rpm() # placeholder function
+	def entry(self):
+		global brakes
 
-class contactor(object):
-		# need more info on this
-		def __init__(self, addr, placeholder=0):
-				self.placeholder = placeholder
+		try:
+			brakes.disengage()
+		except:
+			return Fault()
+
+	# Transition to next state
+	def trigger(self, event):
+		# Transition to Braking
+		if event == 'braking':
+			return Braking()
+		# Transition to Coasting
+		elif event == 'coasting':
+			return Coasting()
+
+		return self
+
+# State 4: Coasting
+class Coasting(State):
+
+	def entry(self):
+		pass
+
+	# Transition to Braking
+	def trigger(self, event):
+		if event == 'braking':
+			return Braking()
+
+		return self
+
+# State 5: Braking
+class Braking(State):
+
+	def entry(self):
+		pass
+
+	# Transition to next state
+	def trigger(self, event):
+		# Transition to Crawling
+		if event == 'crawling':
+			return Crawling()
+		# Transition to Safe to Approach
+		elif event == 'safe_to_approach':
+			return SafeToApproach()
+
+		return self
+
+# State 6: Crawling
+class Crawling(State):
+
+	def entry(self):
+		pass
+
+	# Transition to Braking
+	def trigger(self, event):
+		if event == 'braking':
+			return Braking()
+
+		return self
+
+# State 7: Startup
+class Startup(State):
+
+	def entry(self):
+		# Initialize systems
+		import systems # Import systems classes
+		global brakes # Grab the global brakes variable
+
+		try:
+			brakes = systems.brake() # Instantiate a braking object
+			brakes.engage() # Engage the brakes
+		except:
+			# If above doesn't work, fault
+			return Fault()
+
+	# Transition to Ready to Launch
+	def trigger(self, event):
+		if event == 'ready_to_launch':
+			return ReadyToLaunch()
+
+		return self
