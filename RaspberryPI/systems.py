@@ -1,5 +1,6 @@
 # Control systems classes such as brakes, tensioners, etc
 import piplates.RELAYplate as relay # PiPlates relay library
+import canDict # Get the CAN dictionary for sake of readability
 
 # Address of relay plate (0-7, set by jumper on plate)
 relay_addr = 0
