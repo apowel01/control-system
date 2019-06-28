@@ -1,0 +1,11 @@
+[Unit]
+Description=Hyperloop pod service
+After=network.target
+
+[Service]
+ExecStart=/sbin/ip link set can0 up type can bitrate 500000
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
