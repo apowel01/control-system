@@ -1,5 +1,6 @@
 # Control systems classes such as brakes, tensioners, etc
 import piplates.RELAYplate as relay # PiPlates relay library
+import can # Get the CAN-bus module
 import canDict # Get the CAN dictionary for sake of readability
 
 # Address of relay plate (0-7, set by jumper on plate)
@@ -67,18 +68,123 @@ class brake(object):
 
 class motor(object):
 	"""docstring for motor"""
+	# Instantiate the CAN-bus object
+	bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
+
 	def __init__(self):
-		self.setThrottle(0) # Initialize with zero throttle
+		self.disableAll() # Initialize with zero throttle
 
 	# Returns True/False based upon whether the system is 
 	def isNominal(self):
 		return True
 	
-	# Set motor throttle to percentage setting, 0-100%
+	#Set all motors to zero torque
+	def disableAll(self):
+		try:
+			msg = can.Message(arbitration_id=canDict.ids['All stop'],
+                      data=[0, 0, 0, 0, 0, 0, 0, 0],
+                      extended_id=False)
+			self.bus.send(msg)
+		except can.CanError:
+			print("****MOTOR COMMAND ERROR****")
+			raise
+
+	# Sets all motors to max torque
+	def maxTorqueAll(self):
+		try:
+			msg = can.Message(arbitration_id=canDict.ids['All max power'],
+                      data=[0, 0, 0, 0, 0, 0, 0, 0],
+                      extended_id=False)
+			self.bus.send(msg)
+		except can.CanError:
+			print("****MOTOR COMMAND ERROR****")
+			raise
+	
+	#Set all motors to specified torque (0-100)
+	def setTorqueAll(self,torque):
+		try:
+			msg = can.Message(arbitration_id=canDict.ids['All set power'],
+                      data=[0, 0, 0, 0, 0, 0, 0, torque],
+                      extended_id=False)
+			self.bus.send(msg)
+		except can.CanError:
+			print("****MOTOR COMMAND ERROR****")
+			raise
+	
+	# REDUNDANT? Set motor throttle to percentage setting, 0-100%
 	def setThrottle(self, setting):
 		print("@TODO Transmit throttle message: {}".format(setting))
 		return True
 
+	#Set one motor to zero torque (1:6 = FR,FL,MR,ML,BR,BL)
+	def disableOne(self,motorid):
+		try:
+			if motorid == 1:
+				canid = canDict.ids['FR Motor stop']
+			elif motorid == 2:
+				canid = canDict.ids['FL Motor stop']
+			elif motorid == 3:
+				canid = canDict.ids['MR Motor stop']
+			elif motorid == 4:
+				canid = canDict.ids['ML Motor stop']
+			elif motorid == 5:
+				canid = canDict.ids['BR Motor stop']
+			elif motorid == 6:
+				canid = canDict.ids['BL Motor stop']
+			msg = can.Message(arbitration_id=canid,
+                      data=[0, 0, 0, 0, 0, 0, 0, 0],
+                      extended_id=False)
+			self.bus.send(msg)
+		except can.CanError:
+			print("****MOTOR COMMAND ERROR****")
+			raise
+
+	#Set one motor to max torque (1:6 = FR,FL,MR,ML,BR,BL)
+	def maxTorqueOne(self,motorid):
+		try:
+			if motorid == 1:
+				canid = 273
+			elif motorid == 2:
+				canid = 289
+			elif motorid == 3:
+				canid = 305
+			elif motorid == 4:
+				canid = 321
+			elif motorid == 5:
+				canid = 337
+			elif motorid == 6:
+				canid = 353
+			msg = can.Message(arbitration_id=canid,
+                      data=[0, 0, 0, 0, 0, 0, 0, 0],
+                      extended_id=False)
+			self.bus.send(msg)
+		except can.CanError:
+			print("****MOTOR COMMAND ERROR****")
+			raise
+
+	#Set one motor to specified torque (1:6 = FR,FL,MR,ML,BR,BL)		
+	def setTorqueOne(self,motorid,torque):
+		try:
+			if motorid == 1:
+				canid = 274
+			elif motorid == 2:
+				canid = 290
+			elif motorid == 3:
+				canid = 306
+			elif motorid == 4:
+				canid = 322
+			elif motorid == 5:
+				canid = 338
+			elif motorid == 6:
+				canid = 354
+			msg = can.Message(arbitration_id=canid,
+                      data=[0, 0, 0, 0, 0, 0, 0, torque],
+                      extended_id=False)
+			self.bus.send(msg)
+		except can.CanError:
+			print("****MOTOR COMMAND ERROR****")
+			raise
+	
 	# Sets pod speed in miles/hr
 	def setSpeed(self, setting):
 		print("@TODO Determine how to implement MPH-based drive: {} MPH".format(setting))
@@ -140,106 +246,4 @@ class tensioner(object):
 			relay.relayOFF(relay_addr, self.tensRelay)
 		except:
 			print("****TENSIONER ERROR****")
-			raise
-
-class motors(object):
-	def __init__(self):
-		self.disableall()
-
-	def disableall(self):
-		try:
-			#Set all motors to zero torque
-			msg = can.Message(arbitration_id=256,
-                      data=[0, 0, 0, 0, 0, 0, 0, 0],
-                      is_extended_id=False)
-			bus.send(msg)
-		except can.CanError:
-			print("****MOTOR COMMAND ERROR****")
-			raise
-
-	def maxtorqueall(self):
-		try:
-			#Set all motors to max torque
-			msg = can.Message(arbitration_id=257,
-                      data=[0, 0, 0, 0, 0, 0, 0, 0],
-                      is_extended_id=False)
-			bus.send(msg)
-		except can.CanError:
-			print("****MOTOR COMMAND ERROR****")
-			raise			
-	def settorqueall(self,torque):
-		try:
-			#Set all motors to specified torque (0-100)
-			msg = can.Message(arbitration_id=258,
-                      data=[0, 0, 0, 0, 0, 0, 0, torque],
-                      is_extended_id=False)
-			bus.send(msg)
-		except can.CanError:
-			print("****MOTOR COMMAND ERROR****")
-			raise
-	def disableone(self,motorid):
-		try:
-			#Set one motor to zero torque (1:6 = FR,FL,MR,ML,BR,BL)
-			if motorid == 1:
-				canid = 272
-			elif motorid == 2:
-				canid = 288
-			elif motorid == 3:
-				canid = 304
-			elif motorid == 4:
-				canid = 320
-			elif motorid == 5:
-				canid = 336
-			elif motorid == 6:
-				canid = 352
-			msg = can.Message(arbitration_id=canid,
-                      data=[0, 0, 0, 0, 0, 0, 0, 0],
-                      is_extended_id=False)
-			bus.send(msg)
-		except can.CanError:
-			print("****MOTOR COMMAND ERROR****")
-			raise
-	def maxtorqueone(self,motorid):
-		try:
-			#Set one motor to max torque (1:6 = FR,FL,MR,ML,BR,BL)
-			if motorid == 1:
-				canid = 273
-			elif motorid == 2:
-				canid = 289
-			elif motorid == 3:
-				canid = 305
-			elif motorid == 4:
-				canid = 321
-			elif motorid == 5:
-				canid = 337
-			elif motorid == 6:
-				canid = 353
-			msg = can.Message(arbitration_id=canid,
-                      data=[0, 0, 0, 0, 0, 0, 0, 0],
-                      is_extended_id=False)
-			bus.send(msg)
-		except can.CanError:
-			print("****MOTOR COMMAND ERROR****")
-			raise			
-	def settorqueone(self,motorid,torque):
-		try:
-			#Set one motor to specified torque (1:6 = FR,FL,MR,ML,BR,BL)
-			if motorid == 1:
-				canid = 274
-			elif motorid == 2:
-				canid = 290
-			elif motorid == 3:
-				canid = 306
-			elif motorid == 4:
-				canid = 322
-			elif motorid == 5:
-				canid = 338
-			elif motorid == 6:
-				canid = 354
-			msg = can.Message(arbitration_id=canid,
-                      data=[0, 0, 0, 0, 0, 0, 0, torque],
-                      is_extended_id=False)
-			bus.send(msg)
-		except can.CanError:
-			print("****MOTOR COMMAND ERROR****")
 			raise

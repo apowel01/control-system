@@ -67,7 +67,7 @@ class Fault(State):
 
 			brakes.engage() # Engage brakes
 			batteries.disable() # Disable batteries
-			motors.setThrottle(0) # Set motor throttle to 0
+			motors.disableAll() # Set motor throttle to 0
 			tensioners.disable() # Disengage tensioners
 
 		except Exception as e:
@@ -93,7 +93,7 @@ class SafeToApproach(State):
 
 		try:
 			brakes.engage()
-			motors.setThrottle(0)
+			motors.disableAll()
 			batteries.disable()
 			tensioners.disable()
 		except:
@@ -117,7 +117,7 @@ class ReadyToLaunch(State):
 
 		try:
 			brakes.engage()
-			motors.setThrottle(0)
+			motors.disableAll()
 			batteries.disable()
 			tensioners.disable()
 		except:
@@ -143,7 +143,7 @@ class Launching(State):
 			brakes.disengage() # Disengage batteries
 			batteries.enable() # Enables batteries
 			tensioners.enable() # Engages tensioners
-			motors.setThrottle(100) # Set motors to 100%
+			motors.maxTorqueAll() # Set motors to 100%
 		except:
 			return Fault()
 
@@ -176,7 +176,7 @@ class Coasting(State):
 			brakes.disengage() # Disengage batteries
 			batteries.enable() # Enables batteries
 			tensioners.enable() # Engages tensioners
-			motors.setThrottle(0) # Set motors to 0%
+			motors.disableAll() # Set motors to 0%
 		except:
 			return Fault()
 
@@ -200,7 +200,7 @@ class Braking(State):
 			brakes.engage() # Disengage batteries
 			batteries.enable() # Enables batteries
 			tensioners.enable() # Engages tensioners
-			motors.setThrottle(0) # Set motors to 0%
+			motors.disableAll() # Set motors to 0%
 		except:
 			return Fault()
 
