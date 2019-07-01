@@ -103,7 +103,8 @@ class SafeToApproach(State):
 	def trigger(self, event):
 		if event == 'crawling':
 			return Crawling()
-
+		elif event == 'fault':
+			return Fault()
 		return self
 
 # State 2: Ready to Launch
@@ -127,7 +128,8 @@ class ReadyToLaunch(State):
 	def trigger(self, event):
 		if event == 'launching':
 			return Launching()
-
+		elif event == 'fault':
+			return Fault()
 		return self
 
 # State 3: Launching
@@ -156,7 +158,8 @@ class Launching(State):
 		# Transition to Coasting
 		elif event == 'coasting':
 			return Coasting()
-
+		elif event == 'fault':
+			return Fault()
 		return self
 
 	# Checks telemetry to ensure we're go for launch
@@ -184,7 +187,8 @@ class Coasting(State):
 	def trigger(self, event):
 		if event == 'braking':
 			return Braking()
-
+		elif event == 'fault':
+			return Fault()
 		return self
 
 # State 5: Braking
@@ -212,6 +216,8 @@ class Braking(State):
 		# Transition to Safe to Approach
 		elif event == 'safe_to_approach':
 			return SafeToApproach()
+		elif event == 'fault':
+			return Fault()
 
 		return self
 
@@ -236,7 +242,8 @@ class Crawling(State):
 	def trigger(self, event):
 		if event == 'braking':
 			return Braking()
-
+		elif event == 'fault':
+			return Fault()
 		return self
 
 # State 7: Startup
@@ -267,5 +274,6 @@ class Startup(State):
 	def trigger(self, event):
 		if event == 'ready_to_launch':
 			return ReadyToLaunch()
-
+		elif event == 'fault':
+			return Fault()
 		return self
