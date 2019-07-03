@@ -119,8 +119,8 @@ class ReadyToLaunch(State):
 		try:
 			brakes.engage()
 			motors.disableAll()
-			batteries.disable()
-			tensioners.disable()
+			batteries.enable()
+			tensioners.enable()
 		except:
 			return Fault()
 
