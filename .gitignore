@@ -1,2 +1,3 @@
-RaspberryPI/__pycache__
+RaspberryPI/__pycache__/
 RaspberryPI/**/*.pyc
+*.py[cod]
