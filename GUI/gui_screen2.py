@@ -119,6 +119,8 @@ class GUI(QMainWindow):
         #Title of the entire window
         self.setWindowTitle('Cal Poly Hyperloop')
         self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setFixedSize(1600, 1200)
+
 
         #Used to allow GUI to be draggable
         self.oldPos = self.pos()

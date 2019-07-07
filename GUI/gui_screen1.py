@@ -41,9 +41,8 @@ class GUI(QMainWindow):
         #Title of the entire window
         self.setWindowTitle('Cal Poly Hyperloop')
         self.setWindowFlags(Qt.FramelessWindowHint)
-
+        self.setFixedSize(1600, 1200)
         self.teamId.setText("TEAM ID: "+self.team_id)
-
 
 
         #Used to allow GUI to be draggable
@@ -264,42 +263,9 @@ def update_labels():
                     print("no connection yet")
                     time.sleep(1)
                 
-
-
 timer = QTimer()
 timer.timeout.connect(update_labels)
 timer.start(20)
-
-
-# async def processData(reader, writer):
-#     while True:
-#         RECIEVED_JSON = reader.read(1024)
-#         if not RECIEVED_JSON:
-#             continue
-#         await ayncio.sleep(.05)
-#         update_labels(RECIEVED_JSON)
-
-# async def processData():
-#     reader, writer = await asyncio.open_connection(
-#         '192.168.0.6', 5001)
-
-#     # print(f'Send: {message!r}')
-#     # writer.write(message.encode())
-#     while True:
-#         RECIEVED_JSON = await reader.read(100)
-#         if not RECIEVED_JSON:
-#             continue
-#         print(f'Received: {RECIEVED_JSON.decode()!r}')
-#         await asyncio.sleep(.05)
-#         recieved = RECIEVED_JSON.decode().split('}')
-#         data = recieved[-2]+'}' 
-#         update_labels(data)
-
-    # print('Close the connection')
-    # writer.close()
-    # await writer.wait_closed()
-
-# asyncio.run(processData())
 
 sys.exit(app.exec_())
 
