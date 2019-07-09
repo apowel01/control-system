@@ -14,6 +14,17 @@ time.sleep(0.1)
 bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
 
 #----------------DATA STRUCTURES-----------------
+
+# New telemetry dictionary
+telemDict {
+	281: {
+		'name': 'FR Motor data',
+		'data': None,
+		'time': None
+		},
+	297: dict()
+	}
+
 CanDataIds =  {
 		281 : 'FR Motor data',
 		297 : 'FL Motor data',
