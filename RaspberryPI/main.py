@@ -4,6 +4,7 @@
 # Imports
 import os
 import time
+import can
 import json
 import asyncio # Used for asynchronous functions
 import socket # Used for sending data to SpaceX
@@ -26,8 +27,20 @@ telemetry = dict()
 telemetry['distance'] = 0
 
 #-------------CAN NETWORK SETUP---------------
-os.system("sudo /sbin/ip link set can0 up type can bitrate 500000")
-time.sleep(0.1)
+# os.system("sudo /sbin/ip link set can0 up type can bitrate 500000")
+# time.sleep(0.1)
+
+# CAN bus object
+can0 = can.interface.Bus(channel='can0', bustype='socketcan_native')
+# New telemetry dictionary
+telemDict = {
+	281: {
+		'name': 'FR Motor data',
+		'data': None,
+		'time': None
+		},
+	297: dict()
+	}
 
 # Command server
 async def cmd_server(host, port):
@@ -36,7 +49,7 @@ async def cmd_server(host, port):
 
 # Telemetry server
 async def tlm_server(host, port):
-	server = await asyncio.start_server(processTlm, host, port)
+	server = await asyncio.start_server(broadcastTlm, host, port)
 	await server.serve_forever()
 
 # Process network commands
@@ -86,8 +99,8 @@ async def processNetCmds(reader, writer):
 
 	writer.close()
 
-# Process telemetry for telemetry server
-async def processTlm(reader, writer):
+# Broascast telemetry for telemetry server
+async def broadcastTlm(reader, writer):
 	global pod # Grab global pod object
 	# Init telemetry dictionary
 	global telemetry
@@ -110,6 +123,25 @@ async def processTlm(reader, writer):
 		await asyncio.sleep(.1) # Wait until sending telem update
 
 	writer.close()
+
+# Process CAN-based telemetry
+# Input: Processing frequency [Hz]
+async def processTelem(freq = 10):
+	global telemDict # Bring in telemetry dictionary
+	canReader = can.AsyncBufferedReader()
+
+	while True:
+		print("Trying to read can?")
+		async for msg in canReader:
+			print(msg)
+		# if (msg.arbitration_id in CanDataIds):
+		# 	CanDataVals[CanDataIds[msg.arbitration_id]] = msg.data
+		# 	CanDataTimes[CanDataIds[msg.arbitration_id]] = msg.timestamp
+		# if (msg.arbitration_id in CanRecvIds):
+		# 	CanRecvTimes[CanRecvIds[msg.arbitration_id]] = msg.timestamp
+		# if (time.time() <= timer1+.1):
+		# 	break
+		await asyncio.sleep(1/freq)
 
 # Coroutine for sending telemetry to SpaceX
 # Input: Transmit frequency [Hz]
