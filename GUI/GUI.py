@@ -18,7 +18,7 @@ class GUI1(QMainWindow):
         Modification to the following variables will appear on the GUI instantly
         '''
         self.team_id = '0123456'
-        self.end_distance = 1609 #meters
+        self.end_distance = 125000 #meters
         self.distance = 0 #meters
         self.speed = 0 #MPH
         self.acceleration = 0 #M/S2
@@ -41,6 +41,7 @@ class GUI1(QMainWindow):
         self.setWindowTitle('Cal Poly Hyperloop')
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setFixedSize(1600, 1200)
+        self.move(1920, 0) #MOVE GUI TO FIRST SCREEN
         self.teamId.setText("TEAM ID: "+self.team_id)
 
 
@@ -291,6 +292,7 @@ class GUI2(QMainWindow):
         self.setWindowTitle('Cal Poly Hyperloop')
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setFixedSize(1600, 1200)
+        self.move(3520, 0) #MOVE GUI TO SECOND SCREEN
 
 
         #Used to allow GUI to be draggable

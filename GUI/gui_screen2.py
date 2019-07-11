@@ -120,6 +120,7 @@ class GUI(QMainWindow):
         self.setWindowTitle('Cal Poly Hyperloop')
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setFixedSize(1600, 1200)
+        self.move(0, 10)
 
 
         #Used to allow GUI to be draggable

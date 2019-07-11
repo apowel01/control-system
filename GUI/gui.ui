@@ -275,7 +275,7 @@ font: 25 18pt &quot;Roboto&quot;;</string>
      <string notr="true">color: white; background: transparent;</string>
     </property>
     <property name="text">
-     <string>123.45 F°</string>
+     <string>123.45 C°</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -459,7 +459,7 @@ background: transparent;
 font: 25 26pt &quot;Roboto&quot;;</string>
     </property>
     <property name="text">
-     <string>MPH</string>
+     <string>M/S</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
