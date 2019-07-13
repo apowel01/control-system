@@ -64,7 +64,7 @@ class GUI1(QMainWindow):
         completion_ratio = self.distance/self.end_distance
         #1400 is the value at which the progress bar and clipart reach the end
         progressRatio = int(1400*completion_ratio)
-        self.distanceLabel.setText(str(self.distance)+'M') 
+        self.distanceLabel.setText(str(self.distance)+'CM') 
         if progressRatio>1400:
             self.pause_timer()
         else:
