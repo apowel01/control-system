@@ -273,41 +273,48 @@ telemDict = {
 
 
 async def updateTelemDict(freq = 10):
-	try:
-		# timer = time.time()
-		motor_id = [281,297,345,361]
-		for i in motor_id:		
-			telemDict[i]['rpm'] = telemDict[i]['data'][1] << 8 & telemDict[i]['data'][0]
-			telemDict[i]['volt'] = telemDict[i]['data'][3] << 8 & telemDict[i]['data'][2]
-			telemDict[i]['temp'] = telemDict[i]['data'][5] << 8 & telemDict[i]['data'][4]
-			telemDict[i]['throttle'] = telemDict[i]['data'][6]
+	while True:
+		# try:
+			# timer = time.time()
+			motor_id = [281,297,345,361]
+			for i in motor_id:		
+				if telemDict[i]['data'] != None:
+					telemDict[i]['rpm'] = (telemDict[i]['data'][1] << 8) + telemDict[i]['data'][0]
+					telemDict[i]['volt'] = (telemDict[i]['data'][3] << 8) + telemDict[i]['data'][2]
+					telemDict[i]['temp'] = (telemDict[i]['data'][5] << 8) + telemDict[i]['data'][4]
+					telemDict[i]['throttle'] = telemDict[i]['data'][6]
+					
+			brake_id = [537, 554, 601, 617]
+			for i in brake_id:
+				if telemDict[i]['data'] != None:
+					telemDict[i]['temp'] = (telemDict[i]['data'][1] << 8) + telemDict[i]['data'][0]
+					telemDict[i]['reed'] = telemDict[i]['data'][2]
+
+			tension_id = [793, 809, 857, 873]
+			for i in tension_id:
+				if telemDict[i]['data'] != None:
+					telemDict[i]['reed'] = telemDict[i]['data'][0]
 			
-		brake_id = [537, 554, 601, 617]
-		for i in brake_id:
-			telemDict[i]['temp'] = telemDict[i]['data'][1] << 8 & telemDict[i]['data'][0]
-			telemDict[i]['reed'] = telemDict[i]['data'][2]
-
-		tension_id = [793, 809, 857, 873]
-		for i in tension_id:
-			telemDict[i]['reed'] = telemDict[i]['data'][0]
-		
-		pressure_id = [522, 778]
-		for i in pressure_id:
-			telemDict[i]['pressure'] = telemDict[i]['data'][1] << 8 & telemDict[i]['data'][0]
+			pressure_id = [522, 778]
+			for i in pressure_id:
+				if telemDict[i]['data'] != None:
+					telemDict[i]['pressure'] = (telemDict[i]['data'][1] << 8) + telemDict[i]['data'][0]
 
 
-		telemDict[1049][distance] = telemDict[1049]['data'][1] << 8 & telemDict[1049]['data'][0]
-		telemDict[1065][distance] = telemDict[1065]['data'][1] << 8 & telemDict[1065]['data'][0]
+			if (telemDict[1049]['data'] != None) or (telemDict[1065]['data'] != None) or (telemDict[249]['data'] != None) or (telemDict[265]['data'] != None):
+				telemDict[1049][distance] = (telemDict[1049]['data'][1] << 8) + telemDict[1049]['data'][0]
+				telemDict[1065][distance] = (telemDict[1065]['data'][1] << 8) + telemDict[1065]['data'][0]
 
-		telemDict[249][distance] = telemDict[249]['data'][1] << 8 & telemDict[249]['data'][0]
-		telemDict[265][distance] = telemDict[265]['data'][1] << 8 & telemDict[265]['data'][0]
-		# print("****************************")
-		# print(time.time() - timer)
-		# print("****************************")
-	except Exception as e:
-		pass
-		
-	await asyncio.sleep(1/freq)
+				telemDict[249][distance] = (telemDict[249]['data'][1] << 8) + telemDict[249]['data'][0]
+				telemDict[265][distance] = (telemDict[265]['data'][1] << 8) + telemDict[265]['data'][0]
+			# print("****************************")
+			# print(time.time() - timer)
+			# print("****************************")
+		# except Exception as e:
+		# 	print("NOOOOOOOOOOOOOOOOOOOOOOOOOO")
+		# 	pass
+			
+			await asyncio.sleep(1/freq)
 	
 
 # Command server
@@ -393,8 +400,12 @@ async def broadcastTlm(reader, writer):
 	writer.close()
 
 
-
-
+async def printing(freq = 10):
+	global telemDict
+	while True:
+		print("Printing")
+		print(telemDict[281]['rpm'])
+		await asyncio.sleep(1/freq)
 
 
 # Process CAN-based telemetry
@@ -405,7 +416,7 @@ async def processTelem(freq = 100, can_read_freq = 1000):
 
 
 	while True:
-		print("Trying to read can?")
+		# print("Trying to read can?")
 		timer1 = time.time()
 		for msg in can0:
 			print("  Arbitration id")
@@ -414,7 +425,7 @@ async def processTelem(freq = 100, can_read_freq = 1000):
 			print(msg.data)
 			print("  Timestamp")
 			print(msg.timestamp)
-			# print(telemDict.keys)
+			print(telemDict.keys)
 			try:
 				telemDict[msg.arbitration_id]['data'] = msg.data
 				telemDict[msg.arbitration_id]['time'] = msg.timestamp				
@@ -425,7 +436,7 @@ async def processTelem(freq = 100, can_read_freq = 1000):
 				break
 
 		#await asyncio.sleep(1/freq)
-		print("**Flag**")
+		# print("**Flag**")
 
 			# print("**MESSAGE**")
 			# print(telemDict[1306]['health'])
@@ -613,7 +624,8 @@ async def main():
 		spacex_tlm(),
 		state_transistion(),
 		updateTelemDict(),
-		processTelem()           # Put process telem last, it messes everything afterwards
+		processTelem(),           # Put process telem last, it messes everything afterwards
+		printing()
 		# broadcastTlm(),
 		# processNetCmds()
 	)
