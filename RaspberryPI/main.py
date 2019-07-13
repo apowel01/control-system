@@ -23,8 +23,12 @@ stateDict = {
     'Startup': 1 # Startup is the same as safe to approach (to SpaceX)
 	}
 
-telemetry = dict()
-telemetry['distance'] = 0
+telemetry = {
+	'position': 0,
+	'velocity': 0,
+	'acceleration': 0
+}
+
 
 motor_temp_fault = 70
 max_batt_temp = 70
@@ -48,210 +52,222 @@ can0 = can.interface.Bus(channel='can0', bustype='socketcan_native')
 telemDict = {
 	281 or 'FR Motor': {
 		'name': 	'FR Motor data',
-		'data': 	0,
-		'time': 	0,
-		'rpm' : 	0,
-		'volt': 	0,
-		'temp': 	0,
-		'throttle': 0,
-		'torque': 0
+		'data': 	None,
+		'time': 	None,
+		'rpm' : 	None,
+		'volt': 	None,
+		'temp': 	None,
+		'throttle': None,
+		'torque': None
 		},
 	297 or 'FL Motor': {
 		'name': 'FL Motor data',
-		'data': 	0,
-		'time': 	0,
-		'rpm' : 	0,
-		'volt': 	0,
-		'temp': 	0,
-		'throttle': 0,
-		'torque': 0
+		'data': 	None,
+		'time': 	None,
+		'rpm' : 	None,
+		'volt': 	None,
+		'temp': 	None,
+		'throttle': None,
+		'torque': None
 		},
 	313 or 'MR Motor': {
 		'name': 'MR Motor data',
-		'data': 	0,
-		'time': 	0,
-		'rpm' : 	0,
-		'volt': 	0,
-		'temp': 	0,
-		'throttle': 0,
-		'torque': 0
+		'data': 	None,
+		'time': 	None,
+		'rpm' : 	None,
+		'volt': 	None,
+		'temp': 	None,
+		'throttle': None,
+		'torque': None
 		},
 	329 or 'ML Motor': {
 		'name': 'ML Motor data',
-		'data': 	0,
-		'time': 	0,
-		'rpm' : 	0,
-		'volt': 	0,
-		'temp': 	0,
-		'throttle': 0,
-		'torque': 0
+		'data': 	None,
+		'time': 	None,
+		'rpm' : 	None,
+		'volt': 	None,
+		'temp': 	None,
+		'throttle': None,
+		'torque': None
 		},
 	345 or 'RR Motor': {
 		'name': 'RR Motor data',
-		'data': 	0,
-		'time': 	0,
-		'rpm' : 	0,
-		'volt': 	0,
-		'temp': 	0,
-		'throttle': 0,
-		'torque': 0
+		'data': 	None,
+		'time': 	None,
+		'rpm' : 	None,
+		'volt': 	None,
+		'temp': 	None,
+		'throttle': None,
+		'torque': None
 		},
 	361 or 'RL Motor': {
 		'name': 'RL Motor data',
-		'data': 	0,
-		'time': 	0,
-		'rpm' : 	0,
-		'volt': 	0,
-		'temp': 	0,
-		'throttle': 0,
-		'torque': 0
+		'data': 	None,
+		'time': 	None,
+		'rpm' : 	None,
+		'volt': 	None,
+		'temp': 	None,
+		'throttle': None,
+		'torque': None
+		},
+	522 or 'All Brakes': {
+		'name': 'All brakes',
+		'data': None,
+		'time': None,
+		'pressure': None
 		},
 	537 or 'FR Brake': {
 		'name': 'FR Brake data',
-		'data': 0,
-		'time': 0,
-		'temp': 0,
-		'reed': 0
+		'data': None,
+		'time': None,
+		'temp': None,
+		'reed': None
 		},
 	554 or 'FL Brake': {
 		'name': 'FL Brake data',
-		'data': 0,
-		'time': 0,
-		'temp': 0,
-		'reed': 0
+		'data': None,
+		'time': None,
+		'temp': None,
+		'reed': None
 		},
 	569 or 'MR Brake': {
 		'name': 'MR Brake data',
-		'data': 0,
-		'time': 0,
-		'temp': 0,
-		'reed': 0
+		'data': None,
+		'time': None,
+		'temp': None,
+		'reed': None
 		},
 	585 or 'ML Brake': {
 		'name': 'ML Brake data',
-		'data': 0,
-		'time': 0,
-		'temp': 0,
-		'reed': 0
+		'data': None,
+		'time': None,
+		'temp': None,
+		'reed': None
 		},
 	601 or 'RR Brake': {
 		'name': 'RR Brake data',
-		'data': 0,
-		'time': 0,
-		'temp': 0,
-		'reed': 0
+		'data': None,
+		'time': None,
+		'temp': None,
+		'reed': None
 		},
 	617 or 'RL Brake': {
 		'name': 'RL Brake data',
-		'data': 0,
-		'time': 0,
-		'temp': 0,
-		'reed': 0
+		'data': None,
+		'time': None,
+		'temp': None,
+		'reed': None
+		},
+	778 or 'All Tensioner': {
+		'name': 'All tensioner',
+		'data': None,
+		'time': None,
+		'pressure': None
 		},
 	793 or 'FR Tensioner': {
 		'name': 'FR Tensioner data',
-		'data': 0,
-		'time': 0,
-		'reed': 0
+		'data': None,
+		'time': None,
+		'reed': None
 		},
 	809 or 'FL Tensioner': {
 		'name': 'FL Tensioner data',
-		'data': 0,
-		'time': 0,
-		'reed': 0
+		'data': None,
+		'time': None,
+		'reed': None
 		},
 	825 or 'MR Tensioner': {
 		'name': 'MR Tensioner data',
-		'data': 0,
-		'time': 0,
-		'reed': 0
+		'data': None,
+		'time': None,
+		'reed': None
 		},
 	841 or 'ML Tensioner': {
 		'name': 'ML Tensioner data',
-		'data': 0,
-		'time': 0,
-		'reed': 0
+		'data': None,
+		'time': None,
+		'reed': None
 		},
 	857 or 'RR Tensioner': {
 		'name': 'RR Tensioner data',
-		'data': 0,
-		'time': 0,
-		'reed': 0
+		'data': None,
+		'time': None,
+		'reed': None
 		},
 	873 or 'RL Tensioner': {
 		'name': 'RL Tensioner data',
-		'data': 0,
-		'time': 0,
-		'reed': 0
+		'data': None,
+		'time': None,
+		'reed': None
 		},
 	1049 or 'F Lidar': {
 		'name': 'F Lidar data',
-		'data': 			0,
-		'time': 			0,
-		'distance' : 		0
+		'data': 			None,
+		'time': 			None,
+		'distance' : 		None
 		},
 	1065 or 'R Lidar': {
 		'name': 'R Lidar data',
-		'data': 			0,
-		'time': 			0,
-		'distance' : 		0
+		'data': 			None,
+		'time': 			None,
+		'distance' : 		None
 		},
 	249 or 'R Band': {
 		'name': 'R Band data',
-		'data': 			0,
-		'time': 			0,
-		'time_arduino' :	0
+		'data': 			None,
+		'time': 			None,
+		'time_arduino' :	None
 		},
 	265 or 'L Band':{
 		'name': 'L Band data',
-		'data': 			0,
-		'time': 			0,
-		'time_arduino' : 	0
+		'data': 			None,
+		'time': 			None,
+		'time_arduino' : 	None
 		},
 	1305 or 'F BMS': {
 		'name': 'F BMS data',
-		'data': 0,
-		'time': 0,
-		'max batt temp' : 0,
-		'max v' : 0,
-		'min v' : 0,
-		'current' : 0
+		'data': None,
+		'time': None,
+		'max batt temp' : None,
+		'max v' : None,
+		'min v' : None,
+		'current' : None
 		},
 	1321 or 'M BMS': {
 		'name': 'M BMS data',
-		'data': 0,
-		'time': 0,
-		'max batt temp' : 0,
-		'max v' : 0,
-		'min v' : 0,
-		'current' : 0
+		'data': None,
+		'time': None,
+		'max batt temp' : None,
+		'max v' : None,
+		'min v' : None,
+		'current' : None
 		},
 	1337 or 'R BMS': {
 		'name': 'R BMS data',
-		'data': 0,
-		'time': 0,
-		'max batt temp' : 0,
-		'max v' : 0,
-		'min v' : 0,
-		'current' : 0
+		'data': None,
+		'time': None,
+		'max batt temp' : None,
+		'max v' : None,
+		'min v' : None,
+		'current' : None
 		},
 	1306 or 'F BMS Arduino': {
 		'name': 'F BMS Arduino data',
-		'data': 	0,
-		'time': 	0,
-		'health' :  0
+		'data': 	None,
+		'time': 	None,
+		'health' :  None
 		},
 	1322 or 'M BMS Arduino': {
 		'name': 'M BMS Arduino data',
-		'data': 	0,
-		'time': 	0,
-		'health' :  0
+		'data': 	None,
+		'time': 	None,
+		'health' :  None
 		},
 	1338 or 'R BMS Arduino': {
 		'name': 'R BMS Arduino data',
-		'data': 	0,
-		'time': 	0,
-		'health' :  0
+		'data': 	None,
+		'time': 	None,
+		'health' :  None
 		}
 	}
 
@@ -261,25 +277,30 @@ async def updateTelemDict(freq = 10):
 		# timer = time.time()
 		motor_id = [281,297,345,361]
 		for i in motor_id:		
-			telemDict[i]['rpm'] = telemDict[i]['data'][1] << 8 or telemDict[i]['data'][0]
-			telemDict[i]['volt'] = telemDict[i]['data'][3] << 8 or telemDict[i]['data'][2]
-			telemDict[i]['temp'] = telemDict[i]['data'][5] << 8 or telemDict[i]['data'][4]
+			telemDict[i]['rpm'] = telemDict[i]['data'][1] << 8 & telemDict[i]['data'][0]
+			telemDict[i]['volt'] = telemDict[i]['data'][3] << 8 & telemDict[i]['data'][2]
+			telemDict[i]['temp'] = telemDict[i]['data'][5] << 8 & telemDict[i]['data'][4]
 			telemDict[i]['throttle'] = telemDict[i]['data'][6]
 			
 		brake_id = [537, 554, 601, 617]
 		for i in brake_id:
-			telemDict[i]['temp'] = telemDict[i]['data'][1] << 8 or telemDict[i]['data'][0]
+			telemDict[i]['temp'] = telemDict[i]['data'][1] << 8 & telemDict[i]['data'][0]
 			telemDict[i]['reed'] = telemDict[i]['data'][2]
 
 		tension_id = [793, 809, 857, 873]
 		for i in tension_id:
 			telemDict[i]['reed'] = telemDict[i]['data'][0]
 		
-		telemDict[1049][distance] = telemDict[1049]['data'][1] << 8 or telemDict[1049]['data'][0]
-		telemDict[1065][distance] = telemDict[1065]['data'][1] << 8 or telemDict[1065]['data'][0]
+		pressure_id = [522, 778]
+		for i in pressure_id:
+			telemDict[i]['pressure'] = telemDict[i]['data'][1] << 8 & telemDict[i]['data'][0]
 
-		telemDict[249][distance] = telemDict[249]['data'][1] << 8 or telemDict[249]['data'][0]
-		telemDict[265][distance] = telemDict[265]['data'][1] << 8 or telemDict[265]['data'][0]
+
+		telemDict[1049][distance] = telemDict[1049]['data'][1] << 8 & telemDict[1049]['data'][0]
+		telemDict[1065][distance] = telemDict[1065]['data'][1] << 8 & telemDict[1065]['data'][0]
+
+		telemDict[249][distance] = telemDict[249]['data'][1] << 8 & telemDict[249]['data'][0]
+		telemDict[265][distance] = telemDict[265]['data'][1] << 8 & telemDict[265]['data'][0]
 		# print("****************************")
 		# print(time.time() - timer)
 		# print("****************************")
@@ -378,11 +399,14 @@ async def broadcastTlm(reader, writer):
 
 # Process CAN-based telemetry
 # Input: Processing frequency [Hz]
-async def processTelem(freq = 10):
+async def processTelem(freq = 100, can_read_freq = 1000):
 	global telemDict # Bring in telemetry dictionary
+
+
 
 	while True:
 		print("Trying to read can?")
+		timer1 = time.time()
 		for msg in can0:
 			print("  Arbitration id")
 			print(msg.arbitration_id)
@@ -397,6 +421,9 @@ async def processTelem(freq = 10):
 			except Exception as e:
 				print(f"Caught exception: {e}")
 				continue
+			if (time.time() >= timer1 + (1/can_read_freq)):
+				break
+
 		#await asyncio.sleep(1/freq)
 		print("**Flag**")
 
@@ -405,6 +432,38 @@ async def processTelem(freq = 10):
 			# print("**WORKS**")
 			
 		await asyncio.sleep(1/freq)
+
+
+
+
+
+
+	# reader = can.AsyncBufferedReader()
+	
+	# listeners = [reader]
+
+	# loop = asyncio.get_event_loop()
+	# notifier = can.Notifier(can0, listeners, loop=loop)
+
+	# while True:
+
+	# 	for _ in range(10):
+	# 		# Wait for next message from AsyncBufferedReader
+	# 		msg = await reader.get_message()
+	# 		print("data")
+	# 		print(msg.data)
+	# 		print("Timestamp")
+	# 		print(msg.timestamp)
+	# 		# Delay response
+	# 		await asyncio.sleep(0.01)
+	# 	# Wait for last message to arrive
+	# 	await reader.get_message()
+	# 	print('Done!')
+	# 	await asyncio.sleep(1/freq)
+
+	# 	# Clean-up
+	# 	notifier.stop()
+	# 	can0.shutdown()
 
 
 
@@ -425,7 +484,7 @@ async def spacex_tlm(freq = 50):
 
 	# Send data at rate specified by freq
 	while True:
-		position = telemetry['distance']
+		position = telemetry['position']
 		velocity = 9001
 		acceleration = 9.81
 		status = stateDict[str(pod.state)]
@@ -456,47 +515,66 @@ async def spacex_tlm(freq = 50):
 		await asyncio.sleep(1/freq)
 
 
-async def state_transistion(freq = 10):
+async def state_transistion(freq = 100):
 	global stateDict
 	global pod
 	global telemetry
 	global id_dict
 	while True:
 
-		if (telemDict[281]['temp'] > motor_temp_fault or 
-			telemDict[297]['temp'] > motor_temp_fault or 
-			telemDict[313]['temp'] > motor_temp_fault or 
-			telemDict[329]['temp'] > motor_temp_fault or 
-			telemDict[345]['temp'] > motor_temp_fault or 
-			telemDict[361]['temp'] > motor_temp_fault or 
-			telemDict[1305]['max batt temp'] > max_batt_temp or 
-			telemDict[1321]['max batt temp'] > max_batt_temp or 
-			telemDict[1337]['max batt temp'] > max_batt_temp or 
-			telemDict[1305]['max v'] > max_V or 
-			telemDict[1321]['max v'] > max_V or 
-			telemDict[1337]['max v'] > max_V or 
-			telemDict[1305]['min v'] < min_V or 
-			telemDict[1321]['min v'] < min_V or 
-			telemDict[1337]['min v'] < min_V or 
-			((telemDict[281]['rpm'] > 0 or 
-			telemDict[297]['rpm'] > 0 or 
-			telemDict[313]['rpm'] > 0 or 
-			telemDict[329]['rpm'] > 0 or 
-			telemDict[345]['rpm'] > 0 or 
-			telemDict[361]['rpm'] > 0) and 
-			(telemDict[537]['reed'] == True or 
-			telemDict[553]['reed'] == True or 
-			telemDict[569]['reed'] == True or 
-			telemDict[585]['reed'] == True or 
-			telemDict[601]['reed'] == True or 
-			telemDict[617]['reed'] == True)) or 
-			telemDict[1305]['current'] > max_Amp or  
-			telemDict[1321]['current'] > max_Amp or  
-			telemDict[1337]['current'] > max_Amp):# or TelemCommand == 'Fault'):
+		try:
+			if (telemDict[281]['temp'] > motor_temp_fault or 
+				telemDict[297]['temp'] > motor_temp_fault or 
+				telemDict[313]['temp'] > motor_temp_fault or 
+				telemDict[329]['temp'] > motor_temp_fault or 
+				telemDict[345]['temp'] > motor_temp_fault or 
+				telemDict[361]['temp'] > motor_temp_fault or 
+				telemDict[1305]['max batt temp'] > max_batt_temp or 
+				telemDict[1321]['max batt temp'] > max_batt_temp or 
+				telemDict[1337]['max batt temp'] > max_batt_temp or 
+				telemDict[1305]['max v'] > max_V or 
+				telemDict[1321]['max v'] > max_V or 
+				telemDict[1337]['max v'] > max_V or 
+				telemDict[1305]['min v'] < min_V or 
+				telemDict[1321]['min v'] < min_V or 
+				telemDict[1337]['min v'] < min_V or 
+				((telemDict[281]['rpm'] > 0 or 
+				telemDict[297]['rpm'] > 0 or 
+				telemDict[313]['rpm'] > 0 or 
+				telemDict[329]['rpm'] > 0 or 
+				telemDict[345]['rpm'] > 0 or 
+				telemDict[361]['rpm'] > 0) and 
+				(telemDict[537]['reed'] == True or 
+				telemDict[553]['reed'] == True or 
+				telemDict[569]['reed'] == True or 
+				telemDict[585]['reed'] == True or 
+				telemDict[601]['reed'] == True or 
+				telemDict[617]['reed'] == True)) or 
+				telemDict[1305]['current'] > max_Amp or  
+				telemDict[1321]['current'] > max_Amp or  
+				telemDict[1337]['current'] > max_Amp):# or TelemCommand == 'Fault'):
+				pod.trigger('fault')
+		except Exception as e:
+			print(f"Caught exception: {e}")
 
 
-	#Need to add loss of comms fault, pressure faults
-			pod.trigger('fault')
+		if ((stateDict[str(pod.state)] == 'launching') & (telemetry['velocity'] >= 185)):
+			pod.trigger('coasting')
+		elif ((stateDict[str(pod.state)] == 'launching') & (telemetry['position'] >= 3520)):
+			pod.trigger('braking')
+
+		if ((stateDict[str(pod.state)] == 'coasting') & (telemetry['position'] >= 3520)):
+			pod.trigger('braking')
+
+		if ((stateDict[str(pod.state)] == 'braking') & (telemetry['position'] >= 5180 & telemetry['velocity'] <= 0.5)):
+			pod.trigger('crawling')
+		elif ((stateDict[str(pod.state)] == 'braking') & (telemetry['position'] <= 5180 & telemetry['velocity'] <= 0.5)):
+			pod.trigger(SafeToApproach)
+
+		if ((stateDict[str(pod.state)] == 'crawling') & (telemetry['position'] >= 5180)):
+			pod.trigger('braking')
+
+		# Need to add loss of comms fault, pressure faults
 
 		# Sleep for 1/freq secs before sending another packet
 		await asyncio.sleep(1/freq)
@@ -523,6 +601,8 @@ async def main():
 	# i=0
 	# if os.stat("/home/pi/data_log.csv").st_size == 0:
  #        file.write("All CAN data \n")
+
+
 
 
 	# Gather asynchronous coroutines
