@@ -49,11 +49,10 @@ class State(object):
 
 # State 0: Fault
 class Fault(State):
+	# Re-initialize systems
+	import systems # Import systems classes
 
 	def entry(self):
-		# Re-initialize systems
-		import systems # Import systems classes
-
 		global brakes # Grab the global brakes variable
 		global motors # Grab the global motors variable
 		global batteries # Grab the global batteries variable

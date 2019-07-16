@@ -14,6 +14,17 @@ time.sleep(0.1)
 bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
 
 #----------------DATA STRUCTURES-----------------
+
+# New telemetry dictionary
+telemDict {
+	281: {
+		'name': 'FR Motor data',
+		'data': None,
+		'time': None
+		},
+	297: dict()
+	}
+
 CanDataIds =  {
 		281 : 'FR Motor data',
 		297 : 'FL Motor data',
@@ -274,38 +285,38 @@ pod = FSM()
 
 isRunning = True
 while isRunning
-	if (TelemDataVals['FR Motor Temp'] > 70 || TelemDataVals['FL Motor Temp'] > 70 || TelemDataVals['MR Motor Temp'] > 70 || TelemDataVals['ML Motor Temp'] > 70 || TelemDataVals['RR Motor Temp'] > 70 || TelemDataVals['RL Motor Temp'] > 70 || TelemDataVals['F Battery Max Temp'] > 70 || TelemDataVals['M Battery Max Temp'] > 70 || TelemDataVals['R Battery Max Temp'] > 70 || TelemDataVals['F Battery Max Voltage'] > 68 || TelemDataVals['M Battery Max Voltage'] > 68 || TelemDataVals['R Battery Max Voltage'] > 68 || TelemDataVals['F Battery Min Voltage'] < 60 || TelemDataVals['M Battery Min Voltage'] < 60 || TelemDataVals['R Battery Min Voltage'] < 60 || ((TelemDataVals['FR Motor Torque'] > 0 || TelemDataVals['FL Motor Torque'] > 0 || TelemDataVals['ML Motor Torque'] > 0 || TelemDataVals['MR Motor Torque'] > 0 || TelemDataVals['RL Motor Torque'] > 0 || TelemDataVals['RR Motor Torque'] > 0) && (TelemDataVals['FR Brake Read Switch'] == True || TelemDataVals['FL Brake Read Switch'] == True || TelemDataVals['ML Brake Read Switch'] == True || TelemDataVals['MR Brake Read Switch'] == True || TelemDataVals['RL Brake Read Switch'] == True || TelemDataVals['RR Brake Read Switch'] == True || )) || TelemDataVals['F Battery Current'] > 250 ||  TelemDataVals['M Battery Current'] > 250 ||  TelemDataVals['R Battery Current'] > 250 || TelemCommand == 'Fault'): 
-#Need to add loss of comms fault, pressure faults
+	if (TelemDataVals['FR Motor Temp'] > 70 or TelemDataVals['FL Motor Temp'] > 70 or TelemDataVals['MR Motor Temp'] > 70 or TelemDataVals['ML Motor Temp'] > 70 or TelemDataVals['RR Motor Temp'] > 70 or TelemDataVals['RL Motor Temp'] > 70 or TelemDataVals['F Battery Max Temp'] > 70 or TelemDataVals['M Battery Max Temp'] > 70 or TelemDataVals['R Battery Max Temp'] > 70 or TelemDataVals['F Battery Max Voltage'] > 68 or TelemDataVals['M Battery Max Voltage'] > 68 or TelemDataVals['R Battery Max Voltage'] > 68 or TelemDataVals['F Battery Min Voltage'] < 60 or TelemDataVals['M Battery Min Voltage'] < 60 or TelemDataVals['R Battery Min Voltage'] < 60 or ((TelemDataVals['FR Motor Torque'] > 0 or TelemDataVals['FL Motor Torque'] > 0 or TelemDataVals['ML Motor Torque'] > 0 or TelemDataVals['MR Motor Torque'] > 0 or TelemDataVals['RL Motor Torque'] > 0 or TelemDataVals['RR Motor Torque'] > 0) and (TelemDataVals['FR Brake Read Switch'] == True or TelemDataVals['FL Brake Read Switch'] == True or TelemDataVals['ML Brake Read Switch'] == True or TelemDataVals['MR Brake Read Switch'] == True or TelemDataVals['RL Brake Read Switch'] == True or TelemDataVals['RR Brake Read Switch'] == True or )) or TelemDataVals['F Battery Current'] > 250 or  TelemDataVals['M Battery Current'] > 250 or  TelemDataVals['R Battery Current'] > 250 or TelemCommand == 'Fault'): 
+	#Need to add loss of comms fault, pressure faults
 		pod.trigger('fault')
 
-	if (pod.state == 'Fault' && !(TelemDataVals['FR Motor Temp'] > 70 || TelemDataVals['FL Motor Temp'] > 70 || TelemDataVals['MR Motor Temp'] > 70 || TelemDataVals['ML Motor Temp'] > 70 || TelemDataVals['RR Motor Temp'] > 70 || TelemDataVals['RL Motor Temp'] > 70 || TelemDataVals['F Battery Max Temp'] > 70 || TelemDataVals['M Battery Max Temp'] > 70 || TelemDataVals['R Battery Max Temp'] > 70 || TelemDataVals['F Battery Max Voltage'] > 68 || TelemDataVals['M Battery Max Voltage'] > 68 || TelemDataVals['R Battery Max Voltage'] > 68 || TelemDataVals['F Battery Min Voltage'] < 60 || TelemDataVals['M Battery Min Voltage'] < 60 || TelemDataVals['R Battery Min Voltage'] < 60 || ((TelemDataVals['FR Motor Torque'] > 0 || TelemDataVals['FL Motor Torque'] > 0 || TelemDataVals['ML Motor Torque'] > 0 || TelemDataVals['MR Motor Torque'] > 0 || TelemDataVals['RL Motor Torque'] > 0 || TelemDataVals['RR Motor Torque'] > 0) && (TelemDataVals['FR Brake Read Switch'] == True || TelemDataVals['FL Brake Read Switch'] == True || TelemDataVals['ML Brake Read Switch'] == True || TelemDataVals['MR Brake Read Switch'] == True || TelemDataVals['RL Brake Read Switch'] == True || TelemDataVals['RR Brake Read Switch'] == True || )) || TelemDataVals['F Battery Current'] > 250 ||  TelemDataVals['M Battery Current'] > 250 ||  TelemDataVals['R Battery Current'] > 250)): 
+	if (pod.state == 'Fault' and !(TelemDataVals['FR Motor Temp'] > 70 or TelemDataVals['FL Motor Temp'] > 70 or TelemDataVals['MR Motor Temp'] > 70 or TelemDataVals['ML Motor Temp'] > 70 or TelemDataVals['RR Motor Temp'] > 70 or TelemDataVals['RL Motor Temp'] > 70 or TelemDataVals['F Battery Max Temp'] > 70 or TelemDataVals['M Battery Max Temp'] > 70 or TelemDataVals['R Battery Max Temp'] > 70 or TelemDataVals['F Battery Max Voltage'] > 68 or TelemDataVals['M Battery Max Voltage'] > 68 or TelemDataVals['R Battery Max Voltage'] > 68 or TelemDataVals['F Battery Min Voltage'] < 60 or TelemDataVals['M Battery Min Voltage'] < 60 or TelemDataVals['R Battery Min Voltage'] < 60 or ((TelemDataVals['FR Motor Torque'] > 0 or TelemDataVals['FL Motor Torque'] > 0 or TelemDataVals['ML Motor Torque'] > 0 or TelemDataVals['MR Motor Torque'] > 0 or TelemDataVals['RL Motor Torque'] > 0 or TelemDataVals['RR Motor Torque'] > 0) and (TelemDataVals['FR Brake Read Switch'] == True or TelemDataVals['FL Brake Read Switch'] == True or TelemDataVals['ML Brake Read Switch'] == True or TelemDataVals['MR Brake Read Switch'] == True or TelemDataVals['RL Brake Read Switch'] == True or TelemDataVals['RR Brake Read Switch'] == True or )) or TelemDataVals['F Battery Current'] > 250 or  TelemDataVals['M Battery Current'] > 250 or  TelemDataVals['R Battery Current'] > 250)): 
 		pod.trigger('safe_to_approach')
 
-	if (pod.state == 'SafeToApproach' && TelemCommand == 'Crawl'):
+	if (pod.state == 'SafeToApproach' and TelemCommand == 'Crawl'):
 		pod.trigger('crawling')
 
-	if (pod.state == 'ReadyToLaunch' && TelemCommand == 'Launch'):
+	if (pod.state == 'ReadyToLaunch' and TelemCommand == 'Launch'):
 		pod.trigger('launching')
 
-	if (pod.state == 'Launching' && TelemDataVals['Pod Velocity'] > 105 ):
+	if (pod.state == 'Launching' and TelemDataVals['Pod Velocity'] > 105 ):
 		pod.trigger('coasting')
 
-	if (pod.state == 'Launching' && TelemDataVals['Pod Position From End'] < 1763):
+	if (pod.state == 'Launching' and TelemDataVals['Pod Position From End'] < 1763):
 		pod.trigger('braking') 
 
-	if (pod.state == 'Coasting' && TelemDataVals['Pod Position From End'] < 1763):
+	if (pod.state == 'Coasting' and TelemDataVals['Pod Position From End'] < 1763):
 		pod.trigger('braking')
 
-	if (pod.state == 'Braking' && TelemDataVals['Pod Position From End'] < 100 && TelemDataVals['Pod Velocity'] == 0):
+	if (pod.state == 'Braking' and TelemDataVals['Pod Position From End'] < 100 and TelemDataVals['Pod Velocity'] == 0):
 		pod.trigger('safe_to_approach') 
 
-	if (pod.state == 'Braking' && TelemDataVals['Pod Position From End'] > 100 && TelemDataVals['Pod Velocity'] == 0):
+	if (pod.state == 'Braking' and TelemDataVals['Pod Position From End'] > 100 and TelemDataVals['Pod Velocity'] == 0):
 		pod.trigger('crawling')
 
-	if (pod.state == 'Crawling' && TelemDataVals['Pod Position From End'] < 100):
+	if (pod.state == 'Crawling' and TelemDataVals['Pod Position From End'] < 100):
 		pod.trigger('braking')
 
-	if (pod.state == 'Startup' && TeleCommand == 'PrepareToLaunch')
+	if (pod.state == 'Startup' and TeleCommand == 'PrepareToLaunch')
 		pod.trigger('ready_to_launch')
 
 	if (TeleCommand == 'Startup')
@@ -325,7 +336,7 @@ while isRunning
 
 #-----------------NETWORK RECEPTION--------------------------
 
-#TeleCommand = NetworkRecieve() This is wishful code currently
+#TelemCommand = NetworkRecieve() This is wishful code currently
 
 #---------------TELEMETRY CALCULATION------------------------
 
