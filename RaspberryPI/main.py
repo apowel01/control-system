@@ -63,8 +63,7 @@ telemDict = {
 		'rpm' : 	None,
 		'volt': 	None,
 		'temp': 	None,
-		'throttle': None,
-		'torque':   None
+		'throttle': None
 		},
 	297 or 'FL Motor': {
 		'name': 'FL Motor data',
@@ -73,8 +72,7 @@ telemDict = {
 		'rpm' : 	None,
 		'volt': 	None,
 		'temp': 	None,
-		'throttle': None,
-		'torque':   None
+		'throttle': None
 		},
 	# 313 or 'MR Motor': {
 	# 	'name': 'MR Motor data',
@@ -103,8 +101,7 @@ telemDict = {
 		'rpm' : 	None,
 		'volt': 	None,
 		'temp': 	None,
-		'throttle': None,
-		'torque':   None
+		'throttle': None
 		},
 	361 or 'RL Motor': {
 		'name': 'RL Motor data',
@@ -113,8 +110,7 @@ telemDict = {
 		'rpm' : 	None,
 		'volt': 	None,
 		'temp': 	None,
-		'throttle': None,
-		'torque':   None
+		'throttle': None
 		},
 	522 or 'All Brakes': {
 		'name': 'All brakes',
@@ -129,7 +125,7 @@ telemDict = {
 		'time': 	None,
 		'reed': 	None
 		},
-	554 or 'FL Brake': {
+	553 or 'FL Brake': {
 		'name': 'FL Brake data',
 		'data': 	None,
 		'time': 	None,
@@ -170,12 +166,12 @@ telemDict = {
 		'solenoid temp': None,
 		'pressure': None
 		},
-	779 or 'All Tensioner 2' {
+	779 or 'All Tensioner 2': {
 		'name': 'All tensioner 1',
 		'data': 	None,
 		'time': 	None,
 		'back pneumatic temp': None
-	}
+		},
 	793 or 'FR Tensioner': {
 		'name': 'FR Tensioner data',
 		'data': 	None,
@@ -224,23 +220,14 @@ telemDict = {
 		'time': 			None,
 		'distance' : 		None
 		},
-	249 or 'R Band': {
-		'name': 'R Band data',
-		'data': 			None,
-		'time': 			None,
-		'count' :				0
-		},
-	265 or 'L Band':{
-		'name': 'L Band data',
-		'data': 			None,
-		'time': 			None,
-		'count' : 				0
-		},
 	1305 or 'F BMS': {
 		'name': 'F BMS data',
 		'data': 			None,
 		'time': 			None,
-		'max batt temp' :   None,
+		'state of charge':	None,
+		'instant voltage':	None,
+		'max temp' :   		None,
+		'min temp' :		None,
 		'max v' : 			None,
 		'min v' :			None,
 		'current' : 		None
@@ -255,12 +242,15 @@ telemDict = {
 	# 	'current' : 		None
 	# 	},
 	1337 or 'R BMS': {
-		'name': 'R BMS data',
+		'name': 'F BMS data',
 		'data': 			None,
 		'time': 			None,
-		'max batt temp' :	None,
+		'state of charge':	None,
+		'instant voltage':	None,
+		'max temp' :   		None,
+		'min temp' :		None,
 		'max v' : 			None,
-		'min v' : 			None,
+		'min v' :			None,
 		'current' : 		None
 		},
 	1306 or 'F BMS Arduino': {
@@ -406,7 +396,7 @@ def updatePosition(lidarReading, rpms_list, bands_list):
     #Allow up to 5 errors
     if lidarReading < 10000 and CurrentDistance < 100000 and lidarErrorCounter < 5:
         lidarErrorCounter += 1
-    if len(positions) > 5
+    if len(positions) > 5:
     	del positions[0]
     	del velocities[0]
     	del accelerations[0]
@@ -448,16 +438,27 @@ async def updateTelemDict(freq = 5):
 					telemDict[i]['tank temp'] = (telemDict[i]['data'][4] << 8) + telemDict[i]['data'][5] 
 
 			all_tensioner_id1 = [778]
-			for i in pressure_id1:
+			for i in all_tensioner_id1:
 				if telemDict[i]['data'] != None:
 					telemDict[i]['tank temp'] = (telemDict[i]['data'][4] << 8) + telemDict[i]['data'][5] 
 					telemDict[i]['front pneumatic temp'] = (telemDict[i]['data'][2] << 8) + telemDict[i]['data'][3] 
 					telemDict[i]['front solenoid temp'] = (telemDict[i]['data'][0] << 8) + telemDict[i]['data'][1] 
 
 			all_tensioner_id2 = [779]
-			for i in pressure_id2:
+			for i in all_tensioner_id2:
 				if telemDict[i]['data'] != None:
 					telemDict[i]['back pneumatic temp'] = (telemDict[i]['data'][0] << 8) + telemDict[i]['data'][1] 
+
+			BMS_id1 = [1305,1337]
+			for i in BMS_id1:
+				if telemDict[i]['data'] != None:
+					telemDict[i]['current'] = telemDict[i]['data'][0]
+					telemDict[i]['instant voltage'] = telemDict[i]['data'][1]
+					telemDict[i]['state of charge'] = telemDict[i]['data'][2]
+					telemDict[i]['max temp'] = telemDict[i]['data'][3]   	
+					telemDict[i]['min temp'] = telemDict[i]['data'][4]
+					telemDict[i]['max v'] = telemDict[i]['data'][5] 
+					telemDict[i]['min v'] = telemDict[i]['data'][6] 
 
 			BMS_arduino_id = [1306,1338]
 			for i in BMS_arduino_id:
@@ -465,12 +466,12 @@ async def updateTelemDict(freq = 5):
 					telemDict[i]['discharge enable'] = telemDict[i]['data'][1]
 					telemDict[i]['charge enable'] = telemDict[i]['data'][0] 
 
-			if (telemDict[1049]['data'] != None) or (telemDict[1065]['data'] != None) or (telemDict[249]['data'] != None) or (telemDict[265]['data'] != None):
+			if (telemDict[1049]['data'] != None) or (telemDict[1065]['data'] != None) or (telemDict[1050]['data'] != None) or (telemDict[1051]['data'] != None):
 				telemDict[1049]['distance'] = (telemDict[1049]['data'][1] << 8) + telemDict[1049]['data'][0]
 				telemDict[1065]['distance'] = (telemDict[1065]['data'][1] << 8) + telemDict[1065]['data'][0]
 
-				telemDict[249]['distance'] = (telemDict[249]['data'][1] << 8) + telemDict[249]['data'][0]
-				telemDict[265]['distance'] = (telemDict[265]['data'][1] << 8) + telemDict[265]['data'][0]
+				telemDict[1050]['count'] = (telemDict[1050]['data'][1] << 8) + telemDict[1050]['data'][0]
+				telemDict[1051]['count'] = (telemDict[1051]['data'][1] << 8) + telemDict[1051]['data'][0]
 			# print("****************************")
 			# print(time.time() - timer)
 			# print("****************************")
