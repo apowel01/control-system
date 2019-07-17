@@ -1,3 +1,4 @@
 RaspberryPI/__pycache__/
 RaspberryPI/**/*.pyc
 *.py[cod]
+RaspberryPI/position.py
