@@ -2,3 +2,5 @@ RaspberryPI/__pycache__/
 RaspberryPI/**/*.pyc
 *.py[cod]
 RaspberryPI/position.py
+GUI/gui_screen2.py
+GUI/GUI.py
