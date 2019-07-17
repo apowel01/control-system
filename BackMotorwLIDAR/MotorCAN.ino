@@ -19,22 +19,22 @@ double disp_sampleTime = 800;    //How frequent you want to display data  (1000 
 //String inString = "";            // string to hold input
 
 // Identifying Pins
-int pressurePinL = 62; // A8
-int tempPinL = 63;     // A9
-int voltagePinL = 64;  // A10
-int motorPinL = 4;
-int pressurePinR = 65; // A11
-int tempPinR = 66;     // A12
-int voltagePinR = 64;  // A10
-int motorPinR = 5;
-int brakeReedPinR = 43;
-int brakeReedPinL = 45;
-int tensionerReedPinR = 47;
-int tensionerReedPinL = 49;
-int BMSDischargePin = 51;
-int BMSChargePin = 53;
-int brakePressPin = 68;     //A14
-int tensionerPressPin = 69;  //A15
+int pressurePinL =          62;   // A8
+int tempPinL =              63;   // A9
+int voltagePinL =           64;   // A10
+int motorPinL =              4;
+int pressurePinR =          65;   // A11
+int tempPinR =              66;   // A12
+int voltagePinR =           64;   // A10
+int motorPinR =              5;
+int brakeReedPinR =         43;
+int brakeReedPinL =         45;
+int tensionerReedPinR =     47;
+int tensionerReedPinL =     49;
+int BMSDischargePin =       51;
+int BMSChargePin =          53;
+
+int tensBackPneuTempPin =   55;   //A1
 
 // Setting up Hall Sensor stuff
 //The R pins on the board
@@ -98,8 +98,6 @@ void setup() {
   pinMode(voltagePinR, INPUT);
   pinMode(BMSDischargePin, INPUT_PULLUP);
   pinMode(BMSChargePin, INPUT_PULLUP);
-  pinMode(brakePressPin, INPUT);
-  pinMode(tensionerPressPin, INPUT);
   pinMode(tensionerReedPinL, INPUT_PULLUP);
   pinMode(tensionerReedPinR, INPUT_PULLUP);
   pinMode(brakeReedPinL, INPUT_PULLUP);
@@ -127,7 +125,8 @@ void setup() {
   digitalWrite(pin32, LOW);
   digitalWrite(pin34, LOW);
   digitalWrite(pin36, LOW);
-  
+
+  pinMode(tensBackPneuTempPin, INPUT);
 
 
   pinMode(hallSensorOutputR, INPUT_PULLUP);
@@ -357,13 +356,14 @@ void loop() {
     voltageL = (analogRead(voltagePinL) / 1023.0) * 5 * ((Rsmall + Rbig) / Rsmall) * 1.0255;
 //    currentL = current_acq("L");
 //    powerL = voltageL * currentL;
-    tempL = temp_acq("L");
+    tempL = temp_acq(tempPinL);
     voltageR = (analogRead(voltagePinR) / 1023.0) * 5 * ((Rsmall + Rbig) / Rsmall) * 1.0255;
 //    currentR = current_acq("R");
 //    powerR = voltageR * currentR;
-    tempR = temp_acq("R");
-    brakePressure = press_acq(brakePressPin);
-    tensionerPressure = press_acq(tensionerPressPin);
+    tempR = temp_acq(tempPinR);
+
+    float tensBackPneuTemp;
+    tensBackPneuTemp = temp_acq(tensBackPneuTempPin);
     
     
     // Sending Motor Data Packets
@@ -394,15 +394,9 @@ void loop() {
     stmp[7] = digitalRead(BMSDischargePin);
     CAN.sendMsgBuf(0x53a, 0, 8, stmp);
 
-    //Sending Brake Pressure Packet
-    stmp[6] = highByte((int) brakePressure);
-    stmp[7] = lowByte((int) brakePressure);
-    CAN.sendMsgBuf(0x20a, 0, 8, stmp);
-
-    //Sending Tensioner Pressure Packet
-    stmp[6] = highByte((int) tensionerPressure);
-    stmp[7] = lowByte((int) tensionerPressure);
-    CAN.sendMsgBuf(0x30a, 0, 8, stmp);    
+    //Sending Tensioner Temp Packet
+    stmp[6] = highByte((int) tensBackPneuTemp);
+    stmp[7] = lowByte((int) tensBackPneuTemp);   
 
     //Sending Brake Reed Switch Data
     stmp[6] = 0;
@@ -474,19 +468,13 @@ void tickBand() {
 }
 //----------------------------------------------------------------------------------------------------
 
-float temp_acq(char WhichMotor)
+float temp_acq(int pin)
 {
   float tempB;
   float tempV;
   float temp;
-  if (WhichMotor == "L")
-  {
-    tempB = analogRead(tempPinL);
-  }
-  else
-  {
-    tempB = analogRead(tempPinR);
-  }
+  tempB = analogRead(pin);
+  
   tempV = tempB * (5000 / 1024);
 
   temp = ((tempV - 500) / 10) * (9 / 5) + 55;
