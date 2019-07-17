@@ -39,11 +39,11 @@ max_V = 68
 min_V = 60
 max_Amp = 250
 
-id_dict = {
-	'FR Motor': 281,
-	'FL Motor': 297,
-	'MR Motor': 313
-}
+# id_dict = {
+# 	'FR Motor': 281,
+# 	'FL Motor': 297,
+# 	'MR Motor': 313
+# }
 
 #-------------CAN NETWORK SETUP---------------
 # os.system("sudo /sbin/ip link set can0 up type can bitrate 500000")
@@ -288,7 +288,7 @@ telemDict = {
 		'charge enable': 	None
 		},
 	1050: {
-		'name': 'Left Band',
+		'name': 'Right Band',
 		'data': None,
 		'time': None,
 		'count': None
