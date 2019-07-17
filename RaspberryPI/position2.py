@@ -93,20 +93,19 @@ def updatePosition(lidarReading, rpms_list, bands_list):
                 hallSensor_total = 3048
             else:
                 hallSensor_total += HallSensor_distance #Keeps track of how long we have traveled with Hall Sensor
-
-    CurrentDistance = LaserSensor_distance + hallSensor_total
+        CurrentDistance = LaserSensor_distance + hallSensor_total
     position = CurrentDistance
 
     #Insert position
     positions.append([position, currentTime])
 
     #calculate velocity (CM/Sec)
-    velocity = float(position/currentTime)
+    velocity = float(positions[-1][0]-positions[-2][0]/currentTimestep)
     velocities.append([velocity, currentTime])
 
 
     #calculate acceleration
-    acceleration = float(velocity/currentTime)
+    acceleration = float(velocity/currentTimestep)
     accelerations.append([acceleration, currentTime])
 
     #Check if an error occured with the lidar
