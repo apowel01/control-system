@@ -119,21 +119,20 @@ telemDict = {
 	522 or 'All Brakes': {
 		'name': 'All brakes',
 		'data': 	None,
-		'time': 	None,	
+		'time': 	None,
+		'tank temp':	None,	
 		'pressure': None
 		},
 	537 or 'FR Brake': {
 		'name': 'FR Brake data',
 		'data': 	None,
 		'time': 	None,
-		'temp': 	None,
 		'reed': 	None
 		},
 	554 or 'FL Brake': {
 		'name': 'FL Brake data',
 		'data': 	None,
 		'time': 	None,
-		'temp': 	None,
 		'reed': 	None
 		},
 	# 569 or 'MR Brake': {
@@ -154,22 +153,29 @@ telemDict = {
 		'name': 'RR Brake data',
 		'data': 	None,
 		'time': 	None,
-		'temp': 	None,
 		'reed': 	None
 		},
 	617 or 'RL Brake': {
 		'name': 'RL Brake data',
 		'data': 	None,
 		'time': 	None,
-		'temp': 	None,
 		'reed': 	None
 		},
-	778 or 'All Tensioner': {
-		'name': 'All tensioner',
+	778 or 'All Tensioner 1': {
+		'name': 'All tensioner 1',
 		'data': 	None,
 		'time': 	None,
+		'tank temp': None,
+		'front pneumatic temp': None,
+		'solenoid temp': None,
 		'pressure': None
 		},
+	779 or 'All Tensioner 2' {
+		'name': 'All tensioner 1',
+		'data': 	None,
+		'time': 	None,
+		'back pneumatic temp': None
+	}
 	793 or 'FR Tensioner': {
 		'name': 'FR Tensioner data',
 		'data': 	None,
@@ -261,19 +267,25 @@ telemDict = {
 		'name': 'F BMS Arduino data',
 		'data': 			None,
 		'time': 			None,
-		'health' :  		None
+		'health' :  		None,
+		'discharge enable':	None,
+		'charge enable': 	None
 		},
 	# 1322 or 'M BMS Arduino': {
 	# 	'name': 'M BMS Arduino data',
 	# 	'data': 			None,
 	# 	'time': 			None,
-	# 	'health' : 			None
+	# 	'health' : 			None,
+	#   'discharge enable':	None,
+	#   'charge enable': 	None
 	# 	},
 	1338 or 'R BMS Arduino': {
 		'name': 'R BMS Arduino data',
 		'data': 			None,
 		'time': 			None,
-		'health' :  		None
+		'health' :  		None,
+		'discharge enable':	None,
+		'charge enable': 	None
 		},
 	1050: {
 		'name': 'Left Band',
@@ -418,19 +430,40 @@ async def updateTelemDict(freq = 5):
 			brake_id = [537, 554, 601, 617]
 			for i in brake_id:
 				if telemDict[i]['data'] != None:
-					telemDict[i]['temp'] = (telemDict[i]['data'][1] << 8) + telemDict[i]['data'][0]
-					telemDict[i]['reed'] = telemDict[i]['data'][2]
+					telemDict[i]['reed'] = telemDict[i]['data'][7]
 
 			tension_id = [793, 809, 857, 873]
 			for i in tension_id:
 				if telemDict[i]['data'] != None:
-					telemDict[i]['reed'] = telemDict[i]['data'][0]
+					telemDict[i]['reed'] = telemDict[i]['data'][7]
 			
 			pressure_id = [522, 778]
 			for i in pressure_id:
 				if telemDict[i]['data'] != None:
-					telemDict[i]['pressure'] = (telemDict[i]['data'][1] << 8) + telemDict[i]['data'][0]
+					telemDict[i]['pressure'] = (telemDict[i]['data'][6] << 8) + telemDict[i]['data'][7]
 
+			all_brake_id = [522]
+			for i in all_brake_id:
+				if telemDict[i]['data'] != None:
+					telemDict[i]['tank temp'] = (telemDict[i]['data'][4] << 8) + telemDict[i]['data'][5] 
+
+			all_tensioner_id1 = [778]
+			for i in pressure_id1:
+				if telemDict[i]['data'] != None:
+					telemDict[i]['tank temp'] = (telemDict[i]['data'][4] << 8) + telemDict[i]['data'][5] 
+					telemDict[i]['front pneumatic temp'] = (telemDict[i]['data'][2] << 8) + telemDict[i]['data'][3] 
+					telemDict[i]['front solenoid temp'] = (telemDict[i]['data'][0] << 8) + telemDict[i]['data'][1] 
+
+			all_tensioner_id2 = [779]
+			for i in pressure_id2:
+				if telemDict[i]['data'] != None:
+					telemDict[i]['back pneumatic temp'] = (telemDict[i]['data'][0] << 8) + telemDict[i]['data'][1] 
+
+			BMS_arduino_id = [1306,1338]
+			for i in BMS_arduino_id:
+				if telemDict[i]['data'] != None:
+					telemDict[i]['discharge enable'] = telemDict[i]['data'][1]
+					telemDict[i]['charge enable'] = telemDict[i]['data'][0] 
 
 			if (telemDict[1049]['data'] != None) or (telemDict[1065]['data'] != None) or (telemDict[249]['data'] != None) or (telemDict[265]['data'] != None):
 				telemDict[1049]['distance'] = (telemDict[1049]['data'][1] << 8) + telemDict[1049]['data'][0]
