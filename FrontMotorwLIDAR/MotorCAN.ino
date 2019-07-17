@@ -73,8 +73,7 @@ float FSR = .256;                // FSR = Full Scale Range of ADC input
 int motor_out_HIGH = 90;         // Max Motor Servo output
 int motor_out_LOW = 57;          // Min Motor Servo Output
 
-int throttleL = 0;
-int throttleR = 0;
+int throttle = 0;
 
 //CAN Variable Declaration
 
@@ -167,13 +166,14 @@ void setup() {
   //CAN.init_Filt(5, 0, 0x109);
 
   // Initializing Timer
-  Timer1.initialize(50000);         // initialize timer1, and set a .01 second period
+  Timer1.initialize(50000);         // initialize timer1, and set a .05 second period
   Timer1.attachInterrupt(sendmessage);  // run sendmessage whenever the timer overflows
-
 }
 
 unsigned char stmp[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 bool needtosendsensor = 0;
+bool launching = 0;
+unsigned long timesincelaunch;
 
 void loop() {
 
@@ -207,69 +207,93 @@ void loop() {
   {
     if (canId == 0x000 || canId == 0x100)
     {
-      throttleR = 0;
-      throttleL = 0;
+      throttle = 0;
+      throttle = 0;
       Serial.print("F Throttle off");
+      launching = false;
       CAN.sendMsgBuf(0x118, 0, 8, stmp);
       CAN.sendMsgBuf(0x128, 0, 8, stmp);
     }
     if (canId == 0x110)
     {
-      throttleR = 0;
+      throttle = 0;
       Serial.print("FR Throttle off");
+      launching = false;
       CAN.sendMsgBuf(0x118, 0, 8, stmp);
     }
     if (canId == 0x120)
     {
-      throttleL = 0;
+      throttle = 0;
       Serial.print("FL Throttle off");
+      launching = false;
       CAN.sendMsgBuf(0x128, 0, 8, stmp);
     }
     if (canId == 0x101)
     {
-      throttleR = 100;
-      throttleL = 100;
+      throttle = 100;
+      throttle = 100;
       Serial.print("F Max Throttle");
+      launching = true; 
+      timesincelaunch = millis();
       CAN.sendMsgBuf(0x118, 0, 8, stmp);
       CAN.sendMsgBuf(0x128, 0, 8, stmp);
     }
     if (canId == 0x111)
     {
-      throttleR = 100;
+      throttle = 100;
       Serial.print("FR Max Throttle");
+      launching = true; 
+      timesincelaunch = millis();
       CAN.sendMsgBuf(0x118, 0, 8, stmp);
     }
     if (canId == 0x121)
     {
-      throttleL = 100;
+      throttle = 100;
       Serial.print("FL Max Throttle");
+      launching = true; 
+      timesincelaunch = millis();
       CAN.sendMsgBuf(0x128, 0, 8, stmp);
     }
     if (canId == 0x102)
     {
-      throttleR = buf[7];
-      throttleL = throttleR;
+      throttle = buf[7];
+      throttle = throttle;
       Serial.print("F Throttle changed");
+      launching = false;
       CAN.sendMsgBuf(0x118, 0, 8, stmp);
       CAN.sendMsgBuf(0x128, 0, 8, stmp);
     }
     if (canId == 0x112)
     {
-      throttleR = buf[7];
+      throttle = buf[7];
       Serial.print("FR Throttle changed");
+      launching = false;
       CAN.sendMsgBuf(0x118, 0, 8, stmp);
     }
     if (canId == 0x122)
     {
-      throttleL = buf[7];
+      throttle = buf[7];
       Serial.print("FL Throttle changed");
+      launching = false;
       CAN.sendMsgBuf(0x128, 0, 8, stmp);
     }
 
-    motor_output(throttleL, "L");
-    motor_output(throttleR, "R");
+    
   }
-
+    
+    
+  //Updating throttle
+  if (launching == true)
+  {
+    throttle = (millis()-timesincelaunch)*100/15;  
+  }
+  if (throttle > 100)
+  {
+    throttle = 100;
+  }
+  motor_output(throttle, "L");
+  motor_output(throttle, "R");
+  
   // Hall Sensing
   currentMillis = millis();
   revolutionsR = counterR/14.0;
@@ -307,7 +331,8 @@ void loop() {
   //Message Sending, with Timer1 delay
   
   if (needtosendsensor)
-  {
+  {   
+    
     //Sending LIDAR Data
     stmp[0] = 0;
     stmp[1] = 0;
@@ -354,7 +379,7 @@ void loop() {
     stmp[4] = lowByte((int) voltageR);
     stmp[5] = highByte((int) tempR);
     stmp[6] = lowByte((int) tempR);
-    stmp[7] = throttleR;
+    stmp[7] = throttle;
     CAN.sendMsgBuf(0x119, 0, 8, stmp);
     stmp[1] = highByte((int) RPM_L);
     stmp[2] = lowByte((int) RPM_L);
@@ -362,7 +387,7 @@ void loop() {
     stmp[4] = lowByte((int) voltageL);
     stmp[5] = highByte((int) tempL);
     stmp[6] = lowByte((int) tempL);
-    stmp[7] = throttleL;
+    stmp[7] = throttle;
     CAN.sendMsgBuf(0x129, 0, 8, stmp);
     
     //Sending BMS Data Packet
@@ -414,7 +439,6 @@ void sendmessage() {
 }
 
 //----------------------------------------------------------------------------------------------------
-
 void motor_output(int throttle, char WhichMotor)
 {
   int motor_out = 0;
