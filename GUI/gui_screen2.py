@@ -269,10 +269,8 @@ class GUI(QMainWindow):
             self.MP_state.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
         if self.volt_minRange < self.MP_volt_value < self.volt_maxRange:
-            self.MP_podSquare.setStyleSheet("QLabel { background-color : #00a34f;}");
             self.MP_volt.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
-            self.MP_podSquare.setStyleSheet("QLabel { background-color : #9d0b0f;}");
             self.MP_volt.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
         if self.curr_minRange < self.MP_curr_value < self.curr_maxRange:
@@ -456,8 +454,10 @@ class GUI(QMainWindow):
         self.battery_actual.setText(voltage+" V")
 
         if self.battery_minRange < self.battery_actual_value < self.battery_maxRange:
+            self.MP_podSquare.setStyleSheet("QLabel { background-color : #00a34f;}");
             self.battery_actual.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
+            self.MP_podSquare.setStyleSheet("QLabel { background-color : #9d0b0f;}");
             self.battery_actual.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
     def update_motors_label(self):
