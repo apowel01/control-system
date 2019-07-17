@@ -25,7 +25,7 @@ int voltagePinL = 64;  // A10
 int motorPinL = 4;
 int pressurePinR = 65; // A11
 int tempPinR = 66;     // A12
-int voltagePinR = 67;  // A13
+int voltagePinR = 64;  // A10
 int motorPinR = 5;
 int brakeReedPinR = 43;
 int brakeReedPinL = 45;
@@ -67,8 +67,8 @@ int RPM_L;
 
 
 int n = 20;                      // Number of averaged adc samples
-double Rsmall = 10000;           // Small Resistor of voltage divider
-double Rbig = 150000;
+double Rsmall = 988;           // Small Resistor of voltage divider
+double Rbig = 19850;
 float FSR = .256;                // FSR = Full Scale Range of ADC input
 int motor_out_HIGH = 90;         // Max Motor Servo output
 int motor_out_LOW = 57;          // Min Motor Servo Output
