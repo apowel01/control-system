@@ -243,12 +243,12 @@ telemDict = {
 		'time': 			None,
 		'time delta' :		None,
 		'state of charge':	None,
-		'instant voltage':	None,
-		'max temp' :   		None,
+		'instant voltage':	0,
+		'max temp' :   		0,
 		'min temp' :		None,
 		'max v' : 			None,
 		'min v' :			None,
-		'current' : 		None,
+		'current' : 		0,
 		},
 	1307 or 'F BMS 2': {
 		'name': 'F BMS 2 data',
@@ -375,7 +375,7 @@ telemDict = {
 		'time delta' :		None,
 		'count': 			None
 		},
-	1051: or 'Left Band': {
+	1051 or 'Left Band': {
 		'name': 'Left Band Data',
 		'data': 			None,
 		'time': 			None,
@@ -433,20 +433,20 @@ async def updatePosition(freq = 5):
 		motortimeouttime = 0.5
 		bandtimeoutcount = 0
 		bandtimeouttime = 0.5
-		if TelemDict['F Lidar']['time delta'] < timeouttime:
-			FlidarReading = TelemDict['F Lidar']['distance']
+		if telemDict['F Lidar']['time delta'] < timeouttime:
+			FlidarReading = telemDict['F Lidar']['distance']
 		else:
 			FliderReading = 300
 			timoutcount =timeoutcount +1
-		if TelemDict['R Lidar']['time delta'] < timeouttime:
-			RlidarReading = TelemDict['R Lidar']['distance']
+		if telemDict['R Lidar']['time delta'] < timeouttime:
+			RlidarReading = telemDict['R Lidar']['distance']
 		else:
 			RliderReading = 300
 		rpms_list = []
 		allmotorids = [281,297,345,361]
 		for i in allmotorids:
-			if TelemDict[i]['time delta'] < motortimeouttime:
-				rpms_list.append(TelemDict[i]['rpm'])
+			if telemDict[i]['time delta'] < motortimeouttime:
+				rpms_list.append(telemDict[i]['rpm'])
 			else:
 				motortimeoutcount = motortimeoutcount + 1
 		if motortimeoutcout > 2:
@@ -454,7 +454,7 @@ async def updatePosition(freq = 5):
 
 		allbandids = ['Right Band','Left Band']
 		for i in allbandids:
-			if TelemDict[i]['time delta'] > bandtimeouttime:
+			if telemDict[i]['time delta'] > bandtimeouttime:
 				bandtimeoutcount = bandtimeoutcount + 1
 		if bandtimeoutcout > 1:
 			timeoutcount = timeoutcount +1
@@ -462,7 +462,7 @@ async def updatePosition(freq = 5):
 		if timeoutcount > 1:
 			pod.trigger('fault')
 
-		bands_list = [TelemDict['Right Band']['count'],TelemDict['Left Band']['count']]
+		bands_list = [telemDict['Right Band']['count'],telemDict['Left Band']['count']]
 		#Get the current time since start
 		currentTime = time.time() - startTime
 		currentTimestep = time.time()-startTime
@@ -486,9 +486,9 @@ async def updatePosition(freq = 5):
 
 		'''PREPARE LIDAR DATA DATA'''
 		#If lidar within last 100 meters and the pod has crossed 1000 meters and less than 5 errors from lidar occured
-		if FlidarReading < 125 and CurrentDistance > 100000 and lidarErrorCounter <5 and time()-TelemDict['F Lidar']['time'] <0.5:
+		if FlidarReading < 125 and CurrentDistance > 100000 and lidarErrorCounter <5 and time()-telemDict['F Lidar']['time'] <0.5:
 			CurrentDistance = FLidar 
-		if Rlidar < 12500 and CurrentDistance <150000 and time()-TelemDict['R Lidar']['time'] <0.5:
+		if Rlidar < 12500 and CurrentDistance <150000 and time()-telemDict['R Lidar']['time'] <0.5:
 			CurrentDistance = RLidar
 		else:
 			'''PREPARE HALLSENSOR DATA'''
@@ -539,7 +539,7 @@ async def updatePosition(freq = 5):
 			del accelerations[0]
 		#Returns current data
 		#history of data can be accessed via the global lists (positions, velocities, accelerations)
-		TelemDict['location']['position'] = position
+		telemDict['location']['position'] = position
 		telemDict['location']['velocity'] = velocity
 		telemDict['location']['accleration'] = acceleration
 
@@ -603,13 +603,13 @@ async def updateTelemDict(freq = 5):
 
 			BMS_id2 = [1307,1339]
 			for i in BMS_id2:
-				if telemDict[i][data] != None:
+				if telemDict[i]['data'] != None:
 					telemDict[i]['isolater'] = telemDict[i]['data'][0]
 					telemDict[i]['avg temp'] = telemDict[i]['data'][1]
 
 			BMS_id3 = [1308,1340]
 			for i in BMS_id3:
-				if telemDict[i][data] != None:
+				if telemDict[i]['data'] != None:
 					telemDict[i][int(telemDict[i]['data'][0])] = (telemDict[i]['data'][1] << 8) + telemDict[i]['data'][2]
 
 			BMS_arduino_id = [1306,1338]
@@ -701,7 +701,7 @@ async def broadcastTlm(reader, writer, freq = 5):
 	# Init telemetry dictionary
 	global telemDict
 	print("\n\nBroadcast telemetry\n\n")
-	telemetry['state'] = str(pod.state)
+	telemDict['state'] = str(pod.state)
 
 	# Primary process loop
 	while True:
@@ -709,9 +709,9 @@ async def broadcastTlm(reader, writer, freq = 5):
 			# Watch for the client to close
 			break
 		
-		telemetry['state'] = str(pod.state)
+		telemDict['state'] = str(pod.state)
 		if str(pod.state) == 'Launching' or str(pod.state) == 'Coasting' or str(pod.state) == 'Braking':
-			telemetry['distance'] = telemetry['distance'] + 1 # Sample data
+			telemDict['distance'] = telemDict['distance'] + 1 # Sample data
 
 		print("PRINTING TELEM DICT")
 
@@ -820,16 +820,14 @@ async def CAN_out(freq = 5):
 
 		await asyncio.sleep(1/freq)		
 
-
-
-
-
 # Coroutine for sending telemetry to SpaceX
 # Input: Transmit frequency [Hz]
 async def spacex_tlm(freq = 50):
 	global stateDict # Grab the state dictionary
 	global pod # Grab pod object
-	global telemetry
+	global telemDict
+
+	print(type(telemDict))
 
 	server_ip = "192.168.0.7" # SpaceX telemetry machine
 	server_port = 3000
@@ -864,35 +862,30 @@ async def spacex_tlm(freq = 50):
 		#								optional
 		# stripe_count			uint32 	Count of optical navigation stripes detected in
 		#								the tube. Optional
-<<<<<<< HEAD
-		# packet = struct.pack(">BB7iI", team_id, status, int(acceleration), int(position), int(velocity), int(telemDict['F BMS']['instant voltage']), int(telemDict['F BMS']['current']), int(telemDict['F BMS']['max temp']), 0, int(position) // 3048)
-		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
-=======
-		packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['location']['acceleration']), int(TelemDict['location']['position']), int(TelemDict['location']['velocity']), int(telemDict['F BMS']['instant voltage']), int(telemDict['F BMS']['current']), int(telemDict['F BMS']['avg temp']), 0, int(position) // 3048)
+		packet = struct.pack(">BB7iI", team_id, status, int(telemDict['location']['acceleration']), int(telemDict['location']['position']), int(telemDict['location']['velocity']), int(telemDict[1305]['instant voltage']), int(telemDict[1305]['current']), int(telemDict[1305]['max temp']), 0, int(position) // 3048)
 		spacexTlmSocket.sendto(packet, (server_ip, server_port))
->>>>>>> edb1db80f712f822460a176ea242ce7bdcc57548
 		#-------NEW PACKETS--------
 		# packet = struct.pack(">BB7iI", team_id, status, int(accelerations[-1][0]), int(positions[-1][0]), int(velocities[-1][0]), 0, 0, 0, 0, int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
-		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['FR Motor']['rpm']), int(TelemDict['FL Motor']['rpm']), int(TelemDict['BR Motor']['rpm']), int(TelemDict['BL Motor']['rpm']), int(TelemDict['FR Motor']['temp']), int(TelemDict['FL Motor']['temp']), int(position) // 3048)
+		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict['FR Motor']['rpm']), int(telemDict['FL Motor']['rpm']), int(telemDict['BR Motor']['rpm']), int(telemDict['BL Motor']['rpm']), int(telemDict['FR Motor']['temp']), int(telemDict['FL Motor']['temp']), int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
-		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['BR Motor']['temp']), int(TelemDict['BL Motor']['temp']), int(TelemDict['F BMS']['state of charge']), int(TelemDict['F BMS']['instant voltage']), int(TelemDict['F BMS']['current']), int(TelemDict['F BMS']['min temp']), int(position) // 3048)
+		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict['BR Motor']['temp']), int(telemDict['BL Motor']['temp']), int(telemDict[1305]['state of charge']), int(telemDict[1305]['instant voltage']), int(telemDict[1305]['current']), int(telemDict[1305]['min temp']), int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
-		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['F BMS']['avg temp']), int(TelemDict['F BMS']['max temp']), int(TelemDict['F BMS']['isolater']), int(TelemDict['F BMS']['min v']), int(TelemDict['F BMS']['max v']), int(TelemDict['F BMS']['cell 1 v']), int(position) // 3048)
+		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict[1305]['avg temp']), int(telemDict[1305]['max temp']), int(telemDict[1305]['isolater']), int(telemDict[1305]['min v']), int(telemDict[1305]['max v']), int(telemDict[1305]['cell 1 v']), int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
-		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['F BMS']['cell 2 v']), int(TelemDict['F BMS']['cell 3 v']), int(TelemDict['F BMS']['cell 4 v']), int(TelemDict['F BMS']['cell 5 v']), int(TelemDict['F BMS']['cell 6 v']), int(TelemDict['F BMS']['cell 7 v']), int(position) // 3048)
+		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict[1305]['cell 2 v']), int(telemDict[1305]['cell 3 v']), int(telemDict[1305]['cell 4 v']), int(telemDict[1305]['cell 5 v']), int(telemDict[1305]['cell 6 v']), int(telemDict[1305]['cell 7 v']), int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
-		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['F BMS']['cell 8 v']), int(TelemDict['R BMS']['state of charge']), int(TelemDict['R BMS']['instant voltage']), int(TelemDict['R BMS']['current']), int(TelemDict['R BMS']['min temp']), int(TelemDict['R BMS']['avg temp']), int(position) // 3048)
+		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict[1305]['cell 8 v']), int(telemDict['R BMS']['state of charge']), int(telemDict['R BMS']['instant voltage']), int(telemDict['R BMS']['current']), int(telemDict['R BMS']['min temp']), int(telemDict['R BMS']['avg temp']), int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
-		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['R BMS']['max temp']), int(TelemDict['R BMS']['isolater']), int(TelemDict['R BMS']['min v']), int(TelemDict['R BMS']['max v']), int(TelemDict['R BMS']['cell 1 v']), int(TelemDict['R BMS']['cell 2 v']), int(position) // 3048)
+		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict['R BMS']['max temp']), int(telemDict['R BMS']['isolater']), int(telemDict['R BMS']['min v']), int(telemDict['R BMS']['max v']), int(telemDict['R BMS']['cell 1 v']), int(telemDict['R BMS']['cell 2 v']), int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
-		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['R BMS']['cell 3 v']), int(TelemDict['cell 4 v']['isolater']), int(TelemDict['R BMS']['cell 5 v']), int(TelemDict['R BMS']['cell 6 v']), int(TelemDict['R BMS']['cell 7 v']), int(TelemDict['R BMS']['cell 8 v']), int(position) // 3048)
+		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict['R BMS']['cell 3 v']), int(telemDict['cell 4 v']['isolater']), int(telemDict['R BMS']['cell 5 v']), int(telemDict['R BMS']['cell 6 v']), int(telemDict['R BMS']['cell 7 v']), int(telemDict['R BMS']['cell 8 v']), int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
-		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['R BMS']['cell 3 v']), int(TelemDict['cell 4 v']['isolater']), int(TelemDict['R BMS']['cell 5 v']), int(TelemDict['R BMS']['cell 6 v']), int(TelemDict['R BMS']['cell 7 v']), int(TelemDict['R BMS']['cell 8 v']), int(position) // 3048)
+		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict['R BMS']['cell 3 v']), int(telemDict['cell 4 v']['isolater']), int(telemDict['R BMS']['cell 5 v']), int(telemDict['R BMS']['cell 6 v']), int(telemDict['R BMS']['cell 7 v']), int(telemDict['R BMS']['cell 8 v']), int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
-		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['All Brakes']['pressure']), int(TelemDict['All Tensioner 1']['pressure']), int(TelemDict['All Brakes']['tank temp']), int(TelemDict['All Tensioner 1']['tank temp']), int(TelemDict['All Tensioner 1']['solenoid temp']), int(TelemDict['All Tensioner 1']['front pneumatic temp']), int(position) // 3048)
+		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict['All Brakes']['pressure']), int(telemDict['All Tensioner 1']['pressure']), int(telemDict['All Brakes']['tank temp']), int(telemDict['All Tensioner 1']['tank temp']), int(telemDict['All Tensioner 1']['solenoid temp']), int(telemDict['All Tensioner 1']['front pneumatic temp']), int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
-		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['All Tensioner 2']['back pneumatic temp']), 0, 0, 0, 0, 0, int(position) // 3048)
+		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict['All Tensioner 2']['back pneumatic temp']), 0, 0, 0, 0, 0, int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
 		#-------------------NEED TO RESTRUCTURE PACKETS
 		
@@ -943,20 +936,20 @@ async def state_transistion(freq = 5):
 		# 	print(f"Caught exception: {e}")
 
 
-		if ((stateDict[str(pod.state)] == 'launching') & (telemetry['velocity'] >= 185)):
+		if ((stateDict[str(pod.state)] == 'launching') & (telemDict['location']['velocity'] >= 185)):
 			pod.trigger('coasting')
-		elif ((stateDict[str(pod.state)] == 'launching') & (telemetry['position'] >= 3520)):
+		elif ((stateDict[str(pod.state)] == 'launching') & (telemDict['location']['position'] >= 3520)):
 			pod.trigger('braking')
 
-		if ((stateDict[str(pod.state)] == 'coasting') & (telemetry['position'] >= 3520)):
+		if ((stateDict[str(pod.state)] == 'coasting') & (telemDict['location']['position'] >= 3520)):
 			pod.trigger('braking')
 
-		if ((stateDict[str(pod.state)] == 'braking') & (telemetry['position'] >= 5180 & telemetry['velocity'] <= 0.5)):
+		if ((stateDict[str(pod.state)] == 'braking') & (telemDict['location']['position'] >= 5180 & telemDict['location']['velocity'] <= 0.5)):
 			pod.trigger('crawling')
-		elif ((stateDict[str(pod.state)] == 'braking') & (telemetry['position'] <= 5180 & telemetry['velocity'] <= 0.5)):
+		elif ((stateDict[str(pod.state)] == 'braking') & (telemDict['location']['position'] <= 5180 & telemDict['location']['velocity'] <= 0.5)):
 			pod.trigger(SafeToApproach)
 
-		if ((stateDict[str(pod.state)] == 'crawling') & (telemetry['position'] >= 5180)):
+		if ((stateDict[str(pod.state)] == 'crawling') & (telemDict['location']['position'] >= 5180)):
 			pod.trigger('braking')
 
 		# Need to add loss of comms fault, pressure faults
