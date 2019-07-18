@@ -50,6 +50,7 @@ os.system("sudo ifconfig can0 txqueuelen 1000")
 
 # New telemetry dictionary
 telemDict = {
+	'state': None,
 	281 or 'FR Motor': {
 		'name': 	'FR Motor data',
 		'data': 	None,
@@ -700,8 +701,7 @@ async def broadcastTlm(reader, writer, freq = 5):
 	global pod # Grab global pod object
 	# Init telemetry dictionary
 	global telemDict
-	print("\n\nBroadcast telemetry\n\n")
-	telemDict['state'] = str(pod.state)
+	print("Broadcasting telemetry")
 
 	# Primary process loop
 	while True:
@@ -713,7 +713,7 @@ async def broadcastTlm(reader, writer, freq = 5):
 		if str(pod.state) == 'Launching' or str(pod.state) == 'Coasting' or str(pod.state) == 'Braking':
 			telemDict['distance'] = telemDict['distance'] + 1 # Sample data
 
-		 # Serialize dictionary as json (ignoring unserializable data)
+		 # Serialize dictionary as xjson (ignoring unserializable data)
 		output = json.dumps(telemDict, default=lambda o: '')
 		writer.write(output.encode('utf8'))
 
@@ -793,7 +793,6 @@ async def processTelem(freq = 5, can_read_freq = 10):
 				continue
 		# Wait for last message to arrive
 		await reader.get_message()
-		print('Done!')
 		await asyncio.sleep(1/freq)
 
 		# Clean-up
@@ -824,8 +823,6 @@ async def spacex_tlm(freq = 50):
 	global stateDict # Grab the state dictionary
 	global pod # Grab pod object
 	global telemDict
-
-	print(type(telemDict))
 
 	server_ip = "192.168.0.7" # SpaceX telemetry machine
 	server_port = 3000
@@ -860,7 +857,7 @@ async def spacex_tlm(freq = 50):
 		#								optional
 		# stripe_count			uint32 	Count of optical navigation stripes detected in
 		#								the tube. Optional
-		packet = struct.pack(">BB7iI", team_id, status, int(telemDict['location']['acceleration']), int(telemDict['location']['position']), int(telemDict['location']['velocity']), int(telemDict[1305]['instant voltage']), int(telemDict[1305]['current']), int(telemDict[1305]['max temp']), 0, int(position) // 3048)
+		packet = struct.pack(">BB7iI", team_id, status, int(telemDict['location']['acceleration']), int(telemDict['location']['position']), int(telemDict['location']['velocity']), 0, 0, 0, 0, 0)
 		spacexTlmSocket.sendto(packet, (server_ip, server_port))
 		#-------NEW PACKETS--------
 		# packet = struct.pack(">BB7iI", team_id, status, int(accelerations[-1][0]), int(positions[-1][0]), int(velocities[-1][0]), 0, 0, 0, 0, int(position) // 3048)
