@@ -230,7 +230,17 @@ telemDict = {
 		'min temp' :		None,
 		'max v' : 			None,
 		'min v' :			None,
-		'current' : 		None
+		'current' : 		None,
+		'avg temp' :        None, #Here and below needs to be added
+        'isolater' :        None,
+        'cell 1 v' :        None,
+        'cell 2 v' :        None,
+        'cell 3 v' :        None,
+        'cell 4 v' :        None,
+        'cell 5 v' :        None,
+        'cell 6 v' :        None,
+        'cell 7 v' :        None,
+        'cell 8 v' :        None,
 		},
 	# 1321 or 'M BMS': {
 	# 	'name': 'M BMS data',
@@ -252,6 +262,16 @@ telemDict = {
 		'max v' : 			None,
 		'min v' :			None,
 		'current' : 		None
+		'avg temp' :        None, #Here and below needs to be added
+        'isolater' :        None,
+        'cell 1 v' :        None,
+        'cell 2 v' :        None,
+        'cell 3 v' :        None,
+        'cell 4 v' :        None,
+        'cell 5 v' :        None,
+        'cell 6 v' :        None,
+        'cell 7 v' :        None,
+        'cell 8 v' :        None,
 		},
 	1306 or 'F BMS Arduino': {
 		'name': 'F BMS Arduino data',
@@ -690,32 +710,56 @@ async def spacex_tlm(freq = 50):
 
 	# Send data at rate specified by freq
 	while True:
-		position = 1000000
-		velocity = 9001
-		acceleration = 981
+		position = 1000000	#placeholder
+		velocity = 9001		#placeholder
+		acceleration = 981	#placeholder
 		status = stateDict[str(pod.state)]
 
 		# Pack the string according to format BB7iI
 
 		# Packet layout (from SpaceX)
-		# team_id			 uint8  Identifier for the team, assigned by the
-		#							organization. Required.
-		# status			  uint8  Pod status, indicating the current state the pod
-		#							is in. Required.
-		# acceleration		int32  Acceleration in centimeters per second squared.
-		#							Required.
-		# position			int32  Position in centimeters. Required.
-		# velocity			int32  Velocity in centimeters per second. Required.
-		# battery_voltage	 int32  Battery voltage in millivolts. Optional
-		# battery_current	 int32  Battery current in milliamps. Optional
-		# battery_temperature int32  Battery temperature in tenths of a degree
-		#							Celsius. Optional
-		# pod_temperature	 int32  Pod temperature in tenths of a degree Celsius.
-		#							Optional
-		# stripe_count		uint32 Count of optical navigation stripes detected in
-		#							the tube. Optional
-		packet = struct.pack(">BB7iI", team_id, status, int(acceleration), int(position), int(velocity), int(telemDict[1305]['instant voltage']), int(telemDict[1305]['current']), int(telemDict[1305]['max temp']), 0, int(position) // 3048)
+		# team_id			 	uint8  	Identifier for the team, assigned by the
+		#								organization. Required.
+		# status			  	uint8  	Pod status, indicating the current state the pod
+		#								is in. Required.
+		# acceleration			int32  	Acceleration in centimeters per second squared.
+		#								Required.
+		# position				int32  	Position in centimeters. Required.
+		# velocity				int32  	Velocity in centimeters per second. Required.
+		# battery_voltage	 	int32  	Battery voltage in millivolts. Optional
+		# battery_current	 	int32  	Battery current in milliamps. Optional
+		# battery_temperature 	int32  	Battery temperature in tenths of a degree
+		#								Celsius. Optional
+		# pod_temperature	 	int32  	Pod temperature in tenths of a degree Celsius.
+		#								optional
+		# stripe_count			uint32 	Count of optical navigation stripes detected in
+		#								the tube. Optional
+		packet = struct.pack(">BB7iI", team_id, status, int(acceleration), int(position), int(velocity), int(telemDict['F BMS']['instant voltage']), int(telemDict['F BMS']['current']), int(telemDict['F BMS']['max temp']), 0, int(position) // 3048)
 		spacexTlmSocket.sendto(packet, (server_ip, server_port))
+		#-------NEW PACKETS--------
+		# packet = struct.pack(">BB7iI", team_id, status, int(accelerations[-1][0]), int(positions[-1][0]), int(velocities[-1][0]), 0, 0, 0, 0, int(position) // 3048)
+		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
+		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['FR Motor']['rpm']), int(TelemDict['FL Motor']['rpm']), int(TelemDict['BR Motor']['rpm']), int(TelemDict['BL Motor']['rpm']), int(TelemDict['FR Motor']['temp']), int(TelemDict['FL Motor']['temp']), int(position) // 3048)
+		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
+		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['BR Motor']['temp']), int(TelemDict['BL Motor']['temp']), int(TelemDict['F BMS']['state of charge']), int(TelemDict['F BMS']['instant voltage']), int(TelemDict['F BMS']['current']), int(TelemDict['F BMS']['min temp']), int(position) // 3048)
+		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
+		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['F BMS']['avg temp']), int(TelemDict['F BMS']['max temp']), int(TelemDict['F BMS']['isolater']), int(TelemDict['F BMS']['min v']), int(TelemDict['F BMS']['max v']), int(TelemDict['F BMS']['cell 1 v']), int(position) // 3048)
+		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
+		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['F BMS']['cell 2 v']), int(TelemDict['F BMS']['cell 3 v']), int(TelemDict['F BMS']['cell 4 v']), int(TelemDict['F BMS']['cell 5 v']), int(TelemDict['F BMS']['cell 6 v']), int(TelemDict['F BMS']['cell 7 v']), int(position) // 3048)
+		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
+		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['F BMS']['cell 8 v']), int(TelemDict['R BMS']['state of charge']), int(TelemDict['R BMS']['instant voltage']), int(TelemDict['R BMS']['current']), int(TelemDict['R BMS']['min temp']), int(TelemDict['R BMS']['avg temp']), int(position) // 3048)
+		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
+		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['R BMS']['max temp']), int(TelemDict['R BMS']['isolater']), int(TelemDict['R BMS']['min v']), int(TelemDict['R BMS']['max v']), int(TelemDict['R BMS']['cell 1 v']), int(TelemDict['R BMS']['cell 2 v']), int(position) // 3048)
+		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
+		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['R BMS']['cell 3 v']), int(TelemDict['cell 4 v']['isolater']), int(TelemDict['R BMS']['cell 5 v']), int(TelemDict['R BMS']['cell 6 v']), int(TelemDict['R BMS']['cell 7 v']), int(TelemDict['R BMS']['cell 8 v']), int(position) // 3048)
+		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
+		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['R BMS']['cell 3 v']), int(TelemDict['cell 4 v']['isolater']), int(TelemDict['R BMS']['cell 5 v']), int(TelemDict['R BMS']['cell 6 v']), int(TelemDict['R BMS']['cell 7 v']), int(TelemDict['R BMS']['cell 8 v']), int(position) // 3048)
+		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
+		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['All Brakes']['pressure']), int(TelemDict['All Tensioner 1']['pressure']), int(TelemDict['All Brakes']['tank temp']), int(TelemDict['All Tensioner 1']['tank temp']), int(TelemDict['All Tensioner 1']['solenoid temp']), int(TelemDict['All Tensioner 1']['front pneumatic temp']), int(position) // 3048)
+		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
+		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['All Tensioner 2']['back pneumatic temp']), 0, 0, 0, 0, 0, int(position) // 3048)
+		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
+		
 		
 		# Sleep for 1/freq secs before sending another packet
 		await asyncio.sleep(1/freq)
