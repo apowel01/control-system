@@ -388,19 +388,19 @@ async def updatePosition(freq = 5):
 		bandtimeouttime = 0.5
 		if TelemDict['F Lidar']['time delta'] < timeouttime:
 			FlidarReading = TelemDict['F Lidar']['distance']
-		else
+		else:
 			FliderReading = 300
 			timoutcount =timeoutcount +1
 		if TelemDict['R Lidar']['time delta'] < timeouttime:
 			RlidarReading = TelemDict['R Lidar']['distance']
-		else
+		else:
 			RliderReading = 300
 		rpms_list = []
 		allmotorids = [281,297,345,361]
 		for i in allmotorids:
 			if TelemDict[i]['time delta'] < motortimeouttime:
 				rpms_list.append(TelemDict[i]['rpm'])
-			else
+			else:
 				motortimeoutcount = motortimeoutcount + 1
 		if motortimeoutcout > 2:
 			timeoutcount = timeoutcount +1
@@ -732,7 +732,7 @@ async def processTelem(freq = 5, can_read_freq = 10):
 			try:
 				telemDict[msg.arbitration_id]['data'] = msg.data
 				telemDict[msg.arbitration_id]['time'] = msg.timestamp
-				if telemDict[msg.arbitration_id]['time'] != None
+				if telemDict[msg.arbitration_id]['time'] != None:
 					telemDict[msg.arbitration_id]['time delta'] = msg.timestamp - telemDict[msg.arbitration_id]['time']
 
 			except Exception as e:
