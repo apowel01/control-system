@@ -19,28 +19,28 @@ double disp_sampleTime = 800;    //How frequent you want to display data  (1000 
 //String inString = "";            // string to hold input
 
 // Identifying Pins
-int pressurePinL =          62;   // A8
+//int pressurePinL =          62;   // A8
 int tempPinL =              63;   // A9
-int voltagePinL =           64;   // A10
+int voltagePinL =           64;   // A10    *
 int motorPinL =              4;
-int pressurePinR =          65;   // A11
+//int pressurePinR =          65;   // A11
 int tempPinR =              66;   // A12
-int voltagePinR =           64;   // A10
-int motorPinR =              5;
-int brakeReedPinR =         43;
-int brakeReedPinL =         45;
-int tensionerReedPinR =     47;
-int tensionerReedPinL =     49;
-int BMSDischargePin =       51;
-int BMSChargePin =          53;
-int brakePressPin =         68;   //A14
-int tensionerPressPin =     69;   //A15
+int voltagePinR =           64;   // A10    *
+int motorPinR =              5;             
+int brakeReedPinR =         43;             *
+int brakeReedPinL =         45;             *
+int tensionerReedPinR =     47;             *
+int tensionerReedPinL =     49;             *
+int BMSDischargePin =       51;             *
+int BMSChargePin =          53;             *
+int brakePressPin =         68;   //A14     *
+int tensionerPressPin =     69;   //A15     *
 
 //New brake temp sensors
-int brakeAirTankTempPin =   55;   //A1
-int tensAirTankTempPin =    56;   //A2
-int tensSolenoidTempPin =   57;   //A3
-int tensFrontPneuTempPin =  68;   //A4
+int brakeAirTankTempPin =   55;   //A1      * 
+int tensAirTankTempPin =    56;   //A2      * 
+int tensSolenoidTempPin =   57;   //A3      * 
+int tensFrontPneuTempPin =  68;   //A4      * 
 
 // Setting up Hall Sensor stuff
 //The R pins on the board
@@ -57,7 +57,7 @@ const int pin36 = 36;
 //Change frequency by moving pin 2 to QA, QB, QC or QD ranked from smallest to largest
 const int hallSensorOutputR = 2;
 const int hallSensorOutputL = 3;
-const int BandSensorOutputR = 4;
+const int BandSensorOutputR = 6;
 
 unsigned volatile int counterR = 0;
 float revolutionsR;
@@ -177,7 +177,7 @@ void setup() {
   //CAN.init_Filt(5, 0, 0x109);
 
   // Initializing Timer
-  Timer1.initialize(50000);         // initialize timer1, and set a .05 second period
+  Timer1.initialize(100000);         // initialize timer1, and set a .05 second period (50000)
   Timer1.attachInterrupt(sendmessage);  // run sendmessage whenever the timer overflows
 }
 
@@ -352,12 +352,14 @@ void loop() {
     stmp[4] = 0;
     stmp[5] = 0;    
     stmp[6] = highByte((int) distance);
-    stmp[7] = lowByte((int) distance);    
+    stmp[7] = lowByte((int) distance);
+    Serial.print(stmp);    
     CAN.sendMsgBuf(0x419, 0, 8, stmp);
     
     //Sending Band Sensor Data
     stmp[6] = highByte((int) counterBandRight);
     stmp[7] = lowByte((int) counterBandRight);
+    Serial.print(stmp);
     CAN.sendMsgBuf(0x41a, 0, 8, stmp);
     
     // Generating Motor Data Packets
@@ -405,6 +407,7 @@ void loop() {
     stmp[5] = highByte((int) tempR);
     stmp[6] = lowByte((int) tempR);
     stmp[7] = throttle;
+    Serial.print(stmp);
     CAN.sendMsgBuf(0x119, 0, 8, stmp);
     stmp[1] = highByte((int) RPM_L);
     stmp[2] = lowByte((int) RPM_L);
@@ -413,6 +416,7 @@ void loop() {
     stmp[5] = highByte((int) tempL);
     stmp[6] = lowByte((int) tempL);
     stmp[7] = throttle;
+    Serial.print(stmp);
     CAN.sendMsgBuf(0x129, 0, 8, stmp);
     
     //Sending BMS Data Packet
@@ -423,6 +427,7 @@ void loop() {
     stmp[5] = 0;
     stmp[6] = digitalRead(BMSChargePin);
     stmp[7] = digitalRead(BMSDischargePin);
+    Serial.print(stmp);
     CAN.sendMsgBuf(0x51a, 0, 8, stmp);
 
     //Sending Brake Packet
@@ -430,6 +435,7 @@ void loop() {
     stmp[5] = lowByte((int) brakeTankTemp);
     stmp[6] = highByte((int) brakePressure);
     stmp[7] = lowByte((int) brakePressure);
+    Serial.print(stmp);
     CAN.sendMsgBuf(0x20a, 0, 8, stmp);
 
     //Sending Tensioner Packet
@@ -441,6 +447,7 @@ void loop() {
     stmp[5] = lowByte((int) tensTankTemp);
     stmp[6] = highByte((int) tensionerPressure);
     stmp[7] = lowByte((int) tensionerPressure);
+    Serial.print(stmp);
     CAN.sendMsgBuf(0x30a, 0, 8, stmp);    
 
     //Sending Brake Reed Switch Data
@@ -451,14 +458,18 @@ void loop() {
     stmp[5] = 0;
     stmp[6] = 0;
     stmp[7] = digitalRead(brakeReedPinR);
+    Serial.print(stmp);
     CAN.sendMsgBuf(0x219, 0, 8, stmp);
     stmp[7] = digitalRead(brakeReedPinL);
+    Serial.print(stmp);
     CAN.sendMsgBuf(0x229, 0, 8, stmp);
 
     //Sending Tensioner Reed Switch Data
     stmp[7] = digitalRead(tensionerReedPinR);
+    Serial.print(stmp);
     CAN.sendMsgBuf(0x319, 0, 8, stmp);
     stmp[7] = digitalRead(tensionerReedPinL);
+    Serial.print(stmp);
     CAN.sendMsgBuf(0x329, 0, 8, stmp);
 
     

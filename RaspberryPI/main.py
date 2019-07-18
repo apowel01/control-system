@@ -714,7 +714,7 @@ async def spacex_tlm(freq = 50):
 		#							Optional
 		# stripe_count		uint32 Count of optical navigation stripes detected in
 		#							the tube. Optional
-		packet = struct.pack(">BB7iI", team_id, status, int(acceleration), int(position), int(velocity), 0, 0, 0, 0, int(position) // 3048)
+		packet = struct.pack(">BB7iI", team_id, status, int(acceleration), int(position), int(velocity), int(telemDict[1305]['instant voltage']), int(telemDict[1305]['current']), int(telemDict[1305]['max temp']), 0, int(position) // 3048)
 		spacexTlmSocket.sendto(packet, (server_ip, server_port))
 		
 		# Sleep for 1/freq secs before sending another packet

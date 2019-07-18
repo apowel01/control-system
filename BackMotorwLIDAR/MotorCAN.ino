@@ -19,11 +19,11 @@ double disp_sampleTime = 800;    //How frequent you want to display data  (1000 
 //String inString = "";            // string to hold input
 
 // Identifying Pins
-int pressurePinL =          62;   // A8
+//int pressurePinL =          62;   // A8
 int tempPinL =              63;   // A9
 int voltagePinL =           64;   // A10
 int motorPinL =              4;
-int pressurePinR =          65;   // A11
+//int pressurePinR =          65;   // A11
 int tempPinR =              66;   // A12
 int voltagePinR =           64;   // A10
 int motorPinR =              5;
@@ -51,7 +51,7 @@ const int pin36 = 36;
 //Change frequency by moving pin 2 to QA, QB, QC or QD ranked from smallest to largest
 const int hallSensorOutputR = 2;
 const int hallSensorOutputL = 3;
-const int BandSensorOutputL = 4;
+const int BandSensorOutputL = 6;
 
 unsigned volatile int counterR = 0;
 float revolutionsR;
@@ -165,7 +165,7 @@ void setup() {
   //CAN.init_Filt(5, 0, 0x109);
 
   // Initializing Timer
-  Timer1.initialize(50000);         // initialize timer1, and set a .01 second period
+  Timer1.initialize(100000);         // initialize timer1, and set a .01 second period (50000)
   Timer1.attachInterrupt(sendmessage);  // run sendmessage whenever the timer overflows
 
 }
@@ -342,6 +342,12 @@ void loop() {
     stmp[7] = lowByte((int) distance);    
     CAN.sendMsgBuf(0x429, 0, 8, stmp);
     
+    //Sending Band Sensor Data
+    stmp[6] = highByte((int) counterBandLeft);
+    stmp[7] = lowByte((int) counterBandLeft);
+    Serial.print(stmp);
+    CAN.sendMsgBuf(0x42a, 0, 8, stmp);
+    
     // Generating Motor Data Packets
     float voltageL;
 //    float currentL;
@@ -374,6 +380,7 @@ void loop() {
     stmp[5] = highByte((int) tempR);
     stmp[6] = lowByte((int) tempR);
     stmp[7] = throttle;
+    Serial.print(stmp);
     CAN.sendMsgBuf(0x159, 0, 8, stmp);
     stmp[1] = highByte((int) RPM_L);
     stmp[2] = lowByte((int) RPM_L);
@@ -382,6 +389,7 @@ void loop() {
     stmp[5] = highByte((int) tempL);
     stmp[6] = lowByte((int) tempL);
     stmp[7] = throttle;
+    Serial.print(stmp);
     CAN.sendMsgBuf(0x169, 0, 8, stmp);
     
     //Sending BMS Data Packet
@@ -392,29 +400,30 @@ void loop() {
     stmp[5] = 0;
     stmp[6] = digitalRead(BMSChargePin);
     stmp[7] = digitalRead(BMSDischargePin);
+    Serial.print(stmp);
     CAN.sendMsgBuf(0x53a, 0, 8, stmp);
 
     //Sending Tensioner Temp Packet
     stmp[6] = highByte((int) tensBackPneuTemp);
     stmp[7] = lowByte((int) tensBackPneuTemp);   
+    Serial.print(stmp);
 
     //Sending Brake Reed Switch Data
     stmp[6] = 0;
     stmp[7] = digitalRead(brakeReedPinR);
+    Serial.print(stmp);
     CAN.sendMsgBuf(0x219, 0, 8, stmp);
     stmp[7] = digitalRead(brakeReedPinL);
+    Serial.print(stmp);
     CAN.sendMsgBuf(0x229, 0, 8, stmp);
 
     //Sending Tensioner Reed Switch Data
     stmp[7] = digitalRead(tensionerReedPinR);
+    Serial.print(stmp);
     CAN.sendMsgBuf(0x319, 0, 8, stmp);
     stmp[7] = digitalRead(tensionerReedPinL);
+    Serial.print(stmp);
     CAN.sendMsgBuf(0x329, 0, 8, stmp);
-
-    //Sending Band Sensor Data
-    stmp[6] = highByte((int) counterBandLeft);
-    stmp[7] = lowByte((int) counterBandLeft);
-    CAN.sendMsgBuf(0x42a, 0, 8, stmp);
         
     //Resetting Timer
     needtosendsensor = 0;
