@@ -60,6 +60,7 @@ telemDict = {
 		'name': 	'FR Motor data',
 		'data': 	None,
 		'time': 	None,
+		'time delta' :		None,
 		'rpm' : 	None,
 		'volt': 	None,
 		'temp': 	None,
@@ -69,6 +70,7 @@ telemDict = {
 		'name': 'FL Motor data',
 		'data': 	None,
 		'time': 	None,
+		'time delta' :		None,
 		'rpm' : 	None,
 		'volt': 	None,
 		'temp': 	None,
@@ -78,6 +80,7 @@ telemDict = {
 	# 	'name': 'MR Motor data',
 	# 	'data': 	None,
 	# 	'time': 	None,
+	'time delta' :		None,
 	# 	'rpm' : 	None,
 	# 	'volt': 	None,
 	# 	'temp': 	None,
@@ -88,6 +91,7 @@ telemDict = {
 	# 	'name': 'ML Motor data',
 	# 	'data': 	None,
 	# 	'time': 	None,
+	'time delta' :		None,
 	# 	'rpm' : 	None,
 	# 	'volt': 	None,
 	# 	'temp': 	None,
@@ -98,6 +102,7 @@ telemDict = {
 		'name': 'RR Motor data',
 		'data': 	None,
 		'time': 	None,
+		'time delta' :		None,
 		'rpm' : 	None,
 		'volt': 	None,
 		'temp': 	None,
@@ -107,6 +112,7 @@ telemDict = {
 		'name': 'RL Motor data',
 		'data': 	None,
 		'time': 	None,
+		'time delta' :		None,
 		'rpm' : 	None,
 		'volt': 	None,
 		'temp': 	None,
@@ -116,6 +122,7 @@ telemDict = {
 		'name': 'All brakes',
 		'data': 	None,
 		'time': 	None,
+		'time delta' :		None,
 		'tank temp':	None,	
 		'pressure': None
 		},
@@ -123,18 +130,21 @@ telemDict = {
 		'name': 'FR Brake data',
 		'data': 	None,
 		'time': 	None,
+		'time delta' :		None,
 		'reed': 	None
 		},
 	553 or 'FL Brake': {
 		'name': 'FL Brake data',
 		'data': 	None,
 		'time': 	None,
+		'time delta' :		None,
 		'reed': 	None
 		},
 	# 569 or 'MR Brake': {
 	# 	'name': 'MR Brake data',
 	# 	'data': 	None,
 	# 	'time': 	None,
+	'time delta' :		None,
 	# 	'temp': 	None,
 	# 	'reed': 	None
 	# 	},
@@ -142,6 +152,7 @@ telemDict = {
 	# 	'name': 'ML Brake data',
 	# 	'data': 	None,
 	# 	'time': 	None,
+	'time delta' :		None,
 	# 	'temp': 	None,
 	# 	'reed': 	None
 	# 	},
@@ -149,18 +160,21 @@ telemDict = {
 		'name': 'RR Brake data',
 		'data': 	None,
 		'time': 	None,
+		'time delta' :		None,
 		'reed': 	None
 		},
 	617 or 'RL Brake': {
 		'name': 'RL Brake data',
 		'data': 	None,
 		'time': 	None,
+		'time delta' :		None,
 		'reed': 	None
 		},
 	778 or 'All Tensioner 1': {
 		'name': 'All tensioner 1',
 		'data': 	None,
 		'time': 	None,
+		'time delta' :		None,
 		'tank temp': None,
 		'front pneumatic temp': None,
 		'solenoid temp': None,
@@ -170,60 +184,70 @@ telemDict = {
 		'name': 'All tensioner 1',
 		'data': 	None,
 		'time': 	None,
+		'time delta' :		None,
 		'back pneumatic temp': None
 		},
 	793 or 'FR Tensioner': {
 		'name': 'FR Tensioner data',
 		'data': 	None,
 		'time': 	None,
+		'time delta' :		None,
 		'reed': 	None
 		},
 	809 or 'FL Tensioner': {
 		'name': 'FL Tensioner data',
 		'data': 	None,
 		'time': 	None,
+		'time delta' :		None,
 		'reed': 	None
 		},
 	# 825 or 'MR Tensioner': {
 	# 	'name': 'MR Tensioner data',
 	# 	'data': 	None,
 	# 	'time': 	None,
+	'time delta' :		None,
 	# 	'reed': 	None
 	# 	},
 	# 841 or 'ML Tensioner': {
 	# 	'name': 'ML Tensioner data',
 	# 	'data': 	None,
 	# 	'time': 	None,
+	'time delta' :		None,
 	# 	'reed': 	None
 	# 	},
 	857 or 'RR Tensioner': {
 		'name': 'RR Tensioner data',
 		'data': 	None,
 		'time': 	None,
+		'time delta' :		None,
 		'reed': 	None
 		},
 	873 or 'RL Tensioner': {
 		'name': 'RL Tensioner data',
 		'data': 	None,
 		'time': 	None,
+		'time delta' :		None,
 		'reed': 	None
 		},
 	1049 or 'F Lidar': {
 		'name': 'F Lidar data',
 		'data': 			None,
 		'time': 			None,
+		'time delta' :		None,
 		'distance' : 		None
 		},
 	1065 or 'R Lidar': {
 		'name': 'R Lidar data',
 		'data': 			None,
 		'time': 			None,
+		'time delta' :		None,
 		'distance' : 		None
 		},
 	1305 or 'F BMS': {
 		'name': 'F BMS data',
 		'data': 			None,
 		'time': 			None,
+		'time delta' :		None,
 		'state of charge':	None,
 		'instant voltage':	None,
 		'max temp' :   		None,
@@ -246,6 +270,7 @@ telemDict = {
 	# 	'name': 'M BMS data',
 	# 	'data': 			None,
 	# 	'time': 			None,
+	'time delta' :		None,
 	# 	'max batt temp' :	None,
 	# 	'max v' : 			None,
 	# 	'min v' : 			None,
@@ -255,13 +280,14 @@ telemDict = {
 		'name': 'F BMS data',
 		'data': 			None,
 		'time': 			None,
+		'time delta' :		None,
 		'state of charge':	None,
 		'instant voltage':	None,
 		'max temp' :   		None,
 		'min temp' :		None,
 		'max v' : 			None,
 		'min v' :			None,
-		'current' : 		None
+		'current' : 		None,
 		'avg temp' :        None, #Here and below needs to be added
 		'isolater' :        None,
 		'cell 1 v' :        None,
@@ -277,6 +303,7 @@ telemDict = {
 		'name': 'F BMS Arduino data',
 		'data': 			None,
 		'time': 			None,
+		'time delta' :		None,
 		'health' :  		None,
 		'discharge enable':	None,
 		'charge enable': 	None
@@ -285,6 +312,7 @@ telemDict = {
 	# 	'name': 'M BMS Arduino data',
 	# 	'data': 			None,
 	# 	'time': 			None,
+	'time delta' :		None,
 	# 	'health' : 			None,
 	#   'discharge enable':	None,
 	#   'charge enable': 	None
@@ -293,6 +321,7 @@ telemDict = {
 		'name': 'R BMS Arduino data',
 		'data': 			None,
 		'time': 			None,
+		'time delta' :		None,
 		'health' :  		None,
 		'discharge enable':	None,
 		'charge enable': 	None
@@ -301,12 +330,14 @@ telemDict = {
 		'name': 'Right Band',
 		'data': None,
 		'time': None,
+		'time delta' :		None,
 		'count': None
 		},
 	1051: {
 		'name': 'Left Band',
 		'data': None,
 		'time': None,
+		'time delta' :		None,
 		'count': None
 		}
 	}
@@ -349,10 +380,41 @@ async def updatePosition(freq = 5):
 		global lastBand_1
 		global lastBand_2
 		global firstCanMessage
+		timeoutcount = 0
+		timeouttime = 0.5
+		motortimeoutcount = 0
+		motortimeouttime = 0.5
+		bandtimeoutcount = 0
+		bandtimeouttime = 0.5
+		if TelemDict['F Lidar']['time delta'] < timeouttime:
+			FlidarReading = TelemDict['F Lidar']['distance']
+		else
+			FliderReading = 300
+			timoutcount =timeoutcount +1
+		if TelemDict['R Lidar']['time delta'] < timeouttime:
+			RlidarReading = TelemDict['R Lidar']['distance']
+		else
+			RliderReading = 300
+		rpms_list = []
+		allmotorids = [281,297,345,361]
+		for i in allmotorids:
+			if TelemDict[i]['time delta'] < motortimeouttime:
+				rpms_list.append(TelemDict[i]['rpm'])
+			else
+				motortimeoutcount = motortimeoutcount + 1
+		if motortimeoutcout > 2:
+			timeoutcount = timeoutcount +1
 
-		FlidarReading = TelemDict['F Lidar']['distance']
-		RlidarReading = TelemDict['R Lidar']['distance']
-		rpms_list = [TelemDict['FR Motor']['rpm'],TelemDict['FL Motor']['rpm'],TelemDict['RR Motor']['rpm'],TelemDict['RL Motor']['rpm']
+		allbandids = ['Right Band','Left Band']
+		for i in allbandids:
+			if TelemDict[i]['time delta'] > bandtimeouttime:
+				bandtimeoutcount = bandtimeoutcount + 1
+		if bandtimeoutcout > 1:
+			timeoutcount = timeoutcount +1
+
+		if timeoutcount > 1:
+			pod.trigger('fault')
+
 		bands_list = [TelemDict['Right Band']['count'],TelemDict['Left Band']['count']]
 		#Get the current time since start
 		currentTime = time.time() - startTime
@@ -378,9 +440,9 @@ async def updatePosition(freq = 5):
 
 		'''PREPARE LIDAR DATA DATA'''
 		#If lidar within last 100 meters and the pod has crossed 1000 meters and less than 5 errors from lidar occured
-		if FlidarReading < 125 and CurrentDistance > 100000 and lidarErrorCounter <5:
+		if FlidarReading < 125 and CurrentDistance > 100000 and lidarErrorCounter <5 and time()-TelemDict['F Lidar']['time'] <0.5:
 			CurrentDistance = FLidar 
-		if Rlidar < 12500 and CurrentDistance <150000:
+		if Rlidar < 12500 and CurrentDistance <150000 and time()-TelemDict['R Lidar']['time'] <0.5:
 			CurrentDistance = RLidar
 		else:
 			'''PREPARE HALLSENSOR DATA'''
@@ -666,20 +728,22 @@ async def processTelem(freq = 5, can_read_freq = 10):
 			print("Timestamp")
 			print(msg.timestamp)
 			# Delay response
-			await asyncio.sleep(0.05)
+			# await asyncio.sleep(0.05)
+			try:
+				telemDict[msg.arbitration_id]['data'] = msg.data
+				telemDict[msg.arbitration_id]['time'] = msg.timestamp
+				if telemDict[msg.arbitration_id]['time'] != None
+					telemDict[msg.arbitration_id]['time delta'] = msg.timestamp - telemDict[msg.arbitration_id]['time']
+
+			except Exception as e:
+				print(f"Caught exception: {e}")
+				continue
 		# Wait for last message to arrive
 		await reader.get_message()
 		print('Done!')
 		await asyncio.sleep(1/freq)
 
 		# Clean-up
-		notifier.stop()
-		can0.shutdown()
-
-
-
-
-
 
 
 async def CAN_out(freq = 5):
