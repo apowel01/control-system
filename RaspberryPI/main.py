@@ -713,10 +713,8 @@ async def broadcastTlm(reader, writer, freq = 5):
 		if str(pod.state) == 'Launching' or str(pod.state) == 'Coasting' or str(pod.state) == 'Braking':
 			telemDict['distance'] = telemDict['distance'] + 1 # Sample data
 
-		print("PRINTING TELEM DICT")
-
-		output = json.dumps(telemDict) # Serialize dictionary as json
-		print(output)
+		 # Serialize dictionary as json (ignoring unserializable data)
+		output = json.dumps(telemDict, default=lambda o: '')
 		writer.write(output.encode('utf8'))
 
 		await asyncio.sleep(1/freq) # Wait until sending telem update
