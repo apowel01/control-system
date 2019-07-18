@@ -85,16 +85,16 @@ background: transparent;</string>
    <widget class="QLabel" name="speedLabel">
     <property name="geometry">
      <rect>
-      <x>490</x>
-      <y>110</y>
-      <width>551</width>
-      <height>371</height>
+      <x>370</x>
+      <y>260</y>
+      <width>881</width>
+      <height>511</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Roboto</family>
-      <pointsize>165</pointsize>
+      <pointsize>272</pointsize>
       <weight>50</weight>
       <bold>false</bold>
      </font>
@@ -209,10 +209,10 @@ background: transparent;
    <widget class="QLabel" name="spedometer">
     <property name="geometry">
      <rect>
-      <x>399</x>
-      <y>-50</y>
-      <width>761</width>
-      <height>761</height>
+      <x>210</x>
+      <y>-80</y>
+      <width>1255</width>
+      <height>1255</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -226,163 +226,6 @@ background: transparent;
     </property>
     <property name="scaledContents">
      <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>640</y>
-      <width>411</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>18</pointsize>
-      <weight>3</weight>
-      <italic>false</italic>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: white; background: transparent;
-font: 25 18pt &quot;Roboto&quot;;</string>
-    </property>
-    <property name="text">
-     <string>MAX BATTERY TEMP.</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="maxBatteryTemp">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>680</y>
-      <width>251</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>24</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: white; background: transparent;</string>
-    </property>
-    <property name="text">
-     <string>123.45 C°</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="vibration_label">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>820</y>
-      <width>251</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>24</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: white; background: transparent;</string>
-    </property>
-    <property name="text">
-     <string>000 Hz</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>770</y>
-      <width>261</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>18</pointsize>
-      <weight>3</weight>
-      <italic>false</italic>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: white; background: transparent;font: 25 18pt &quot;Roboto&quot;;</string>
-    </property>
-    <property name="text">
-     <string>VIBRATION</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_6">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>910</y>
-      <width>221</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>18</pointsize>
-      <weight>3</weight>
-      <italic>false</italic>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: white; background: transparent;font: 25 18pt &quot;Roboto&quot;;</string>
-    </property>
-    <property name="text">
-     <string>12V VOLTAGE</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="voltageTwelve">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>960</y>
-      <width>251</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>24</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: white; background: transparent;</string>
-    </property>
-    <property name="text">
-     <string>10.25 V</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLabel" name="errors_label">
@@ -435,10 +278,10 @@ font: 25 18pt &quot;Roboto&quot;;</string>
    <widget class="QLabel" name="label_9">
     <property name="geometry">
      <rect>
-      <x>710</x>
-      <y>400</y>
-      <width>110</width>
-      <height>60</height>
+      <x>740</x>
+      <y>700</y>
+      <width>151</width>
+      <height>71</height>
      </rect>
     </property>
     <property name="font">
@@ -468,16 +311,16 @@ font: 25 26pt &quot;Roboto&quot;;</string>
    <widget class="QLabel" name="accele">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>490</y>
-      <width>321</width>
-      <height>91</height>
+      <x>560</x>
+      <y>822</y>
+      <width>331</width>
+      <height>111</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Roboto</family>
-      <pointsize>48</pointsize>
+      <pointsize>79</pointsize>
       <weight>50</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -496,16 +339,16 @@ font: 25 26pt &quot;Roboto&quot;;</string>
    <widget class="QLabel" name="stateLabel">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>130</y>
-      <width>311</width>
-      <height>31</height>
+      <x>490</x>
+      <y>180</y>
+      <width>641</width>
+      <height>141</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Roboto</family>
-      <pointsize>20</pointsize>
+      <pointsize>33</pointsize>
       <weight>75</weight>
       <italic>false</italic>
       <bold>true</bold>
@@ -526,307 +369,19 @@ background: transparent;
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="pack1">
-    <property name="geometry">
-     <rect>
-      <x>890</x>
-      <y>640</y>
-      <width>311</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>18</pointsize>
-      <weight>3</weight>
-      <italic>false</italic>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: white; background: transparent;
-font: 25 18pt &quot;Roboto&quot;;</string>
-    </property>
-    <property name="text">
-     <string>BATTERY PACK 1</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="pack1_2">
-    <property name="geometry">
-     <rect>
-      <x>890</x>
-      <y>770</y>
-      <width>341</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>18</pointsize>
-      <weight>3</weight>
-      <italic>false</italic>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: white; background: transparent;
-font: 25 18pt &quot;Roboto&quot;;</string>
-    </property>
-    <property name="text">
-     <string>BATTERY PACK 2</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="pack1_3">
-    <property name="geometry">
-     <rect>
-      <x>890</x>
-      <y>910</y>
-      <width>331</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>18</pointsize>
-      <weight>3</weight>
-      <italic>false</italic>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: white; background: transparent;
-font: 25 18pt &quot;Roboto&quot;;</string>
-    </property>
-    <property name="text">
-     <string>BATTERY PACK 3</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="A1">
-    <property name="geometry">
-     <rect>
-      <x>1120</x>
-      <y>680</y>
-      <width>221</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>24</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: white; background: transparent;</string>
-    </property>
-    <property name="text">
-     <string>000.00A</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="V1">
-    <property name="geometry">
-     <rect>
-      <x>960</x>
-      <y>680</y>
-      <width>221</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>24</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: white; background: transparent;</string>
-    </property>
-    <property name="text">
-     <string>000.00V</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="V2">
-    <property name="geometry">
-     <rect>
-      <x>960</x>
-      <y>820</y>
-      <width>221</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>24</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: white; background: transparent;</string>
-    </property>
-    <property name="text">
-     <string>000.00V</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="A2">
-    <property name="geometry">
-     <rect>
-      <x>1120</x>
-      <y>820</y>
-      <width>221</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>24</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: white; background: transparent;</string>
-    </property>
-    <property name="text">
-     <string>000.00A</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="V3">
-    <property name="geometry">
-     <rect>
-      <x>960</x>
-      <y>960</y>
-      <width>221</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>24</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: white; background: transparent;</string>
-    </property>
-    <property name="text">
-     <string>000.00V</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="A3">
-    <property name="geometry">
-     <rect>
-      <x>1120</x>
-      <y>960</y>
-      <width>221</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>24</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: white; background: transparent;</string>
-    </property>
-    <property name="text">
-     <string>000.00A</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="warn1">
-    <property name="geometry">
-     <rect>
-      <x>860</x>
-      <y>650</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: yellow; border-radius: 5px;</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QLabel" name="warn2">
-    <property name="geometry">
-     <rect>
-      <x>860</x>
-      <y>780</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: yellow; border-radius: 5px;</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QLabel" name="warn3">
-    <property name="geometry">
-     <rect>
-      <x>860</x>
-      <y>920</y>
-      <width>21</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: yellow; border-radius: 5px;</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>840</x>
-      <y>518</y>
-      <width>101</width>
-      <height>61</height>
+      <x>900</x>
+      <y>880</y>
+      <width>131</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Roboto</family>
-      <pointsize>18</pointsize>
+      <pointsize>30</pointsize>
       <weight>50</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -884,94 +439,6 @@ background: transparent;</string>
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="mph_5">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>730</y>
-      <width>491</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: transparent</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap>line.png</pixmap>
-    </property>
-    <property name="scaledContents">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="mph_6">
-    <property name="geometry">
-     <rect>
-      <x>230</x>
-      <y>870</y>
-      <width>491</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: transparent</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap>line.png</pixmap>
-    </property>
-    <property name="scaledContents">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="mph_7">
-    <property name="geometry">
-     <rect>
-      <x>860</x>
-      <y>730</y>
-      <width>491</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: transparent</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap>line.png</pixmap>
-    </property>
-    <property name="scaledContents">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="mph_8">
-    <property name="geometry">
-     <rect>
-      <x>860</x>
-      <y>870</y>
-      <width>491</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: transparent</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap>line.png</pixmap>
-    </property>
-    <property name="scaledContents">
-     <bool>true</bool>
-    </property>
-   </widget>
    <zorder>spedometer</zorder>
    <zorder>speedLabel</zorder>
    <zorder>label_10</zorder>
@@ -981,35 +448,13 @@ background: transparent;</string>
    <zorder>progressBar</zorder>
    <zorder>podClipArt</zorder>
    <zorder>distanceLabel</zorder>
-   <zorder>label_3</zorder>
-   <zorder>maxBatteryTemp</zorder>
-   <zorder>vibration_label</zorder>
-   <zorder>label_4</zorder>
-   <zorder>label_6</zorder>
-   <zorder>voltageTwelve</zorder>
    <zorder>errors_label</zorder>
    <zorder>mph</zorder>
    <zorder>label_9</zorder>
    <zorder>accele</zorder>
    <zorder>stateLabel</zorder>
-   <zorder>pack1</zorder>
-   <zorder>pack1_2</zorder>
-   <zorder>pack1_3</zorder>
-   <zorder>A1</zorder>
-   <zorder>V1</zorder>
-   <zorder>V2</zorder>
-   <zorder>A2</zorder>
-   <zorder>V3</zorder>
-   <zorder>A3</zorder>
-   <zorder>warn1</zorder>
-   <zorder>warn2</zorder>
-   <zorder>warn3</zorder>
    <zorder>label_7</zorder>
    <zorder>mph_4</zorder>
-   <zorder>mph_5</zorder>
-   <zorder>mph_6</zorder>
-   <zorder>mph_7</zorder>
-   <zorder>mph_8</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
