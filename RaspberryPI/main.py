@@ -231,16 +231,16 @@ telemDict = {
 		'max v' : 			None,
 		'min v' :			None,
 		'current' : 		None,
-		'avg temp' :        None, #Here and below needs to be added
-        'isolater' :        None,
-        'cell 1 v' :        None,
-        'cell 2 v' :        None,
-        'cell 3 v' :        None,
-        'cell 4 v' :        None,
-        'cell 5 v' :        None,
-        'cell 6 v' :        None,
-        'cell 7 v' :        None,
-        'cell 8 v' :        None,
+		'avg temp' :        None, #Here and below needs to be added to data translation and network packets (ID will change)
+		'isolater' :        None,
+		'cell 1 v' :        None,
+		'cell 2 v' :        None,
+		'cell 3 v' :        None,
+		'cell 4 v' :        None,
+		'cell 5 v' :        None,
+		'cell 6 v' :        None,
+		'cell 7 v' :        None,
+		'cell 8 v' :        None,
 		},
 	# 1321 or 'M BMS': {
 	# 	'name': 'M BMS data',
@@ -263,15 +263,15 @@ telemDict = {
 		'min v' :			None,
 		'current' : 		None
 		'avg temp' :        None, #Here and below needs to be added
-        'isolater' :        None,
-        'cell 1 v' :        None,
-        'cell 2 v' :        None,
-        'cell 3 v' :        None,
-        'cell 4 v' :        None,
-        'cell 5 v' :        None,
-        'cell 6 v' :        None,
-        'cell 7 v' :        None,
-        'cell 8 v' :        None,
+		'isolater' :        None,
+		'cell 1 v' :        None,
+		'cell 2 v' :        None,
+		'cell 3 v' :        None,
+		'cell 4 v' :        None,
+		'cell 5 v' :        None,
+		'cell 6 v' :        None,
+		'cell 7 v' :        None,
+		'cell 8 v' :        None,
 		},
 	1306 or 'F BMS Arduino': {
 		'name': 'F BMS Arduino data',
@@ -330,99 +330,108 @@ lastBand_1 = 0
 lastBand_2 = 0
 
 def median(lst):
-    n = len(lst)
-    s = sorted(lst)
-    return (sum(s[n//2-1:n//2+1])/2.0, s[n//2])[n % 2] if n else None
+	n = len(lst)
+	s = sorted(lst)
+	return (sum(s[n//2-1:n//2+1])/2.0, s[n//2])[n % 2] if n else None
 
-# async def updatePosition(lidarReading, rpms_list, bands_list):
-def updatePosition(lidarReading, rpms_list, bands_list):
-    global startTime
+# async def updatePosition(FlidarReading, rpms_list, bands_list):
+async def updatePosition(freq = 5):
+	while True:
+		#FlidarReading, rpms_list, bands_list
+		global startTime
 
-    global positions
-    global velocities
-    global accelerations
-    
-    global lidarErrorCounter
-    global hallSensor_total
-    global lastBand_1
-    global lastBand_2
-    global firstCanMessage
+		global positions
+		global velocities
+		global accelerations
+		
+		global lidarErrorCounter
+		global hallSensor_total
+		global lastBand_1
+		global lastBand_2
+		global firstCanMessage
 
-    #Get the current time since start
-    currentTime = time.time() - startTime
-    currentTimestep = time.time()-positions[-1][1]-startTime
-    # currentTimestep = time.time()-currentTime 
+		FlidarReading = TelemDict['F Lidar']['distance']
+		RlidarReading = TelemDict['R Lidar']['distance']
+		rpms_list = [TelemDict['FR Motor']['rpm'],TelemDict['FL Motor']['rpm'],TelemDict['RR Motor']['rpm'],TelemDict['RL Motor']['rpm']
+		bands_list = [TelemDict['Right Band']['count'],TelemDict['Left Band']['count']]
+		#Get the current time since start
+		currentTime = time.time() - startTime
+		currentTimestep = time.time()-positions[-1][1]-startTime
+		# currentTimestep = time.time()-currentTime 
 
-    #TotalDistance (gets last recorded position)
-    CurrentDistance = positions[-1][0]
-    print("current distance, ", CurrentDistance)
+		#TotalDistance (gets last recorded position)
+		CurrentDistance = positions[-1][0]
+		print("current distance, ", CurrentDistance)
 
-    #Used to calculate distance from revolutions
-    circumfrence_of_wheels = 3048#####
+		#Used to calculate distance from revolutions
+		circumfrence_of_wheels = 3048#####
 
-    #Get readings from arduinos
-    #convert readings to cm
-    Lidar = (1250 - lidarReading)*100
-    print(currentTimestep)
-    HallSensors = [rpm*circumfrence_of_wheels*currentTimestep*(1/60) for rpm in rpms_list]
+		#Get readings from arduinos
+		#convert readings to cm
+		FLidar = (1250 - FlidarReading)*100
+		RLidar = RlidarReading*100
+		print(currentTimestep)
+		HallSensors = [rpm*circumfrence_of_wheels*currentTimestep*(1/60) for rpm in rpms_list]
 
-    LaserSensor_1 = bands_list[0]*3048 #100ft = 3048cm
-    LaserSensor_2 = bands_list[1]*3048 #100ft = 3048cm
+		LaserSensor_1 = bands_list[0]*3048 #100ft = 3048cm
+		LaserSensor_2 = bands_list[1]*3048 #100ft = 3048cm
 
-    '''PREPARE LIDAR DATA DATA'''
-    #If lidar within last 100 meters and the pod has crossed 1000 meters and less than 5 errors from lidar occured
-    if lidarReading < 10000 and CurrentDistance > 100000 and lidarErrorCounter <5:
-        CurrentDistance = Lidar 
-    else:
-        '''PREPARE HALLSENSOR DATA'''
-        HallSensor_median = median(HallSensors)
-        HallSensors_withinRange = []
-        for HallSensor in HallSensors: #Filter out hall sensors that are not within range
-            if abs(HallSensor/HallSensor_median-1) <.1:
-                HallSensors_withinRange.append(HallSensor)
+		'''PREPARE LIDAR DATA DATA'''
+		#If lidar within last 100 meters and the pod has crossed 1000 meters and less than 5 errors from lidar occured
+		if FlidarReading < 125 and CurrentDistance > 100000 and lidarErrorCounter <5:
+			CurrentDistance = FLidar 
+		if Rlidar < 12500 and CurrentDistance <150000:
+			CurrentDistance = RLidar
+		else:
+			'''PREPARE HALLSENSOR DATA'''
+			HallSensor_median = median(HallSensors)
+			HallSensors_withinRange = []
+			for HallSensor in HallSensors: #Filter out hall sensors that are not within range
+				if abs(HallSensor/HallSensor_median-1) <.1:
+					HallSensors_withinRange.append(HallSensor)
 
-        HallSensor_distance = 0
-        for HallSensor in HallSensors_withinRange: #Take the average of hall sensors within range
-            HallSensor_distance += HallSensor
-        HallSensor_distance = HallSensor_distance/len(HallSensors_withinRange)
+			HallSensor_distance = 0
+			for HallSensor in HallSensors_withinRange: #Take the average of hall sensors within range
+				HallSensor_distance += HallSensor
+			HallSensor_distance = HallSensor_distance/len(HallSensors_withinRange)
 
-        '''PREPARE LASERSENSOR DATA''' #GET BACK TO THIS
-        if LaserSensor_1 != lastBand_1 or LaserSensor_2 != lastBand_2:
-            hallSensor_total = 0  #Clear hall sensor distance if we just detected a band
-            if LaserSensor_1 > LaserSensor_2:
-                LaserSensor_distance =  LaserSensor_1
-                lastBand_1 = LaserSensor_1
-            else:
-                LaserSensor_distance =  LaserSensor_2
-                lastBand_2 = LaserSensor_2
-        else:
-            hallSensor_total += HallSensor_distance #Keeps track of how long we have traveled with Hall Sensor
-        CurrentDistance = LaserSensor_distance + hallSensor_total
-    position = CurrentDistance
+			'''PREPARE LASERSENSOR DATA''' #GET BACK TO THIS
+			if LaserSensor_1 != lastBand_1 or LaserSensor_2 != lastBand_2:
+				hallSensor_total = 0  #Clear hall sensor distance if we just detected a band
+				if LaserSensor_1 > LaserSensor_2:
+					LaserSensor_distance =  LaserSensor_1
+					lastBand_1 = LaserSensor_1
+				else:
+					LaserSensor_distance =  LaserSensor_2
+					lastBand_2 = LaserSensor_2
+			else:
+				hallSensor_total += HallSensor_distance #Keeps track of how long we have traveled with Hall Sensor
+			CurrentDistance = LaserSensor_distance + hallSensor_total
+		position = CurrentDistance
 
-    #Insert position
-    positions.append([position, currentTime])
+		#Insert position
+		positions.append([position, currentTime])
 
-    #calculate velocity (CM/Sec)
-    velocity = float(positions[-1][0]-positions[-2][0]/currentTimestep)
-    velocities.append([velocity, currentTime])
+		#calculate velocity (CM/Sec)
+		velocity = float(positions[-1][0]-positions[-2][0]/currentTimestep)
+		velocities.append([velocity, currentTime])
 
 
-    #calculate acceleration
-    acceleration = float(velocity/currentTimestep)
-    accelerations.append([acceleration, currentTime])
+		#calculate acceleration
+		acceleration = float(velocity/currentTimestep)
+		accelerations.append([acceleration, currentTime])
 
-    #Check if an error occured with the lidar
-    #Allow up to 5 errors
-    if lidarReading < 10000 and CurrentDistance < 100000 and lidarErrorCounter < 5:
-        lidarErrorCounter += 1
-    if len(positions) > 5:
-    	del positions[0]
-    	del velocities[0]
-    	del accelerations[0]
-    #Returns current data
-    #history of data can be accessed via the global lists (positions, velocities, accelerations)
-    return [position, velocity, acceleration]
+		#Check if an error occured with the lidar
+		#Allow up to 5 errors
+		if FlidarReading < 10000 and CurrentDistance < 100000 and lidarErrorCounter < 5:
+			lidarErrorCounter += 1
+		if len(positions) > 5:
+			del positions[0]
+			del velocities[0]
+			del accelerations[0]
+		#Returns current data
+		#history of data can be accessed via the global lists (positions, velocities, accelerations)
+		return [position, velocity, acceleration]
 
 
 async def updateTelemDict(freq = 5):
