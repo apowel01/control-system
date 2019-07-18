@@ -26,12 +26,6 @@ stateDict = {
 	'Startup': 1 # Startup is the same as safe to approach (to SpaceX)
 	}
 
-telemetry = {
-	'position': 0,
-	'velocity': 0,
-	'acceleration': 0
-}
-
 
 motor_temp_fault = 70
 max_batt_temp = 70
@@ -374,19 +368,24 @@ telemDict = {
 		'discharge enable':	None,
 		'charge enable': 	None
 		},
-	1050: {
-		'name': 'Right Band',
+	1050 or 'Right Band': {
+		'name': 'Right Band Data',
 		'data': 			None,
 		'time': 			None,
 		'time delta' :		None,
 		'count': 			None
 		},
-	1051: {
-		'name': 'Left Band',
+	1051: or 'Left Band': {
+		'name': 'Left Band Data',
 		'data': 			None,
 		'time': 			None,
 		'time delta' :		None,
 		'count': 			None
+		},
+	'location': {
+		'position':			0,
+		'velocity':			0,
+		'acceleration':		0
 		}
 	}
 
@@ -466,8 +465,7 @@ async def updatePosition(freq = 5):
 		bands_list = [TelemDict['Right Band']['count'],TelemDict['Left Band']['count']]
 		#Get the current time since start
 		currentTime = time.time() - startTime
-		currentTimestep = time.time()-positions[-1][1]-startTime
-		# currentTimestep = time.time()-currentTime 
+		currentTimestep = time.time()-startTime
 
 		#TotalDistance (gets last recorded position)
 		CurrentDistance = positions[-1][0]
@@ -541,7 +539,9 @@ async def updatePosition(freq = 5):
 			del accelerations[0]
 		#Returns current data
 		#history of data can be accessed via the global lists (positions, velocities, accelerations)
-		return [position, velocity, acceleration]
+		TelemDict['location']['position'] = position
+		telemDict['location']['velocity'] = velocity
+		telemDict['location']['accleration'] = acceleration
 
 		await asyncio.sleep(1/freq)
 
@@ -873,7 +873,7 @@ async def spacex_tlm(freq = 50):
 		#								optional
 		# stripe_count			uint32 	Count of optical navigation stripes detected in
 		#								the tube. Optional
-		packet = struct.pack(">BB7iI", team_id, status, int(acceleration), int(position), int(velocity), int(telemDict['F BMS']['instant voltage']), int(telemDict['F BMS']['current']), int(telemDict['F BMS']['max temp']), 0, int(position) // 3048)
+		packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['location']['acceleration']), int(TelemDict['location']['position']), int(TelemDict['location']['velocity']), int(telemDict['F BMS']['instant voltage']), int(telemDict['F BMS']['current']), int(telemDict['F BMS']['avg temp']), 0, int(position) // 3048)
 		spacexTlmSocket.sendto(packet, (server_ip, server_port))
 		#-------NEW PACKETS--------
 		# packet = struct.pack(">BB7iI", team_id, status, int(accelerations[-1][0]), int(positions[-1][0]), int(velocities[-1][0]), 0, 0, 0, 0, int(position) // 3048)
