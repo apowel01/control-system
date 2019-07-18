@@ -328,17 +328,17 @@ telemDict = {
 		},
 	1050: {
 		'name': 'Right Band',
-		'data': None,
-		'time': None,
+		'data': 			None,
+		'time': 			None,
 		'time delta' :		None,
-		'count': None
+		'count': 			None
 		},
 	1051: {
 		'name': 'Left Band',
-		'data': None,
-		'time': None,
+		'data': 			None,
+		'time': 			None,
 		'time delta' :		None,
-		'count': None
+		'count': 			None
 		}
 	}
 
@@ -834,7 +834,7 @@ async def spacex_tlm(freq = 50):
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
 		# packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['All Tensioner 2']['back pneumatic temp']), 0, 0, 0, 0, 0, int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
-		
+		#-------------------NEED TO RESTRUCTURE PACKETS
 		
 		# Sleep for 1/freq secs before sending another packet
 		await asyncio.sleep(1/freq)
