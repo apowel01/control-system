@@ -510,7 +510,7 @@ async def updateTelemDict(freq = 5):
 					telemDict[i]['temp'] = (telemDict[i]['data'][5] << 8) + telemDict[i]['data'][6]
 					telemDict[i]['throttle'] = telemDict[i]['data'][7]
 					
-			brake_id = [537, 554, 601, 617]
+			brake_id = [537, 553, 601, 617]
 			for i in brake_id:
 				if telemDict[i]['data'] != None:
 					telemDict[i]['reed'] = telemDict[i]['data'][7]
@@ -574,7 +574,6 @@ async def updateTelemDict(freq = 5):
 			
 			await asyncio.sleep(1/freq)
 	
-
 # Command server
 async def cmd_server(host, port):
 	server = await asyncio.start_server(processNetCmds, host, port)
@@ -636,8 +635,8 @@ async def processNetCmds(reader, writer):
 async def broadcastTlm(reader, writer, freq = 5):
 	global pod # Grab global pod object
 	# Init telemetry dictionary
-	global telemetry
-	# telemetry = {'state': str(pod.state), 'distance': 0}
+	global telemDict
+	print("\n\nBroadcast telemetry\n\n")
 	telemetry['state'] = str(pod.state)
 
 	# Primary process loop
@@ -650,7 +649,10 @@ async def broadcastTlm(reader, writer, freq = 5):
 		if str(pod.state) == 'Launching' or str(pod.state) == 'Coasting' or str(pod.state) == 'Braking':
 			telemetry['distance'] = telemetry['distance'] + 1 # Sample data
 
-		output = json.dumps(telemetry) # Serialize dictionary as json
+		print("PRINTING TELEM DICT")
+
+		output = json.dumps(telemDict) # Serialize dictionary as json
+		print(output)
 		writer.write(output.encode('utf8'))
 
 		await asyncio.sleep(1/freq) # Wait until sending telem update
@@ -670,10 +672,6 @@ async def printing(freq = .1):
 # Input: Processing frequency [Hz]
 async def processTelem(freq = 5, can_read_freq = 10):
 	global telemDict # Bring in telemetry dictionary
-
-
-
-
 
 	# while True:
 	# 	# print("Trying to read can?")
@@ -706,11 +704,6 @@ async def processTelem(freq = 5, can_read_freq = 10):
 			
 	# 	await asyncio.sleep(1/freq)
 
-
-
-
-
-
 	reader = can.AsyncBufferedReader()
 	
 	listeners = [reader]
@@ -718,15 +711,13 @@ async def processTelem(freq = 5, can_read_freq = 10):
 	loop = asyncio.get_event_loop()
 	notifier = can.Notifier(can0, listeners, loop=loop)
 	# can0.flush_tx_buffer()
-	print("HIIIII")
+	print("Starting processTelem loop")
 	while True:
 		for _ in range(10):
 			# Wait for next message from AsyncBufferedReader
 			msg = await reader.get_message()
-			print("data")
-			print(msg.data)
-			print("Timestamp")
-			print(msg.timestamp)
+			# print(f"Processing data: {msg.data}")
+			# print(f"Timestamp: {msg.timestamp}")
 			# Delay response
 			# await asyncio.sleep(0.05)
 			try:
@@ -809,8 +800,8 @@ async def spacex_tlm(freq = 50):
 		#								optional
 		# stripe_count			uint32 	Count of optical navigation stripes detected in
 		#								the tube. Optional
-		packet = struct.pack(">BB7iI", team_id, status, int(acceleration), int(position), int(velocity), int(telemDict['F BMS']['instant voltage']), int(telemDict['F BMS']['current']), int(telemDict['F BMS']['max temp']), 0, int(position) // 3048)
-		spacexTlmSocket.sendto(packet, (server_ip, server_port))
+		# packet = struct.pack(">BB7iI", team_id, status, int(acceleration), int(position), int(velocity), int(telemDict['F BMS']['instant voltage']), int(telemDict['F BMS']['current']), int(telemDict['F BMS']['max temp']), 0, int(position) // 3048)
+		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
 		#-------NEW PACKETS--------
 		# packet = struct.pack(">BB7iI", team_id, status, int(accelerations[-1][0]), int(positions[-1][0]), int(velocities[-1][0]), 0, 0, 0, 0, int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
