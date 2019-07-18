@@ -4,3 +4,4 @@ RaspberryPI/**/*.pyc
 RaspberryPI/position.py
 GUI/gui_screen2.py
 GUI/GUI.py
+RaspberryPI/position2.py

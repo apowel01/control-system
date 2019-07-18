@@ -113,6 +113,12 @@ def updatePosition(lidarReading, rpms_list, bands_list):
     if lidarReading < 10000 and CurrentDistance < 100000 and lidarErrorCounter < 5:
         lidarErrorCounter += 1
 
+
+    if len(positions) > 5:
+        del positions[0]
+        del velocities[0]
+        del accelerations[0]
+
     #Returns current data
     #history of data can be accessed via the global lists (positions, velocities, accelerations)
     return [position, velocity, acceleration]

@@ -17,7 +17,7 @@ class GUI1(QMainWindow):
         '''Input data into the GUI below
         Modification to the following variables will appear on the GUI instantly
         '''
-        self.team_id = '0123456'
+        self.team_id = 'SLOLOOP'
         self.end_distance = 125000 #meters
         self.distance = 0 #meters
         self.speed = 0 #MPH
@@ -42,6 +42,7 @@ class GUI1(QMainWindow):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setFixedSize(1600, 1200)
         self.move(1920, 0) #MOVE GUI TO FIRST SCREEN
+
         self.teamId.setText("TEAM ID: "+self.team_id)
 
 
@@ -197,16 +198,25 @@ class GUI2(QMainWindow):
         self.minCell_maxRange = 3.6;
         self.maxCell_minRange = 2;
         self.maxCell_maxRange = 3.6;
-        self.packTemp_minRange = 0;
-        self.packTemp_maxRange = 60;
+        self.Temp_minRange = -20
+        self.Temp_maxRange = 60
+
 
         #PNEUMATICS (RANGES)
         self.brakesPressure_minRange = 240;
         self.brakesPressure_maxRange = 250;
         self.tensionerPressure_minRange = 50;
         self.tensionerPressure_maxRange = 150;
-        self.brakesTemprature_minRange = 0;
-        self.brakesTemprature_maxRange = 60;
+        self.breaksAirTank_minRange = 0;
+        self.breaksAirTank_maxRange = 130;
+        self.tensionerAirTank_minRange = 0;
+        self.tensionerAirTank_maxRange = 130;
+        self.solenoid_minRange = 0;
+        self.solenoid_maxRange = 122;
+        self.frontTensioner_minRange = 23;
+        self.frontTensioner_maxRange = 140;
+        self.rearTensioner_minRange = 23;
+        self.rearTensioner_maxRange = 140;
 
         #12V BATTERY (RANGES)
         self.battery_minRange = 11;
@@ -220,51 +230,48 @@ class GUI2(QMainWindow):
         self.FP_state_value = 0;
         self.FP_volt_value = 0;
         self.FP_curr_value = 0;
+        self.FP_lowTemp_Value = 0;
+        self.FP_avgTemp_Value = 0;
+        self.FP_highTemp_Value = 0;
         self.FP_minCell_value = 0;
         self.FP_maxCell_value = 0;
-        self.FP_t1_value = 0;
-        self.FP_t2_value = 0;
-        self.FP_t3_value = 0;
-        self.FP_t4_value = 0;
-        self.FP_t5_value = 0;
-        self.FP_t6_value = 0;
-        self.FP_t7_value = 0;
-        self.FP_t8_value = 0;
-
-        #MIDDLE PACK
-        self.MP_state_value = 0;
-        self.MP_volt_value = 0;
-        self.MP_curr_value = 0;
-        self.MP_minCell_value = 0;
-        self.MP_maxCell_value = 0;
-        self.MP_t1_value = 0;
-        self.MP_t2_value = 0;
-        self.MP_t3_value = 0;
-        self.MP_t4_value = 0;
-        self.MP_t5_value = 0;
-        self.MP_t6_value = 0;
-        self.MP_t7_value = 0;
-        self.MP_t8_value = 0;
+        self.FP_cell1 = 0;
+        self.FP_cell2 = 0;
+        self.FP_cell3 = 0;
+        self.FP_cell4 = 0;
+        self.FP_cell5 = 0;
+        self.FP_cell6 = 0;
+        self.FP_cell7 = 0;
+        self.FP_cell8 = 0;
+        self.FP_isolator_value=0;
 
         #REAR PACK
         self.RP_state_value = 0;
         self.RP_volt_value = 0;
         self.RP_curr_value = 0;
+        self.RP_lowTemp_Value = 0;
+        self.RP_avgTemp_Value = 0;
+        self.RP_highTemp_Value = 0;        
         self.RP_minCell_value = 0;
         self.RP_maxCell_value = 0;
-        self.RP_t1_value = 0;
-        self.RP_t2_value = 0;
-        self.RP_t3_value = 0;
-        self.RP_t4_value = 0;
-        self.RP_t5_value = 0;
-        self.RP_t6_value = 0;
-        self.RP_t7_value = 0;
-        self.RP_t8_value = 0;
+        self.RP_cell1 = 0;
+        self.RP_cell2 = 0;
+        self.RP_cell3 = 0;
+        self.RP_cell4 = 0;
+        self.RP_cell5 = 0;
+        self.RP_cell6 = 0;
+        self.RP_cell7 = 0;
+        self.RP_cell8 = 0;
+        self.RP_isolator_value=1;
 
         #PNEUMATICS
         self.brakes_pressure_value = 0;
         self.tensioner_pressure_value = 0;
-        self.brakes_temp_value = 0;
+        self.brakes_airTank_temp_value = 0;
+        self.tensioner_airTank_temp_value = 0;
+        self.solenoid_temp_value = 0;
+        self.frontTensioner__temp_value = 0;
+        self.rearTensioner__temp_value = 0;
 
         #12V Battery
         self.battery_actual_value = 0;
@@ -273,26 +280,19 @@ class GUI2(QMainWindow):
 
         #motors
         self.TL_rpm_value = 0;
-        self.ML_rpm_value = 0;
         self.BL_rpm_value = 0;
         self.TR_rpm_value = 0;
-        self.MR_rpm_value = 0;
         self.BR_rpm_value = 0;
         self.TL_temp_value = 0;
-        self.ML_temp_value = 0;
         self.BL_temp_value = 0;
         self.TR_temp_value = 0;
-        self.MR_temp_value = 0;
         self.BR_temp_value = 0;
-
-
-
 
         #Title of the entire window
         self.setWindowTitle('Cal Poly Hyperloop')
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setFixedSize(1600, 1200)
-        self.move(3520, 0) #MOVE GUI TO SECOND SCREEN
+        self.move(3520, 0)
 
 
         #Used to allow GUI to be draggable
@@ -314,30 +314,39 @@ class GUI2(QMainWindow):
         state_text = "{0:.2f}".format(self.FP_state_value) 
         volt_text = "{0:.2f}".format(self.FP_volt_value) 
         curr_text = "{0:.2f}".format(self.FP_curr_value) 
+        lowTemp_text = "{0:.2f}".format(self.FP_lowTemp_Value)
+        avgTemp_text = "{0:.2f}".format(self.FP_avgTemp_Value) 
+        highTemp_text = "{0:.2f}".format(self.FP_highTemp_Value) 
         minCell_text = "{0:.2f}".format(self.FP_minCell_value) 
         maxCell_text = "{0:.2f}".format(self.FP_maxCell_value)
-        t1_text = "{0:.2f}".format(self.FP_t1_value) 
-        t2_text = "{0:.2f}".format(self.FP_t2_value) 
-        t3_text = "{0:.2f}".format(self.FP_t3_value) 
-        t4_text = "{0:.2f}".format(self.FP_t4_value) 
-        t5_text = "{0:.2f}".format(self.FP_t5_value) 
-        t6_text = "{0:.2f}".format(self.FP_t6_value) 
-        t7_text = "{0:.2f}".format(self.FP_t7_value) 
-        t8_text = "{0:.2f}".format(self.FP_t8_value) 
+        cell1_text = "{0:.2f}".format(self.FP_cell1)
+        cell2_text = "{0:.2f}".format(self.FP_cell2)
+        cell3_text = "{0:.2f}".format(self.FP_cell3)
+        cell4_text = "{0:.2f}".format(self.FP_cell4)
+        cell5_text = "{0:.2f}".format(self.FP_cell5)
+        cell6_text = "{0:.2f}".format(self.FP_cell6)
+        cell7_text = "{0:.2f}".format(self.FP_cell7)
+        cell8_text = "{0:.2f}".format(self.FP_cell8)
+        isolator_text = "{0:.2f}".format(self.FP_isolator_value)
 
-        self.FP_state.setText(state_text+"")
+
+        self.FP_state.setText(state_text+"%")
         self.FP_volt.setText(volt_text+" V")
         self.FP_curr.setText(curr_text+" A")
+        self.FP_lowTemp.setText(lowTemp_text+" C°")
+        self.FP_avgTemp.setText(avgTemp_text+" C°")
+        self.FP_highTemp.setText(highTemp_text+" C°")            
         self.FP_minCell.setText(minCell_text+" V")
         self.FP_maxCell.setText(maxCell_text+" V")
-        self.FP_t1.setText(t1_text+" C")
-        self.FP_t2.setText(t2_text+" C")
-        self.FP_t3.setText(t3_text+" C")
-        self.FP_t4.setText(t4_text+" C")
-        self.FP_t5.setText(t5_text+" C")
-        self.FP_t6.setText(t6_text+" C")
-        self.FP_t7.setText(t7_text+" C")
-        self.FP_t8.setText(t8_text+" C")
+        self.FP_cv1.setText(cell1_text+" V")
+        self.FP_cv2.setText(cell2_text+" V")
+        self.FP_cv3.setText(cell3_text+" V")
+        self.FP_cv4.setText(cell4_text+" V")
+        self.FP_cv5.setText(cell5_text+" V")
+        self.FP_cv6.setText(cell6_text+" V")
+        self.FP_cv7.setText(cell7_text+" V")
+        self.FP_cv8.setText(cell8_text+" V")
+        self.FP_isolater.setText(isolator_text)
 
         if self.chargeState_minRange < self.FP_state_value < self.chargeState_maxRange:
             self.FP_state.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
@@ -356,6 +365,21 @@ class GUI2(QMainWindow):
         else:
             self.FP_curr.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
+        if self.Temp_minRange < self.FP_lowTemp_Value < self.Temp_maxRange:
+            self.FP_lowTemp.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
+        else:
+            self.FP_lowTemp.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
+        
+        if self.Temp_minRange < self.FP_avgTemp_Value < self.Temp_maxRange:
+            self.FP_avgTemp.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
+        else:
+            self.FP_avgTemp.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
+        
+        if self.Temp_minRange < self.FP_highTemp_Value < self.Temp_maxRange:
+            self.FP_highTemp.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
+        else:
+            self.FP_highTemp.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
+        
         if self.minCell_minRange < self.FP_minCell_value < self.minCell_maxRange:
             self.FP_minCell.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
@@ -366,168 +390,56 @@ class GUI2(QMainWindow):
         else:
             self.FP_maxCell.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
-        if self.packTemp_minRange < self.FP_t1_value < self.packTemp_maxRange:
-            self.FP_t1.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
+        batteryCells = [self.FP_cell1,self.FP_cell2,self.FP_cell3,self.FP_cell4,self.FP_cell5,self.FP_cell6,self.FP_cell7,self.FP_cell8]
+        cellsText = [self.FP_cv1, self.FP_cv2, self.FP_cv3, self.FP_cv4, self.FP_cv5, self.FP_cv6, self.FP_cv7, self.FP_cv8]
+   
+        for cell in range(len(batteryCells)):
+            if self.minCell_minRange < batteryCells[cell] < self.maxCell_maxRange:
+                cellsText[cell].setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
+            else:
+                cellsText[cell].setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
+
+        if self.FP_isolator_value==1:
+            self.FP_isolater.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
-            self.FP_t1.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.FP_t2_value < self.packTemp_maxRange:
-            self.FP_t2.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.FP_t2.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.FP_t3_value < self.packTemp_maxRange:
-            self.FP_t3.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.FP_t3.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.FP_t4_value < self.packTemp_maxRange:
-            self.FP_t4.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.FP_t4.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.FP_t5_value < self.packTemp_maxRange:
-            self.FP_t5.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.FP_t5.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.FP_t6_value < self.packTemp_maxRange:
-            self.FP_t6.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.FP_t6.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.FP_t7_value < self.packTemp_maxRange:
-            self.FP_t7.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.FP_t7.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.FP_t8_value < self.packTemp_maxRange:
-            self.FP_t8.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.FP_t8.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-    def update_middlePack_label(self):
-        state_text = "{0:.2f}".format(self.MP_state_value) 
-        volt_text = "{0:.2f}".format(self.MP_volt_value) 
-        curr_text = "{0:.2f}".format(self.MP_curr_value) 
-        minCell_text = "{0:.2f}".format(self.MP_minCell_value) 
-        maxCell_text = "{0:.2f}".format(self.MP_maxCell_value)
-        t1_text = "{0:.2f}".format(self.MP_t1_value) 
-        t2_text = "{0:.2f}".format(self.MP_t2_value) 
-        t3_text = "{0:.2f}".format(self.MP_t3_value) 
-        t4_text = "{0:.2f}".format(self.MP_t4_value) 
-        t5_text = "{0:.2f}".format(self.MP_t5_value) 
-        t6_text = "{0:.2f}".format(self.MP_t6_value) 
-        t7_text = "{0:.2f}".format(self.MP_t7_value) 
-        t8_text = "{0:.2f}".format(self.MP_t8_value) 
-
-        self.MP_state.setText(state_text+"")
-        self.MP_volt.setText(volt_text+" V")
-        self.MP_curr.setText(curr_text+" A")
-        self.MP_minCell.setText(minCell_text+" V")
-        self.MP_maxCell.setText(maxCell_text+" V")
-        self.MP_t1.setText(t1_text+" C")
-        self.MP_t2.setText(t2_text+" C")
-        self.MP_t3.setText(t3_text+" C")
-        self.MP_t4.setText(t4_text+" C")
-        self.MP_t5.setText(t5_text+" C")
-        self.MP_t6.setText(t6_text+" C")
-        self.MP_t7.setText(t7_text+" C")
-        self.MP_t8.setText(t8_text+" C")
-
-        if self.chargeState_minRange < self.MP_state_value < self.chargeState_maxRange:
-            self.MP_state.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.MP_state.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.volt_minRange < self.MP_volt_value < self.volt_maxRange:
-            self.MP_volt.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.MP_volt.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.curr_minRange < self.MP_curr_value < self.curr_maxRange:
-            self.MP_curr.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.MP_curr.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.minCell_minRange < self.MP_minCell_value < self.minCell_maxRange:
-            self.MP_minCell.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.MP_minCell.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.maxCell_minRange < self.MP_maxCell_value < self.maxCell_maxRange:
-            self.MP_maxCell.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.MP_maxCell.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.MP_t1_value < self.packTemp_maxRange:
-            self.MP_t1.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.MP_t1.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.MP_t2_value < self.packTemp_maxRange:
-            self.MP_t2.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.MP_t2.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.MP_t3_value < self.packTemp_maxRange:
-            self.MP_t3.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.MP_t3.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.MP_t4_value < self.packTemp_maxRange:
-            self.MP_t4.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.MP_t4.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.MP_t5_value < self.packTemp_maxRange:
-            self.MP_t5.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.MP_t5.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.MP_t6_value < self.packTemp_maxRange:
-            self.MP_t6.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.MP_t6.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.MP_t7_value < self.packTemp_maxRange:
-            self.MP_t7.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.MP_t7.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.MP_t8_value < self.packTemp_maxRange:
-            self.MP_t8.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.MP_t8.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
+            self.FP_isolater.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
     def update_rearPack_label(self):
         state_text = "{0:.2f}".format(self.RP_state_value) 
         volt_text = "{0:.2f}".format(self.RP_volt_value) 
         curr_text = "{0:.2f}".format(self.RP_curr_value) 
+        lowTemp_text = "{0:.2f}".format(self.RP_lowTemp_Value)
+        avgTemp_text = "{0:.2f}".format(self.RP_avgTemp_Value) 
+        highTemp_text = "{0:.2f}".format(self.RP_highTemp_Value)
         minCell_text = "{0:.2f}".format(self.RP_minCell_value) 
         maxCell_text = "{0:.2f}".format(self.RP_maxCell_value)
-        t1_text = "{0:.2f}".format(self.RP_t1_value) 
-        t2_text = "{0:.2f}".format(self.RP_t2_value) 
-        t3_text = "{0:.2f}".format(self.RP_t3_value) 
-        t4_text = "{0:.2f}".format(self.RP_t4_value) 
-        t5_text = "{0:.2f}".format(self.RP_t5_value) 
-        t6_text = "{0:.2f}".format(self.RP_t6_value) 
-        t7_text = "{0:.2f}".format(self.RP_t7_value) 
-        t8_text = "{0:.2f}".format(self.RP_t8_value) 
+        cell1_text = "{0:.2f}".format(self.RP_cell1)
+        cell2_text = "{0:.2f}".format(self.RP_cell2)
+        cell3_text = "{0:.2f}".format(self.RP_cell3)
+        cell4_text = "{0:.2f}".format(self.RP_cell4)
+        cell5_text = "{0:.2f}".format(self.RP_cell5)
+        cell6_text = "{0:.2f}".format(self.RP_cell6)
+        cell7_text = "{0:.2f}".format(self.RP_cell7)
+        cell8_text = "{0:.2f}".format(self.RP_cell8)
+        isolator_text = "{0:.2f}".format(self.RP_isolator_value)
 
         self.RP_state.setText(state_text+"")
         self.RP_volt.setText(volt_text+" V")
         self.RP_curr.setText(curr_text+" A")
+        self.RP_lowTemp.setText(lowTemp_text+" C°")
+        self.RP_avgTemp.setText(avgTemp_text+" C°")
+        self.RP_highTemp.setText(highTemp_text+" C°")         
         self.RP_minCell.setText(minCell_text+" V")
         self.RP_maxCell.setText(maxCell_text+" V")
-        self.RP_t1.setText(t1_text+" C")
-        self.RP_t2.setText(t2_text+" C")
-        self.RP_t3.setText(t3_text+" C")
-        self.RP_t4.setText(t4_text+" C")
-        self.RP_t5.setText(t5_text+" C")
-        self.RP_t6.setText(t6_text+" C")
-        self.RP_t7.setText(t7_text+" C")
-        self.RP_t8.setText(t8_text+" C")
+        self.RP_cv1.setText(cell1_text+" V")
+        self.RP_cv2.setText(cell2_text+" V")
+        self.RP_cv3.setText(cell3_text+" V")
+        self.RP_cv4.setText(cell4_text+" V")
+        self.RP_cv5.setText(cell5_text+" V")
+        self.RP_cv6.setText(cell6_text+" V")
+        self.RP_cv7.setText(cell7_text+" V")
+        self.RP_cv8.setText(cell8_text+" V")
+        self.RP_isolater.setText(isolator_text)
 
         if self.chargeState_minRange < self.RP_state_value < self.chargeState_maxRange:
             self.RP_state.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
@@ -546,6 +458,21 @@ class GUI2(QMainWindow):
         else:
             self.RP_curr.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
+        if self.Temp_minRange < self.RP_lowTemp_Value < self.Temp_maxRange:
+            self.RP_lowTemp.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
+        else:
+            self.RP_lowTemp.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
+        
+        if self.Temp_minRange < self.RP_avgTemp_Value < self.Temp_maxRange:
+            self.RP_avgTemp.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
+        else:
+            self.RP_avgTemp.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
+        
+        if self.Temp_minRange < self.RP_highTemp_Value < self.Temp_maxRange:
+            self.RP_highTemp.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
+        else:
+            self.RP_highTemp.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
+        
         if self.minCell_minRange < self.RP_minCell_value < self.minCell_maxRange:
             self.RP_minCell.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
@@ -556,54 +483,37 @@ class GUI2(QMainWindow):
         else:
             self.RP_maxCell.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
-        if self.packTemp_minRange < self.RP_t1_value < self.packTemp_maxRange:
-            self.RP_t1.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
+        batteryCells = [self.RP_cell1,self.RP_cell2,self.RP_cell3,self.RP_cell4,self.RP_cell5,self.RP_cell6,self.RP_cell7,self.RP_cell8]
+        cellsText = [self.RP_cv1, self.RP_cv2, self.RP_cv3, self.RP_cv4, self.RP_cv5, self.RP_cv6, self.RP_cv7, self.RP_cv8]
+   
+        for cell in range(len(batteryCells)):
+            if self.minCell_minRange < batteryCells[cell] < self.maxCell_maxRange:
+                cellsText[cell].setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
+            else:
+                cellsText[cell].setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
+        
+        if self.RP_isolator_value==1:
+            self.RP_isolater.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
-            self.RP_t1.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
+            self.RP_isolater.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
-        if self.packTemp_minRange < self.RP_t2_value < self.packTemp_maxRange:
-            self.RP_t2.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.RP_t2.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.RP_t3_value < self.packTemp_maxRange:
-            self.RP_t3.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.RP_t3.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.RP_t4_value < self.packTemp_maxRange:
-            self.RP_t4.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.RP_t4.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.RP_t5_value < self.packTemp_maxRange:
-            self.RP_t5.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.RP_t5.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.RP_t6_value < self.packTemp_maxRange:
-            self.RP_t6.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.RP_t6.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.RP_t7_value < self.packTemp_maxRange:
-            self.RP_t7.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.RP_t7.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.packTemp_minRange < self.RP_t8_value < self.packTemp_maxRange:
-            self.RP_t8.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-        else:
-            self.RP_t8.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
     def update_pneumatics_label(self):
         brakes_pressure = "{0:.2f}".format(self.brakes_pressure_value) 
         tensioner_pressure = "{0:.2f}".format(self.tensioner_pressure_value) 
-        brakes_temp = "{0:.2f}".format(self.brakes_temp_value) 
+        breaking_airTank = "{0:.2f}".format(self.brakes_airTank_temp_value) 
+        tensioner_airtTank = "{0:.2f}".format(self.tensioner_airTank_temp_value)
+        solenoid = "{0:.2f}".format(self.solenoid_temp_value)
+        frontTensioner = "{0:.2f}".format(self.frontTensioner__temp_value)
+        rearTensioner = "{0:.2f}".format(self.rearTensioner__temp_value)
 
         self.brakes_pressure.setText(brakes_pressure+" PSI")
         self.tensioner_pressure.setText(tensioner_pressure+" PSI")
-        self.brake_temprature.setText(brakes_temp+" C")
+        self.breaking_airTank.setText(breaking_airTank+" C°")
+        self.tensioner_airTank.setText(tensioner_airtTank+" C°")
+        self.solenoid.setText(solenoid+" C°")
+        self.front_tensioner.setText(frontTensioner+" C°")
+        self.rear_tensioner.setText(rearTensioner+" C°")
 
         if self.brakesPressure_minRange < self.brakes_pressure_value < self.brakesPressure_maxRange:
             self.brakes_pressure.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
@@ -615,10 +525,30 @@ class GUI2(QMainWindow):
         else:
             self.tensioner_pressure.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
-        if self.brakesTemprature_minRange < self.brakes_temp_value < self.brakesTemprature_maxRange:
-            self.brake_temprature.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
+        if self.breaksAirTank_minRange < self.brakes_airTank_temp_value < self.breaksAirTank_maxRange:
+            self.breaking_airTank.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
-            self.brake_temprature.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
+            self.breaking_airTank.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
+        
+        if self.tensionerAirTank_minRange < self.tensioner_airTank_temp_value < self.tensionerAirTank_maxRange:
+            self.tensioner_airTank.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
+        else:
+            self.tensioner_airTank.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
+
+        if self.solenoid_minRange < self.solenoid_temp_value < self.solenoid_maxRange:
+            self.solenoid.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
+        else:
+            self.solenoid.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
+
+        if self.frontTensioner_minRange < self.frontTensioner__temp_value < self.frontTensioner_maxRange:
+            self.front_tensioner.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
+        else:
+            self.front_tensioner.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
+
+        if self.rearTensioner_minRange < self.rearTensioner__temp_value < self.rearTensioner_maxRange:
+            self.rear_tensioner.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
+        else:
+            self.rear_tensioner.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
     def update_12Vbattery_label(self):
         voltage = "{0:.2f}".format(self.battery_actual_value) 
@@ -635,29 +565,21 @@ class GUI2(QMainWindow):
     def update_motors_label(self):
         top_left_rpm = "{0:.2f}".format(self.TL_rpm_value) 
         top_right_rpm = "{0:.2f}".format(self.TR_rpm_value) 
-        middle_left_rpm = "{0:.2f}".format(self.ML_rpm_value) 
-        middle_right_rpm = "{0:.2f}".format(self.MR_rpm_value) 
         bottom_left_rpm = "{0:.2f}".format(self.BL_rpm_value) 
         bottom_right_rpm = "{0:.2f}".format(self.BR_rpm_value) 
         top_left_temp = "{0:.2f}".format(self.TL_temp_value) 
         top_right_temp = "{0:.2f}".format(self.TR_temp_value) 
-        middle_left_temp = "{0:.2f}".format(self.ML_temp_value) 
-        middle_right_temp = "{0:.2f}".format(self.MR_temp_value) 
         bottom_left_temp = "{0:.2f}".format(self.BL_temp_value) 
         bottom_right_temp = "{0:.2f}".format(self.BR_temp_value)
 
         self.TL_rpm.setText(top_left_rpm+" RPM")
         self.TR_rpm.setText(top_right_rpm+" RPM")
-        self.ML_rpm.setText(middle_left_rpm+" RPM")
-        self.MR_rpm.setText(middle_right_rpm+" RPM")
         self.BL_rpm.setText(bottom_left_rpm+" RPM")
         self.BR_rpm.setText(bottom_right_rpm+" RPM")
-        self.TL_temp.setText(top_left_temp+" C")
-        self.TR_temp.setText(top_right_temp+" C")
-        self.ML_temp.setText(middle_left_temp+" C")
-        self.MR_temp.setText(middle_right_temp+" C")
-        self.BL_temp.setText(bottom_left_temp+" C")
-        self.BR_temp.setText(bottom_right_temp+" C")
+        self.TL_temp.setText(top_left_temp+" C°")
+        self.TR_temp.setText(top_right_temp+" C°")
+        self.BL_temp.setText(bottom_left_temp+" C°")
+        self.BR_temp.setText(bottom_right_temp+" C°")
 
         if self.motorTemp_minRange < self.TL_temp_value < self.motorTemp_maxRange:
             self.TL_tempCircle.setStyleSheet("QLabel {background:rgba(57, 181, 74, .5); border-radius: 22;}");
@@ -668,16 +590,6 @@ class GUI2(QMainWindow):
             self.TR_tempCircle.setStyleSheet("QLabel {background:rgba(57, 181, 74, .5); border-radius: 22;}");
         else:
             self.TR_tempCircle.setStyleSheet("QLabel {background:rgba(239, 15, 15, 0.5); border-radius: 22;}");
-
-        if self.motorTemp_minRange < self.ML_temp_value < self.motorTemp_maxRange:
-            self.ML_tempCircle.setStyleSheet("QLabel {background:rgba(57, 181, 74, .5); border-radius: 22;}");
-        else:
-            self.ML_tempCircle.setStyleSheet("QLabel {background:rgba(239, 15, 15, 0.5); border-radius: 22;}");
-
-        if self.motorTemp_minRange < self.MR_temp_value < self.motorTemp_maxRange:
-            self.MR_tempCircle.setStyleSheet("QLabel {background:rgba(57, 181, 74, .5); border-radius: 22;}");
-        else:
-            self.MR_tempCircle.setStyleSheet("QLabel {background:rgba(239, 15, 15, 0.5); border-radius: 22;}");
 
         if self.motorTemp_minRange < self.BL_temp_value < self.motorTemp_maxRange:
             self.BL_tempCircle.setStyleSheet("QLabel {background:rgba(57, 181, 74, .5); border-radius: 22;}");
@@ -731,21 +643,21 @@ def update_labels():
     #   "pack3_Amp": 33\
     # }'\
 
-    RECIEVED_JSON = s.recv(1024)
-    print(RECIEVED_JSON)
-    recieved = '{'+RECIEVED_JSON.decode().split('}{')[-1].strip('{')
-    print(recieved)
+    RECIEVED_JSON = s.recv(1024)   #UNCOMMENT
+    print(RECIEVED_JSON)   #UNCOMMENT
+    recieved = '{'+RECIEVED_JSON.decode().split('}{')[-1].strip('{')   #UNCOMMENT
+    print(recieved)   #UNCOMMENT
 
     try:
-        data = recieved
-        print("DATA _______________________: ",data)
-        json_parsed = json.loads(data)
+        data = recieved   #UNCOMMENT
+        print("DATA _______________________: ",data)   #UNCOMMENT
+        json_parsed = json.loads(data)   #UNCOMMENT
 
 
         '''UPDATE DATA _SCREEN 1'''
         widget1.state = json_parsed["state"]
-        # widget1.acceleration = json_parsed["acceleration"]
-        # widget1.speed = json_parsed["speed"]
+        widget1.acceleration = json_parsed["acceleration"]
+        widget1.speed = json_parsed["velocity"]
         widget1.distance = json_parsed["distance"]
         # widget1.max_battery_temp = json_parsed["max_battery_temp"]
         # widget1.vibration = json_parsed["vibration"]
@@ -756,68 +668,76 @@ def update_labels():
         # widget1.packAmp3 = json_parsed["pack1_Amp"]
         # widget1.packAmp2 = json_parsed["pack2_Amp"]
         # widget1.packAmp1 = json_parsed["pack3_Amp"]
-        '''UPDATE DATA _SCREEN 1'''
+        
+
+
+
+
+        '''UPDATE DATA _SCREEN 2'''
         #FRONT PACK
         widget2.FP_state_value += .1;
         widget2.FP_volt_value += .1;
         widget2.FP_curr_value += .1;
+        widget2.FP_lowTemp_Value +=.1
+        widget2.FP_avgTemp_Value +=.2
+        widget2.FP_highTemp_Value +=.3
         widget2.FP_minCell_value += .1;
         widget2.FP_maxCell_value += .1;
-        widget2.FP_t1_value += .1;
-        widget2.FP_t2_value += .1;
-        widget2.FP_t3_value += .1;
-        widget2.FP_t4_value += .1;
-        widget2.FP_t5_value += .1;
-        widget2.FP_t6_value += .1;
-        widget2.FP_t7_value += .1;
-        widget2.FP_t8_value += .1;
-        #FRONT PACK
-        widget2.MP_state_value += .1;
-        widget2.MP_volt_value += .1;
-        widget2.MP_curr_value += .1;
-        widget2.MP_minCell_value += .1;
-        widget2.MP_maxCell_value += .1;
-        widget2.MP_t1_value += .1;
-        widget2.MP_t2_value += .1;
-        widget2.MP_t3_value += .1;
-        widget2.MP_t4_value += .1;
-        widget2.MP_t5_value += .1;
-        widget2.MP_t6_value += .1;
-        widget2.MP_t7_value += .1;
-        widget2.MP_t8_value += .1;
-        #FRONT PACK
+
+        widget2.FP_cell1 += .1
+        widget2.FP_cell2 += .2
+        widget2.FP_cell3 += .3
+        widget2.FP_cell4 += .4
+        widget2.FP_cell5 += .5
+        widget2.FP_cell6 += .6
+        widget2.FP_cell7 += .7
+        widget2.FP_cell8 += .8
+
+        widget2.FP_isolator_value = 1
+
+        #REAR PACK
         widget2.RP_state_value += .1;
         widget2.RP_volt_value += .1;
         widget2.RP_curr_value += .1;
+        widget2.RP_lowTemp_Value +=.1
+        widget2.RP_avgTemp_Value +=.2
+        widget2.RP_highTemp_Value +=.3    
         widget2.RP_minCell_value += .1;
         widget2.RP_maxCell_value += .1;
-        widget2.RP_t1_value += .1;
-        widget2.RP_t2_value += .1;
-        widget2.RP_t3_value += .1;
-        widget2.RP_t4_value += .1;
-        widget2.RP_t5_value += .1;
-        widget2.RP_t6_value += .1;
-        widget2.RP_t7_value += .1;
-        widget2.RP_t8_value += .1;
+
+        widget2.RP_cell1 += .1
+        widget2.RP_cell2 += .2
+        widget2.RP_cell3 += .3
+        widget2.RP_cell4 += .4
+        widget2.RP_cell5 += .5
+        widget2.RP_cell6 += .6
+        widget2.RP_cell7 += .7
+        widget2.RP_cell8 += .8
+
+        widget2.RP_isolator_value = 1
+
         #PNEUMATICS
         widget2.brakes_pressure_value += .1;
         widget2.tensioner_pressure_value += .1;
-        widget2.brakes_temp_value += .1;    
+        widget2.brakes_airTank_temp_value += .1;
+        widget2.tensioner_airTank_temp_value += .1;
+        widget2.solenoid_temp_value += .1;
+        widget2.frontTensioner__temp_value += .2;
+        widget2.rearTensioner__temp_value += .3;
+
         #12V Battery
         widget2.battery_actual_value += .1;
+
         #motors
         widget2.TL_rpm_value += .1;
-        widget2.ML_rpm_value += .1;
         widget2.BL_rpm_value += .1;
         widget2.TR_rpm_value += .1;
-        widget2.MR_rpm_value += .1;
         widget2.BR_rpm_value += .1;
         widget2.TL_temp_value += .1;
-        widget2.ML_temp_value += .1;
         widget2.BL_temp_value += .1;
         widget2.TR_temp_value += .1;
-        widget2.MR_temp_value += .1;
         widget2.BR_temp_value += .1;
+
 
 
         '''UPDATE GUI _SCREEN 1'''
@@ -829,15 +749,14 @@ def update_labels():
         widget1.update_vibrationLabel()
         widget1.update_voltage12Label()
         widget1.update_batteryPacks()
-        widget1.update_error_label("ERROR MESSAGE HERE")
+        widget1.update_error_label("")
         '''UPDATE GUI _SCREEN 2'''
         widget2.update_frontPack_label()
-        widget2.update_middlePack_label()
         widget2.update_rearPack_label()
         widget2.update_pneumatics_label()
         widget2.update_12Vbattery_label()
         widget2.update_motors_label()
-        widget2.update_error_label("ERROR MESSAGE HERE")
+        widget2.update_error_label("")
 
         if widget1.state.upper() == "LAUNCHING" or widget1.launched_yet:
             widget1.start_timer()
@@ -848,13 +767,18 @@ def update_labels():
         print(e)
         if len(data) < 2:
             connected = False
+            widget1.update_error_label("NETWORK DISCONECTED")  
+            widget2.update_error_label("NETWORK DISCONECTED")          
             s.close()
             s = socket.socket()
             while not connected:
-                try: 
+                try:
+                    widget2.update_error_label("") 
                     s.connect(('192.168.0.6', 5001))
                     connected = True
                 except socket.error:
+                    widget1.update_error_label("RECONECTING...")
+                    widget2.update_error_label("RECONECTING...")
                     print("no connection yet")
                     time.sleep(1)
                 
