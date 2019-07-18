@@ -26,12 +26,6 @@ stateDict = {
 	'Startup': 1 # Startup is the same as safe to approach (to SpaceX)
 	}
 
-telemetry = {
-	'position': 0,
-	'velocity': 0,
-	'acceleration': 0
-}
-
 
 motor_temp_fault = 70
 max_batt_temp = 70
@@ -255,16 +249,40 @@ telemDict = {
 		'max v' : 			None,
 		'min v' :			None,
 		'current' : 		None,
+		},
+	1307 or 'F BMS 2': {
+		'name': 'F BMS 2 data',
+		'data': 			None,
+		'time': 			None,
+		'time delta' :		None,
 		'avg temp' :        None, #Here and below needs to be added to data translation and network packets (ID will change)
-		'isolater' :        None,
-		'cell 1 v' :        None,
-		'cell 2 v' :        None,
-		'cell 3 v' :        None,
-		'cell 4 v' :        None,
-		'cell 5 v' :        None,
-		'cell 6 v' :        None,
-		'cell 7 v' :        None,
-		'cell 8 v' :        None,
+		'isolater' :        None, #"Isolation ADC"
+		},
+	1308 or 'F BMS Cells': {
+		'name': 'F BMS Cells data',
+		'data': 			None,
+		'time': 			None,
+		'time delta' :		None,
+		1 			:        None, #These are voltages
+		2 			:        None,
+		3 			:        None,
+		4 			:        None,
+		5 			:        None,
+		6 			:        None,
+		7 			:        None,
+		8 			:        None,
+		9 			:        None,
+		10 			:        None,
+		11 			:        None,
+		12 			:        None,
+		13 			:        None,
+		14 			:        None,
+		15 			:        None,
+		16 			:        None,
+		17 			:        None,
+		18 			:        None,
+		19 			:        None,
+		20 			:        None,
 		},
 	# 1321 or 'M BMS': {
 	# 	'name': 'M BMS data',
@@ -288,25 +306,40 @@ telemDict = {
 		'max v' : 			None,
 		'min v' :			None,
 		'current' : 		None,
-		'avg temp' :        None, #Here and below needs to be added
-		'isolater' :        None,
-		'cell 1 v' :        None,
-		'cell 2 v' :        None,
-		'cell 3 v' :        None,
-		'cell 4 v' :        None,
-		'cell 5 v' :        None,
-		'cell 6 v' :        None,
-		'cell 7 v' :        None,
-		'cell 8 v' :        None,
 		},
-	1306 or 'F BMS Arduino': {
-		'name': 'F BMS Arduino data',
+	1339 or 'R BMS 2': {
+		'name': 'F BMS 2 data',
 		'data': 			None,
 		'time': 			None,
 		'time delta' :		None,
-		'health' :  		None,
-		'discharge enable':	None,
-		'charge enable': 	None
+		'avg temp' :        None, #Here and below needs to be added to data translation and network packets (ID will change)
+		'isolater' :        None, #"Isolation ADC"
+		},
+	1340 or 'R BMS Cells': {
+		'name': 'F BMS Cells data',
+		'data': 			None,
+		'time': 			None,
+		'time delta' :		None,
+		1 			:        None, #These are voltages
+		2 			:        None,
+		3 			:        None,
+		4 			:        None,
+		5 			:        None,
+		6 			:        None,
+		7 			:        None,
+		8 			:        None,
+		9 			:        None,
+		10 			:        None,
+		11 			:        None,
+		12 			:        None,
+		13 			:        None,
+		14 			:        None,
+		15 			:        None,
+		16 			:        None,
+		17 			:        None,
+		18 			:        None,
+		19 			:        None,
+		20 			:        None,
 		},
 	# 1322 or 'M BMS Arduino': {
 	# 	'name': 'M BMS Arduino data',
@@ -317,6 +350,15 @@ telemDict = {
 	#   'discharge enable':	None,
 	#   'charge enable': 	None
 	# 	},
+	1306 or 'F BMS Arduino': {
+		'name': 'R BMS Arduino data',
+		'data': 			None,
+		'time': 			None,
+		'time delta' :		None,
+		'health' :  		None,
+		'discharge enable':	None,
+		'charge enable': 	None
+		},
 	1338 or 'R BMS Arduino': {
 		'name': 'R BMS Arduino data',
 		'data': 			None,
@@ -326,19 +368,24 @@ telemDict = {
 		'discharge enable':	None,
 		'charge enable': 	None
 		},
-	1050: {
-		'name': 'Right Band',
+	1050 or 'Right Band': {
+		'name': 'Right Band Data',
 		'data': 			None,
 		'time': 			None,
 		'time delta' :		None,
 		'count': 			None
 		},
-	1051: {
-		'name': 'Left Band',
+	1051: or 'Left Band': {
+		'name': 'Left Band Data',
 		'data': 			None,
 		'time': 			None,
 		'time delta' :		None,
 		'count': 			None
+		},
+	'location': {
+		'position':			0,
+		'velocity':			0,
+		'acceleration':		0
 		}
 	}
 
@@ -418,8 +465,7 @@ async def updatePosition(freq = 5):
 		bands_list = [TelemDict['Right Band']['count'],TelemDict['Left Band']['count']]
 		#Get the current time since start
 		currentTime = time.time() - startTime
-		currentTimestep = time.time()-positions[-1][1]-startTime
-		# currentTimestep = time.time()-currentTime 
+		currentTimestep = time.time()-startTime
 
 		#TotalDistance (gets last recorded position)
 		CurrentDistance = positions[-1][0]
@@ -493,7 +539,9 @@ async def updatePosition(freq = 5):
 			del accelerations[0]
 		#Returns current data
 		#history of data can be accessed via the global lists (positions, velocities, accelerations)
-		return [position, velocity, acceleration]
+		TelemDict['location']['position'] = position
+		telemDict['location']['velocity'] = velocity
+		telemDict['location']['accleration'] = acceleration
 
 		await asyncio.sleep(1/freq)
 
@@ -540,7 +588,7 @@ async def updateTelemDict(freq = 5):
 			all_tensioner_id2 = [779]
 			for i in all_tensioner_id2:
 				if telemDict[i]['data'] != None:
-					telemDict[i]['back pneumatic temp'] = (telemDict[i]['data'][0] << 8) + telemDict[i]['data'][1] 
+					telemDict[i]['back pneumatic temp'] = (telemDict[i]['data'][6] << 8) + telemDict[i]['data'][7] 
 
 			BMS_id1 = [1305,1337]
 			for i in BMS_id1:
@@ -553,18 +601,34 @@ async def updateTelemDict(freq = 5):
 					telemDict[i]['max v'] = telemDict[i]['data'][5] 
 					telemDict[i]['min v'] = telemDict[i]['data'][6] 
 
+			BMS_id2 = [1307,1339]
+			for i in BMS_id2:
+				if telemDict[i][data] != None:
+					telemDict[i]['isolater'] = telemDict[i]['data'][0]
+					telemDict[i]['avg temp'] = telemDict[i]['data'][1]
+
+			BMS_id3 = [1308,1340]
+			for i in BMS_id3:
+				if telemDict[i][data] != None:
+					telemDict[i][int(telemDict[i]['data'][0])] = (telemDict[i]['data'][1] << 8) + telemDict[i]['data'][2]
+
 			BMS_arduino_id = [1306,1338]
 			for i in BMS_arduino_id:
 				if telemDict[i]['data'] != None:
-					telemDict[i]['discharge enable'] = telemDict[i]['data'][1]
-					telemDict[i]['charge enable'] = telemDict[i]['data'][0] 
+					telemDict[i]['discharge enable'] = telemDict[i]['data'][7]
+					telemDict[i]['charge enable'] = telemDict[i]['data'][6] 
+			
+			Control_batt_id = [1338]
+			for i in Control_batt_id:
+				if telemDict[i]['data'] != None:		
+					telemDict[i]['controls voltage'] = (telemDict[i]['data'][4] << 8) + telemDict[i]['data'][5]
 
 			if (telemDict[1049]['data'] != None) or (telemDict[1065]['data'] != None) or (telemDict[1050]['data'] != None) or (telemDict[1051]['data'] != None):
-				telemDict[1049]['distance'] = (telemDict[1049]['data'][1] << 8) + telemDict[1049]['data'][0]
-				telemDict[1065]['distance'] = (telemDict[1065]['data'][1] << 8) + telemDict[1065]['data'][0]
+				telemDict[1049]['distance'] = (telemDict[1049]['data'][6] << 8) + telemDict[1049]['data'][7]
+				telemDict[1065]['distance'] = (telemDict[1065]['data'][6] << 8) + telemDict[1065]['data'][7]
 
-				telemDict[1050]['count'] = (telemDict[1050]['data'][1] << 8) + telemDict[1050]['data'][0]
-				telemDict[1051]['count'] = (telemDict[1051]['data'][1] << 8) + telemDict[1051]['data'][0]
+				telemDict[1050]['count'] = (telemDict[1050]['data'][6] << 8) + telemDict[1050]['data'][7]
+				telemDict[1051]['count'] = (telemDict[1051]['data'][6] << 8) + telemDict[1051]['data'][7]
 			# print("****************************")
 			# print(time.time() - timer)
 			# print("****************************")
@@ -800,8 +864,13 @@ async def spacex_tlm(freq = 50):
 		#								optional
 		# stripe_count			uint32 	Count of optical navigation stripes detected in
 		#								the tube. Optional
+<<<<<<< HEAD
 		# packet = struct.pack(">BB7iI", team_id, status, int(acceleration), int(position), int(velocity), int(telemDict['F BMS']['instant voltage']), int(telemDict['F BMS']['current']), int(telemDict['F BMS']['max temp']), 0, int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
+=======
+		packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['location']['acceleration']), int(TelemDict['location']['position']), int(TelemDict['location']['velocity']), int(telemDict['F BMS']['instant voltage']), int(telemDict['F BMS']['current']), int(telemDict['F BMS']['avg temp']), 0, int(position) // 3048)
+		spacexTlmSocket.sendto(packet, (server_ip, server_port))
+>>>>>>> edb1db80f712f822460a176ea242ce7bdcc57548
 		#-------NEW PACKETS--------
 		# packet = struct.pack(">BB7iI", team_id, status, int(accelerations[-1][0]), int(positions[-1][0]), int(velocities[-1][0]), 0, 0, 0, 0, int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))

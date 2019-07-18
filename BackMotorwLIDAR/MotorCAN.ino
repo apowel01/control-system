@@ -24,6 +24,7 @@ int tempPinL =              63;   // A9
 int voltagePinL =           64;   // A10
 int motorPinL =              4;
 //int pressurePinR =          65;   // A11
+int controlBattVoltPin =    65;   // A11
 int tempPinR =              66;   // A12
 int voltagePinR =           64;   // A10
 int motorPinR =              5;
@@ -102,6 +103,7 @@ void setup() {
   pinMode(tensionerReedPinR, INPUT_PULLUP);
   pinMode(brakeReedPinL, INPUT_PULLUP);
   pinMode(brakeReedPinR, INPUT_PULLUP);
+  pinMode(controlBattVoltPin, INPUT);
   
   //Setting up Hall Sensor Stuff
   pinMode(pin22, OUTPUT);
@@ -345,7 +347,7 @@ void loop() {
     //Sending Band Sensor Data
     stmp[6] = highByte((int) counterBandLeft);
     stmp[7] = lowByte((int) counterBandLeft);
-    Serial.print(stmp);
+   // Serial.print(stmp);
     CAN.sendMsgBuf(0x42a, 0, 8, stmp);
     
     // Generating Motor Data Packets
@@ -364,6 +366,12 @@ void loop() {
 //    powerL = voltageL * currentL;
     tempL = temp_acq(tempPinL);
     voltageR = (analogRead(voltagePinR) / 1023.0) * 5 * ((Rsmall + Rbig) / Rsmall) * 1.0255;
+    int Rsmall2;
+    int Rbig2;
+    Rsmall2 = Rsmall;
+    Rbig2 = Rbig;
+    float controlBattVoltage;
+    controlBattVoltage = (analogRead(controlBattVoltPin) / 1023.0) * 5 * ((Rsmall2 + Rbig2) / Rsmall2) * 1.0255;
 //    currentR = current_acq("R");
 //    powerR = voltageR * currentR;
     tempR = temp_acq(tempPinR);
@@ -380,7 +388,7 @@ void loop() {
     stmp[5] = highByte((int) tempR);
     stmp[6] = lowByte((int) tempR);
     stmp[7] = throttle;
-    Serial.print(stmp);
+   // Serial.print(stmp);
     CAN.sendMsgBuf(0x159, 0, 8, stmp);
     stmp[1] = highByte((int) RPM_L);
     stmp[2] = lowByte((int) RPM_L);
@@ -389,40 +397,40 @@ void loop() {
     stmp[5] = highByte((int) tempL);
     stmp[6] = lowByte((int) tempL);
     stmp[7] = throttle;
-    Serial.print(stmp);
+  //  Serial.print(stmp);
     CAN.sendMsgBuf(0x169, 0, 8, stmp);
     
     //Sending BMS Data Packet
     stmp[1] = 0;
     stmp[2] = 0;
     stmp[3] = 0;
-    stmp[4] = 0;
-    stmp[5] = 0;
+    stmp[4] = highByte((int) controlBattVoltage);
+    stmp[5] = lowByte((int) controlBattVoltage);
     stmp[6] = digitalRead(BMSChargePin);
     stmp[7] = digitalRead(BMSDischargePin);
-    Serial.print(stmp);
+  //  Serial.print(stmp);
     CAN.sendMsgBuf(0x53a, 0, 8, stmp);
 
     //Sending Tensioner Temp Packet
     stmp[6] = highByte((int) tensBackPneuTemp);
     stmp[7] = lowByte((int) tensBackPneuTemp);   
-    Serial.print(stmp);
+   // Serial.print(stmp);
 
     //Sending Brake Reed Switch Data
     stmp[6] = 0;
     stmp[7] = digitalRead(brakeReedPinR);
-    Serial.print(stmp);
+ //   Serial.print(stmp);
     CAN.sendMsgBuf(0x219, 0, 8, stmp);
     stmp[7] = digitalRead(brakeReedPinL);
-    Serial.print(stmp);
+ //   Serial.print(stmp);
     CAN.sendMsgBuf(0x229, 0, 8, stmp);
 
     //Sending Tensioner Reed Switch Data
     stmp[7] = digitalRead(tensionerReedPinR);
-    Serial.print(stmp);
+//    Serial.print(stmp);
     CAN.sendMsgBuf(0x319, 0, 8, stmp);
     stmp[7] = digitalRead(tensionerReedPinL);
-    Serial.print(stmp);
+//    Serial.print(stmp);
     CAN.sendMsgBuf(0x329, 0, 8, stmp);
         
     //Resetting Timer
