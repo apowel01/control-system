@@ -868,7 +868,7 @@ async def spacex_tlm(freq = 50):
 		# packet = struct.pack(">BB7iI", team_id, status, int(acceleration), int(position), int(velocity), int(telemDict['F BMS']['instant voltage']), int(telemDict['F BMS']['current']), int(telemDict['F BMS']['max temp']), 0, int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
 =======
-		packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['location']['acceleration']), int(TelemDict['location']['position']), int(TelemDict['location']['velocity']), int(telemDict['F BMS']['instant voltage']), int(telemDict['F BMS']['current']), int(telemDict['F BMS']['avg temp']), 0, int(position) // 3048)
+		packet = struct.pack(">BB7iI", team_id, status, int(TelemDict['location']['acceleration']), int(TelemDict['location']['position']), int(TelemDict['location']['velocity']), int(telemDict['F BMS']['instant voltage']), int(telemDict['F BMS']['current']), int(telemDict['F BMS']['max temp']), 0, int(position) // 3048)
 		spacexTlmSocket.sendto(packet, (server_ip, server_port))
 >>>>>>> edb1db80f712f822460a176ea242ce7bdcc57548
 		#-------NEW PACKETS--------
@@ -943,20 +943,20 @@ async def state_transistion(freq = 5):
 		# 	print(f"Caught exception: {e}")
 
 
-		if ((stateDict[str(pod.state)] == 'launching') & (telemetry['velocity'] >= 185)):
+		if ((stateDict[str(pod.state)] == 'launching') & (telemDict['velocity'] >= 185)):
 			pod.trigger('coasting')
-		elif ((stateDict[str(pod.state)] == 'launching') & (telemetry['position'] >= 3520)):
+		elif ((stateDict[str(pod.state)] == 'launching') & (telemDict['position'] >= 3520)):
 			pod.trigger('braking')
 
-		if ((stateDict[str(pod.state)] == 'coasting') & (telemetry['position'] >= 3520)):
+		if ((stateDict[str(pod.state)] == 'coasting') & (telemDict['position'] >= 3520)):
 			pod.trigger('braking')
 
-		if ((stateDict[str(pod.state)] == 'braking') & (telemetry['position'] >= 5180 & telemetry['velocity'] <= 0.5)):
+		if ((stateDict[str(pod.state)] == 'braking') & (telemDict['position'] >= 5180 & telemDict['velocity'] <= 0.5)):
 			pod.trigger('crawling')
-		elif ((stateDict[str(pod.state)] == 'braking') & (telemetry['position'] <= 5180 & telemetry['velocity'] <= 0.5)):
+		elif ((stateDict[str(pod.state)] == 'braking') & (telemDict['position'] <= 5180 & telemDict['velocity'] <= 0.5)):
 			pod.trigger(SafeToApproach)
 
-		if ((stateDict[str(pod.state)] == 'crawling') & (telemetry['position'] >= 5180)):
+		if ((stateDict[str(pod.state)] == 'crawling') & (telemDict['position'] >= 5180)):
 			pod.trigger('braking')
 
 		# Need to add loss of comms fault, pressure faults
