@@ -433,6 +433,8 @@ async def updatePosition(freq = 5):
 		#history of data can be accessed via the global lists (positions, velocities, accelerations)
 		return [position, velocity, acceleration]
 
+		await asyncio.sleep(1/freq)
+
 
 async def updateTelemDict(freq = 5):
 	while True:
