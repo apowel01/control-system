@@ -23,15 +23,6 @@ class GUI1(QMainWindow):
         self.speed = 0 #MPH
         self.acceleration = 0 #M/S2
         self.state = "STOPPING"
-        self.max_battery_temp = 0 #F
-        self.vibration = 0 #Hz
-        self.voltage12 = 0 #V
-        self.packVolt1 = 0 
-        self.packAmp1 = 0 #A
-        self.packVolt2 = 0
-        self.packAmp2 = 0
-        self.packVolt3 = 0
-        self.packAmp3 = 0
         self.podTimer = 0 #seconds
         self.startTimer = 0 #used to determine the time of a run
         self.timerSwitch = True
@@ -54,10 +45,8 @@ class GUI1(QMainWindow):
 
     def mouseMoveEvent(self, event):
         delta = QPoint (event.globalPos() - self.oldPos)
-        #print(delta)
         self.move(self.x() + delta.x(), self.y() + delta.y())
         self.oldPos = event.globalPos()
-
 
     '''GUI UPDATE FUNCTIONS'''
 
@@ -82,77 +71,6 @@ class GUI1(QMainWindow):
 
     def update_stateLabel(self):
         self.stateLabel.setText(self.state)    
-
-    def update_batteryTempLabel(self):
-        battery_temp_text = "{0:.2f}".format(self.max_battery_temp)
-        self.maxBatteryTemp.setText(battery_temp_text+" F°")  
-
-    def update_vibrationLabel(self):
-        vibration_text = "{0:.2f}".format(self.vibration)
-        self.vibration_label.setText(vibration_text+" Hz")  
-
-    def update_voltage12Label(self):
-        voltage12_text = "{0:.2f}".format(self.voltage12)
-        self.voltageTwelve.setText(voltage12_text+" V")
-
-    def update_pack1_voltage(self):
-        voltage_text = "{0:.2f}".format(self.packVolt1)
-        self.V1.setText(voltage_text+" V")
-
-    def update_pack2_voltage(self):
-        voltage_text = "{0:.2f}".format(self.packVolt2)
-        self.V2.setText(voltage_text+" V")
-
-    def update_pack3_voltage(self):
-        voltage_text = "{0:.2f}".format(self.packVolt3)
-        self.V3.setText(voltage_text+" V")
-
-    def update_pack1_current(self):
-        current_text = "{0:.2f}".format(self.packAmp1)
-        self.A1.setText(current_text+" A")        
-
-    def update_pack2_current(self):
-        current_text = "{0:.2f}".format(self.packAmp2)
-        self.A2.setText(current_text+" A")
-
-    def update_pack3_current(self):
-        current_text = "{0:.2f}".format(self.packAmp3)
-        self.A3.setText(current_text+" A")
-
-    def update_batteryPack1_Health(self):
-        if self.packVolt1 > 20:
-            self.warn1.setStyleSheet("QLabel { background-color : red; border-radius: 5px;}");
-        elif self.packVolt1> 5:
-            self.warn1.setStyleSheet("QLabel { background-color : lime; border-radius: 5px;}");
-        else:
-            self.warn1.setStyleSheet("QLabel { background-color : yellow; border-radius: 5px;}");
-
-    def update_batteryPack2_Health(self):
-        if self.packVolt2 > 20:
-            self.warn2.setStyleSheet("QLabel { background-color : red; border-radius: 5px;}");
-        elif self.packVolt2> 5:
-            self.warn2.setStyleSheet("QLabel { background-color : lime; border-radius: 5px;}");
-        else:
-            self.warn2.setStyleSheet("QLabel { background-color : yellow; border-radius: 5px;}");
-
-    def update_batteryPack3_Health(self):
-        if self.packVolt3 > 20:
-            self.warn3.setStyleSheet("QLabel { background-color : red; border-radius: 5px;}");
-        elif self.packVolt3> 5:
-            self.warn3.setStyleSheet("QLabel { background-color : lime; border-radius: 5px;}");
-        else:
-            self.warn3.setStyleSheet("QLabel { background-color : yellow; border-radius: 5px;}");
-
-    def update_batteryPacks(self):
-        self.update_pack1_voltage()
-        self.update_pack2_voltage()
-        self.update_pack3_voltage()
-        self.update_pack1_current()
-        self.update_pack2_current()
-        self.update_pack3_current()
-        self.update_batteryPack1_Health()
-        self.update_batteryPack2_Health()
-        self.update_batteryPack3_Health()
 
     def start_timer(self):
         if self.timerSwitch:
@@ -303,7 +221,6 @@ class GUI2(QMainWindow):
 
     def mouseMoveEvent(self, event):
         delta = QPoint (event.globalPos() - self.oldPos)
-        #print(delta)
         self.move(self.x() + delta.x(), self.y() + delta.y())
         self.oldPos = event.globalPos()
 
@@ -656,9 +573,9 @@ def update_labels():
 
         '''UPDATE DATA _SCREEN 1'''
         widget1.state = json_parsed["state"]
-        widget1.acceleration = json_parsed["acceleration"]
+        # widget1.acceleration = json_parsed["acceleration"]
         widget1.speed = json_parsed["velocity"]
-        widget1.distance = json_parsed["distance"]
+        widget1.distance = json_parsed["position"]
         # widget1.max_battery_temp = json_parsed["max_battery_temp"]
         # widget1.vibration = json_parsed["vibration"]
         # widget1.voltage12 = json_parsed["voltage12V"]
@@ -745,10 +662,6 @@ def update_labels():
         widget1.update_distance()
         widget1.update_accelerationLabel()
         widget1.update_stateLabel()
-        widget1.update_batteryTempLabel()
-        widget1.update_vibrationLabel()
-        widget1.update_voltage12Label()
-        widget1.update_batteryPacks()
         widget1.update_error_label("")
         '''UPDATE GUI _SCREEN 2'''
         widget2.update_frontPack_label()
