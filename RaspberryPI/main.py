@@ -617,6 +617,10 @@ async def updateTelemDict(freq = 5):
 				if telemDict[i]['data'] != None:
 					telemDict[i]['discharge enable'] = telemDict[i]['data'][7]
 					telemDict[i]['charge enable'] = telemDict[i]['data'][6] 
+			
+			Control_batt_id = [1338]
+			for i in Control_batt_id:
+				if telemDict[i]['data'] != None:		
 					telemDict[i]['controls voltage'] = (telemDict[i]['data'][4] << 8) + telemDict[i]['data'][5]
 
 			if (telemDict[1049]['data'] != None) or (telemDict[1065]['data'] != None) or (telemDict[1050]['data'] != None) or (telemDict[1051]['data'] != None):

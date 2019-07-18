@@ -25,14 +25,14 @@ int voltagePinL =           64;   // A10    *
 int motorPinL =              4;
 //int pressurePinR =          65;   // A11
 int tempPinR =              66;   // A12
-int voltagePinR =           64;   // A10    *
+int voltagePinR =           64;   // A10    
 int motorPinR =              5;             
-int brakeReedPinR =         43;             *
-int brakeReedPinL =         45;             *
-int tensionerReedPinR =     47;             *
-int tensionerReedPinL =     49;             *
-int BMSDischargePin =       51;             *
-int BMSChargePin =          53;             *
+int brakeReedPinR =         43;   //          *
+int brakeReedPinL =         45;   //          *
+int tensionerReedPinR =     47;   //          *
+int tensionerReedPinL =     49;   //          *
+int BMSDischargePin =       51;   //          *
+int BMSChargePin =          53;   //          *
 int brakePressPin =         68;   //A14     *
 int tensionerPressPin =     69;   //A15     *
 
@@ -353,13 +353,13 @@ void loop() {
     stmp[5] = 0;    
     stmp[6] = highByte((int) distance);
     stmp[7] = lowByte((int) distance);
-    Serial.print(stmp);    
+//    Serial.print(stmp);    
     CAN.sendMsgBuf(0x419, 0, 8, stmp);
     
     //Sending Band Sensor Data
     stmp[6] = highByte((int) counterBandRight);
     stmp[7] = lowByte((int) counterBandRight);
-    Serial.print(stmp);
+//    Serial.print(stmp);
     CAN.sendMsgBuf(0x41a, 0, 8, stmp);
     
     // Generating Motor Data Packets
@@ -407,7 +407,7 @@ void loop() {
     stmp[5] = highByte((int) tempR);
     stmp[6] = lowByte((int) tempR);
     stmp[7] = throttle;
-    Serial.print(stmp);
+//    Serial.print(stmp);
     CAN.sendMsgBuf(0x119, 0, 8, stmp);
     stmp[1] = highByte((int) RPM_L);
     stmp[2] = lowByte((int) RPM_L);
@@ -416,7 +416,7 @@ void loop() {
     stmp[5] = highByte((int) tempL);
     stmp[6] = lowByte((int) tempL);
     stmp[7] = throttle;
-    Serial.print(stmp);
+//    Serial.print(stmp);
     CAN.sendMsgBuf(0x129, 0, 8, stmp);
     
     //Sending BMS Data Packet
@@ -427,7 +427,7 @@ void loop() {
     stmp[5] = 0;
     stmp[6] = digitalRead(BMSChargePin);
     stmp[7] = digitalRead(BMSDischargePin);
-    Serial.print(stmp);
+//    Serial.print(stmp);
     CAN.sendMsgBuf(0x51a, 0, 8, stmp);
 
     //Sending Brake Packet
@@ -435,7 +435,7 @@ void loop() {
     stmp[5] = lowByte((int) brakeTankTemp);
     stmp[6] = highByte((int) brakePressure);
     stmp[7] = lowByte((int) brakePressure);
-    Serial.print(stmp);
+//    Serial.print(stmp);
     CAN.sendMsgBuf(0x20a, 0, 8, stmp);
 
     //Sending Tensioner Packet
@@ -447,7 +447,7 @@ void loop() {
     stmp[5] = lowByte((int) tensTankTemp);
     stmp[6] = highByte((int) tensionerPressure);
     stmp[7] = lowByte((int) tensionerPressure);
-    Serial.print(stmp);
+//    Serial.print(stmp);
     CAN.sendMsgBuf(0x30a, 0, 8, stmp);    
 
     //Sending Brake Reed Switch Data
@@ -458,18 +458,18 @@ void loop() {
     stmp[5] = 0;
     stmp[6] = 0;
     stmp[7] = digitalRead(brakeReedPinR);
-    Serial.print(stmp);
+//    Serial.print(stmp);
     CAN.sendMsgBuf(0x219, 0, 8, stmp);
     stmp[7] = digitalRead(brakeReedPinL);
-    Serial.print(stmp);
+//    Serial.print(stmp);
     CAN.sendMsgBuf(0x229, 0, 8, stmp);
 
     //Sending Tensioner Reed Switch Data
     stmp[7] = digitalRead(tensionerReedPinR);
-    Serial.print(stmp);
+//    Serial.print(stmp);
     CAN.sendMsgBuf(0x319, 0, 8, stmp);
     stmp[7] = digitalRead(tensionerReedPinL);
-    Serial.print(stmp);
+//    Serial.print(stmp);
     CAN.sendMsgBuf(0x329, 0, 8, stmp);
 
     
