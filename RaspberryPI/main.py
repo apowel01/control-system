@@ -261,7 +261,7 @@ telemDict = {
 		'min temp' :		None,
 		'max v' : 			None,
 		'min v' :			None,
-		'current' : 		None
+		'current' : 		None,
 		'avg temp' :        None, #Here and below needs to be added
 		'isolater' :        None,
 		'cell 1 v' :        None,
@@ -352,7 +352,7 @@ async def updatePosition(freq = 5):
 
 		FlidarReading = TelemDict['F Lidar']['distance']
 		RlidarReading = TelemDict['R Lidar']['distance']
-		rpms_list = [TelemDict['FR Motor']['rpm'],TelemDict['FL Motor']['rpm'],TelemDict['RR Motor']['rpm'],TelemDict['RL Motor']['rpm']
+		rpms_list = [TelemDict['FR Motor']['rpm'],TelemDict['FL Motor']['rpm'],TelemDict['RR Motor']['rpm'],TelemDict['RL Motor']['rpm']]
 		bands_list = [TelemDict['Right Band']['count'],TelemDict['Left Band']['count']]
 		#Get the current time since start
 		currentTime = time.time() - startTime
