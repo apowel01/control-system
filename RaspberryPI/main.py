@@ -80,7 +80,7 @@ telemDict = {
 	# 	'name': 'MR Motor data',
 	# 	'data': 	None,
 	# 	'time': 	None,
-	'time delta' :		None,
+	# 'time delta' :		None,
 	# 	'rpm' : 	None,
 	# 	'volt': 	None,
 	# 	'temp': 	None,
@@ -91,7 +91,7 @@ telemDict = {
 	# 	'name': 'ML Motor data',
 	# 	'data': 	None,
 	# 	'time': 	None,
-	'time delta' :		None,
+	# 'time delta' :		None,
 	# 	'rpm' : 	None,
 	# 	'volt': 	None,
 	# 	'temp': 	None,
@@ -144,7 +144,7 @@ telemDict = {
 	# 	'name': 'MR Brake data',
 	# 	'data': 	None,
 	# 	'time': 	None,
-	'time delta' :		None,
+	# 'time delta' :		None,
 	# 	'temp': 	None,
 	# 	'reed': 	None
 	# 	},
@@ -152,7 +152,7 @@ telemDict = {
 	# 	'name': 'ML Brake data',
 	# 	'data': 	None,
 	# 	'time': 	None,
-	'time delta' :		None,
+	# 'time delta' :		None,
 	# 	'temp': 	None,
 	# 	'reed': 	None
 	# 	},
@@ -205,14 +205,14 @@ telemDict = {
 	# 	'name': 'MR Tensioner data',
 	# 	'data': 	None,
 	# 	'time': 	None,
-	'time delta' :		None,
+	# 'time delta' :		None,
 	# 	'reed': 	None
 	# 	},
 	# 841 or 'ML Tensioner': {
 	# 	'name': 'ML Tensioner data',
 	# 	'data': 	None,
 	# 	'time': 	None,
-	'time delta' :		None,
+	# 'time delta' :		None,
 	# 	'reed': 	None
 	# 	},
 	857 or 'RR Tensioner': {
@@ -270,7 +270,7 @@ telemDict = {
 	# 	'name': 'M BMS data',
 	# 	'data': 			None,
 	# 	'time': 			None,
-	'time delta' :		None,
+	# 'time delta' :		None,
 	# 	'max batt temp' :	None,
 	# 	'max v' : 			None,
 	# 	'min v' : 			None,
@@ -312,7 +312,7 @@ telemDict = {
 	# 	'name': 'M BMS Arduino data',
 	# 	'data': 			None,
 	# 	'time': 			None,
-	'time delta' :		None,
+	# 'time delta' :		None,
 	# 	'health' : 			None,
 	#   'discharge enable':	None,
 	#   'charge enable': 	None
