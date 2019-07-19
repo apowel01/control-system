@@ -701,11 +701,11 @@ def update_labels():
         except:
             widget2.solenoid_temp_value = -999
         try:
-            widget2.frontTensioner__temp_value = float(json_parsed["778"]["front pneumatic temp"])
+            widget2.frontTensioner__temp_value = float(json_parsed["778"]["front tensioner temp"])
         except:
             widget2.frontTensioner__temp_value = -999
         try:
-            widget2.rearTensioner__temp_value = float(json_parsed["779"]["back pneumatic temp"])
+            widget2.rearTensioner__temp_value = float(json_parsed["779"]["back tensioner temp"])
         except:
             widget2.rearTensioner__temp_value = -999
         
