@@ -171,7 +171,7 @@ telemDict = {
 		'time': 	None,
 		'time delta' :		None,
 		'tank temp': None,
-		'front pneumatic temp': None,
+		'front tensioner temp': None,
 		'solenoid temp': None,
 		'pressure': None
 		},
@@ -180,7 +180,7 @@ telemDict = {
 		'data': 	None,
 		'time': 	None,
 		'time delta' :		None,
-		'back pneumatic temp': None
+		'back tensioner temp': None
 		},
 	793 or 'FR Tensioner': {
 		'name': 'FR Tensioner data',
@@ -352,7 +352,7 @@ telemDict = {
 	#   'charge enable': 	None
 	# 	},
 	1306 or 'F BMS Arduino': {
-		'name': 'R BMS Arduino data',
+		'name': 'F BMS Arduino data',
 		'data': 			None,
 		'time': 			None,
 		'time delta' :		None,
@@ -377,7 +377,7 @@ telemDict = {
 		'time delta' :		None,
 		'count': 			None
 		},
-	1051 or 'Left Band': {
+	1066 or 'Left Band': {
 		'name': 'Left Band Data',
 		'data': 			None,
 		'time': 			None,
@@ -584,13 +584,13 @@ async def updateTelemDict(freq = 5):
 			for i in all_tensioner_id1:
 				if telemDict[i]['data'] != None:
 					telemDict[i]['tank temp'] = (telemDict[i]['data'][4] << 8) + telemDict[i]['data'][5] 
-					telemDict[i]['front pneumatic temp'] = (telemDict[i]['data'][2] << 8) + telemDict[i]['data'][3] 
-					telemDict[i]['front solenoid temp'] = (telemDict[i]['data'][0] << 8) + telemDict[i]['data'][1] 
+					telemDict[i]['front tensioner temp'] = (telemDict[i]['data'][2] << 8) + telemDict[i]['data'][3] 
+					telemDict[i]['solenoid temp'] = (telemDict[i]['data'][0] << 8) + telemDict[i]['data'][1] 
 
 			all_tensioner_id2 = [779]
 			for i in all_tensioner_id2:
 				if telemDict[i]['data'] != None:
-					telemDict[i]['back pneumatic temp'] = (telemDict[i]['data'][6] << 8) + telemDict[i]['data'][7] 
+					telemDict[i]['back tensioner temp'] = (telemDict[i]['data'][6] << 8) + telemDict[i]['data'][7] 
 
 			BMS_id1 = [1305,1337]
 			for i in BMS_id1:
@@ -605,15 +605,15 @@ async def updateTelemDict(freq = 5):
 				if telemDict[i]['data'] != None:
 					telemDict[i]['isolater'] = ((telemDict[i]['data'][0] << 8) + telemDict[i]['data'][1])*.001 #volts
 					telemDict[i]['state of charge'] = telemDict[i]['data'][2]*.5 #percent
-					telemDict[i]['max temp'] = telemDict[i]['data'][3] #deg C 
-					telemDict[i]['min temp'] = telemDict[i]['data'][4] #deg C
+					telemDict[i]['max temp'] = telemDict[i]['data'][4] #deg C 
+					telemDict[i]['min temp'] = telemDict[i]['data'][3] #deg C
 					telemDict[i]['avg temp'] = telemDict[i]['data'][5] #deg C
 
 
 			BMS_id3 = [1308,1340]
 			for i in BMS_id3:
 				if telemDict[i]['data'] != None:
-					telemDict[i][int(telemDict[i]['data'][0])] = (telemDict[i]['data'][1] << 8) + telemDict[i]['data'][2]
+					telemDict[i][int(telemDict[i]['data'][0]+1)] = ((telemDict[i]['data'][1] << 8) + telemDict[i]['data'][2])*.0001
 
 			BMS_arduino_id = [1306,1338]
 			for i in BMS_arduino_id:
@@ -626,12 +626,12 @@ async def updateTelemDict(freq = 5):
 				if telemDict[i]['data'] != None:		
 					telemDict[i]['controls voltage'] = (telemDict[i]['data'][4] << 8) + telemDict[i]['data'][5]
 
-			if (telemDict[1049]['data'] != None) or (telemDict[1065]['data'] != None) or (telemDict[1050]['data'] != None) or (telemDict[1051]['data'] != None):
+			if (telemDict[1049]['data'] != None) and (telemDict[1065]['data'] != None) and (telemDict[1050]['data'] != None) and (telemDict[1066]['data'] != None):
 				telemDict[1049]['distance'] = (telemDict[1049]['data'][6] << 8) + telemDict[1049]['data'][7]
 				telemDict[1065]['distance'] = (telemDict[1065]['data'][6] << 8) + telemDict[1065]['data'][7]
 
 				telemDict[1050]['count'] = (telemDict[1050]['data'][6] << 8) + telemDict[1050]['data'][7]
-				telemDict[1051]['count'] = (telemDict[1051]['data'][6] << 8) + telemDict[1051]['data'][7]
+				telemDict[1066]['count'] = (telemDict[1066]['data'][6] << 8) + telemDict[1066]['data'][7]
 			# print("****************************")
 			# print(time.time() - timer)
 			# print("****************************")
@@ -712,8 +712,8 @@ async def broadcastTlm(reader, writer, freq = 5):
 			break
 		
 		telemDict['state'] = str(pod.state)
-		if str(pod.state) == 'Launching' or str(pod.state) == 'Coasting' or str(pod.state) == 'Braking':
-			telemDict['distance'] = telemDict['distance'] + 1 # Sample data
+		# if str(pod.state) == 'Launching' or str(pod.state) == 'Coasting' or str(pod.state) == 'Braking':
+		# 	telemDict['distance'] = telemDict['distance'] + 1 # Sample data
 
 		 # Serialize dictionary as xjson (ignoring unserializable data)
 		output = json.dumps(telemDict, default=lambda o: '')
@@ -880,9 +880,9 @@ async def spacex_tlm(freq = 50):
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
 		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict['R BMS']['cell 3 v']), int(telemDict['cell 4 v']['isolater']), int(telemDict['R BMS']['cell 5 v']), int(telemDict['R BMS']['cell 6 v']), int(telemDict['R BMS']['cell 7 v']), int(telemDict['R BMS']['cell 8 v']), int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
-		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict['All Brakes']['pressure']), int(telemDict['All Tensioner 1']['pressure']), int(telemDict['All Brakes']['tank temp']), int(telemDict['All Tensioner 1']['tank temp']), int(telemDict['All Tensioner 1']['solenoid temp']), int(telemDict['All Tensioner 1']['front pneumatic temp']), int(position) // 3048)
+		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict['All Brakes']['pressure']), int(telemDict['All Tensioner 1']['pressure']), int(telemDict['All Brakes']['tank temp']), int(telemDict['All Tensioner 1']['tank temp']), int(telemDict['All Tensioner 1']['solenoid temp']), int(telemDict['All Tensioner 1']['front tensioner temp']), int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
-		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict['All Tensioner 2']['back pneumatic temp']), 0, 0, 0, 0, 0, int(position) // 3048)
+		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict['All Tensioner 2']['back tensioner temp']), 0, 0, 0, 0, 0, int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
 		#-------------------NEED TO RESTRUCTURE PACKETS
 		
