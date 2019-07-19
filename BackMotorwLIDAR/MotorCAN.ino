@@ -293,8 +293,7 @@ void loop() {
   {
     throttle = 100;
   } 
-  motor_output(throttle, "L");
-  motor_output(throttle, "R");
+  motor_output(throttle);
   
   // Hall Sensing
   currentMillis = millis();
@@ -448,7 +447,7 @@ void sendmessage() {
 
 //----------------------------------------------------------------------------------------------------
 
-void motor_output(int throttle, char WhichMotor)
+void motor_output(int throttle)
 {
   int motor_out = 0;
   if (throttle == 0)
@@ -459,14 +458,8 @@ void motor_output(int throttle, char WhichMotor)
   {
     motor_out = (int)map(throttle, 1, 100, motor_out_LOW, motor_out_HIGH);
   }
-  if (WhichMotor == "L")
-  {
     motorL.write(motor_out);
-  }
-  else
-  {
     motorR.write(motor_out);
-  }
 
 }
 

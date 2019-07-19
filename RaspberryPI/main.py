@@ -243,21 +243,21 @@ telemDict = {
 		'data': 			None,
 		'time': 			None,
 		'time delta' :		None,
-		'state of charge':	None,
-		'instant voltage':	0,
-		'max temp' :   		0,
-		'min temp' :		None,
+		'instant voltage':	None,
 		'max v' : 			None,
 		'min v' :			None,
-		'current' : 		0,
+		'current' : 		None
 		},
 	1307 or 'F BMS 2': {
 		'name': 'F BMS 2 data',
 		'data': 			None,
 		'time': 			None,
 		'time delta' :		None,
+		'state of charge' :	None,
+		'min temp' :		None,
+		'max temp' :		None,
 		'avg temp' :        None, #Here and below needs to be added to data translation and network packets (ID will change)
-		'isolater' :        None, #"Isolation ADC"
+		'isolater' :        None #"Isolation ADC"
 		},
 	1308 or 'F BMS Cells': {
 		'name': 'F BMS Cells data',
@@ -283,7 +283,7 @@ telemDict = {
 		17 			:        None,
 		18 			:        None,
 		19 			:        None,
-		20 			:        None,
+		20 			:        None
 		},
 	# 1321 or 'M BMS': {
 	# 	'name': 'M BMS data',
@@ -300,21 +300,21 @@ telemDict = {
 		'data': 			None,
 		'time': 			None,
 		'time delta' :		None,
-		'state of charge':	None,
 		'instant voltage':	None,
-		'max temp' :   		None,
-		'min temp' :		None,
 		'max v' : 			None,
 		'min v' :			None,
-		'current' : 		None,
+		'current' : 		None
 		},
 	1339 or 'R BMS 2': {
 		'name': 'F BMS 2 data',
 		'data': 			None,
 		'time': 			None,
 		'time delta' :		None,
+		'state of charge' :	None,
+		'min temp' :		None,
+		'max temp' :		None,
 		'avg temp' :        None, #Here and below needs to be added to data translation and network packets (ID will change)
-		'isolater' :        None, #"Isolation ADC"
+		'isolater' :        None #"Isolation ADC"
 		},
 	1340 or 'R BMS Cells': {
 		'name': 'F BMS Cells data',
@@ -340,7 +340,7 @@ telemDict = {
 		17 			:        None,
 		18 			:        None,
 		19 			:        None,
-		20 			:        None,
+		20 			:        None
 		},
 	# 1322 or 'M BMS Arduino': {
 	# 	'name': 'M BMS Arduino data',
@@ -367,7 +367,8 @@ telemDict = {
 		'time delta' :		None,
 		'health' :  		None,
 		'discharge enable':	None,
-		'charge enable': 	None
+		'charge enable': 	None,
+		'controls voltage': None
 		},
 	1050 or 'Right Band': {
 		'name': 'Right Band Data',
@@ -594,19 +595,20 @@ async def updateTelemDict(freq = 5):
 			BMS_id1 = [1305,1337]
 			for i in BMS_id1:
 				if telemDict[i]['data'] != None:
-					telemDict[i]['current'] = telemDict[i]['data'][0]
-					telemDict[i]['instant voltage'] = telemDict[i]['data'][1]
-					telemDict[i]['state of charge'] = telemDict[i]['data'][2]
-					telemDict[i]['max temp'] = telemDict[i]['data'][3]   	
-					telemDict[i]['min temp'] = telemDict[i]['data'][4]
-					telemDict[i]['max v'] = telemDict[i]['data'][5] 
-					telemDict[i]['min v'] = telemDict[i]['data'][6] 
+					telemDict[i]['current'] = ((telemDict[i]['data'][0] << 8) + telemDict[i]['data'][1])*.1 #amps
+					telemDict[i]['instant voltage'] = ((telemDict[i]['data'][2] << 8) + telemDict[i]['data'][3])*.1 #volts
+					telemDict[i]['min v'] = ((telemDict[i]['data'][4] << 8) + telemDict[i]['data'][5])*.0001 #volts		 
+					telemDict[i]['max v'] = ((telemDict[i]['data'][6] << 8) + telemDict[i]['data'][7])*.0001 #volts
 
 			BMS_id2 = [1307,1339]
 			for i in BMS_id2:
 				if telemDict[i]['data'] != None:
-					telemDict[i]['isolater'] = telemDict[i]['data'][0]
-					telemDict[i]['avg temp'] = telemDict[i]['data'][1]
+					telemDict[i]['isolater'] = ((telemDict[i]['data'][0] << 8) + telemDict[i]['data'][1])*.001 #volts
+					telemDict[i]['state of charge'] = telemDict[i]['data'][2]*.5 #percent
+					telemDict[i]['max temp'] = telemDict[i]['data'][3] #deg C 
+					telemDict[i]['min temp'] = telemDict[i]['data'][4] #deg C
+					telemDict[i]['avg temp'] = telemDict[i]['data'][5] #deg C
+
 
 			BMS_id3 = [1308,1340]
 			for i in BMS_id3:
@@ -665,7 +667,7 @@ async def processNetCmds(reader, writer):
 			# Try decoding data, otherwise ignore it
 			cmd = data.decode('utf8').rstrip().lower().split(" ")
 		except Exception as e:
-			print(f"Caught exception: {e}")
+			print(f"Caught exception processing network commands: {e}")
 			continue
 
 		output = '' # Init the output
@@ -789,7 +791,7 @@ async def processTelem(freq = 5, can_read_freq = 10):
 					telemDict[msg.arbitration_id]['time delta'] = msg.timestamp - telemDict[msg.arbitration_id]['time']
 
 			except Exception as e:
-				print(f"Caught exception: {e}")
+				print(f"Caught exception processing telemetry: {e}")
 				continue
 		# Wait for last message to arrive
 		await reader.get_message()
