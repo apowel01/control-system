@@ -61,14 +61,14 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>screen2_image_14.png</pixmap>
+     <pixmap>screen2_image_19.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="FP_state">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>140</y>
+      <x>100</x>
+      <y>170</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -96,8 +96,8 @@ color: white;</string>
    <widget class="QLabel" name="FP_volt">
     <property name="geometry">
      <rect>
-      <x>263</x>
-      <y>140</y>
+      <x>274</x>
+      <y>170</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -125,8 +125,8 @@ color: white;</string>
    <widget class="QLabel" name="FP_curr">
     <property name="geometry">
      <rect>
-      <x>416</x>
-      <y>140</y>
+      <x>460</x>
+      <y>170</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -154,8 +154,8 @@ color: white;</string>
    <widget class="QLabel" name="FP_minCell">
     <property name="geometry">
      <rect>
-      <x>263</x>
-      <y>290</y>
+      <x>274</x>
+      <y>334</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -183,8 +183,8 @@ color: white;</string>
    <widget class="QLabel" name="FP_maxCell">
     <property name="geometry">
      <rect>
-      <x>416</x>
-      <y>290</y>
+      <x>460</x>
+      <y>334</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -212,8 +212,8 @@ color: white;</string>
    <widget class="QLabel" name="RP_volt">
     <property name="geometry">
      <rect>
-      <x>263</x>
-      <y>525</y>
+      <x>274</x>
+      <y>520</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -241,8 +241,8 @@ color: white;</string>
    <widget class="QLabel" name="RP_curr">
     <property name="geometry">
      <rect>
-      <x>416</x>
-      <y>525</y>
+      <x>460</x>
+      <y>520</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -270,8 +270,8 @@ color: white;</string>
    <widget class="QLabel" name="RP_maxCell">
     <property name="geometry">
      <rect>
-      <x>416</x>
-      <y>669</y>
+      <x>460</x>
+      <y>690</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -299,8 +299,8 @@ color: white;</string>
    <widget class="QLabel" name="RP_minCell">
     <property name="geometry">
      <rect>
-      <x>263</x>
-      <y>669</y>
+      <x>274</x>
+      <y>690</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -328,8 +328,8 @@ color: white;</string>
    <widget class="QLabel" name="RP_state">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>525</y>
+      <x>100</x>
+      <y>520</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -357,8 +357,8 @@ color: white;</string>
    <widget class="QLabel" name="brakes_pressure">
     <property name="geometry">
      <rect>
-      <x>167</x>
-      <y>927</y>
+      <x>160</x>
+      <y>890</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -386,8 +386,8 @@ color: white;</string>
    <widget class="QLabel" name="tensioner_pressure">
     <property name="geometry">
      <rect>
-      <x>351</x>
-      <y>927</y>
+      <x>370</x>
+      <y>890</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -415,8 +415,8 @@ color: white;</string>
    <widget class="QLabel" name="battery_actual">
     <property name="geometry">
      <rect>
-      <x>630</x>
-      <y>1000</y>
+      <x>705</x>
+      <y>980</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -444,8 +444,8 @@ color: white;</string>
    <widget class="QLabel" name="battery_min">
     <property name="geometry">
      <rect>
-      <x>630</x>
-      <y>1090</y>
+      <x>705</x>
+      <y>1070</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -471,8 +471,8 @@ color: white;</string>
    <widget class="QLabel" name="battery_max">
     <property name="geometry">
      <rect>
-      <x>630</x>
-      <y>900</y>
+      <x>705</x>
+      <y>880</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -844,8 +844,8 @@ border-radius: 30;</string>
    <widget class="QLabel" name="FP_lowTemp">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>210</y>
+      <x>100</x>
+      <y>250</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -873,8 +873,8 @@ color: white;</string>
    <widget class="QLabel" name="FP_avgTemp">
     <property name="geometry">
      <rect>
-      <x>263</x>
-      <y>210</y>
+      <x>274</x>
+      <y>250</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -902,8 +902,8 @@ color: white;</string>
    <widget class="QLabel" name="FP_highTemp">
     <property name="geometry">
      <rect>
-      <x>416</x>
-      <y>210</y>
+      <x>460</x>
+      <y>250</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -931,8 +931,8 @@ color: white;</string>
    <widget class="QLabel" name="RP_lowTemp">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>597</y>
+      <x>100</x>
+      <y>600</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -960,8 +960,8 @@ color: white;</string>
    <widget class="QLabel" name="RP_avgTemp">
     <property name="geometry">
      <rect>
-      <x>263</x>
-      <y>597</y>
+      <x>274</x>
+      <y>600</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -989,8 +989,8 @@ color: white;</string>
    <widget class="QLabel" name="RP_highTemp">
     <property name="geometry">
      <rect>
-      <x>416</x>
-      <y>597</y>
+      <x>460</x>
+      <y>600</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -1018,8 +1018,8 @@ color: white;</string>
    <widget class="QLabel" name="breaking_airTank">
     <property name="geometry">
      <rect>
-      <x>167</x>
-      <y>1015</y>
+      <x>160</x>
+      <y>990</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -1047,8 +1047,8 @@ color: white;</string>
    <widget class="QLabel" name="tensioner_airTank">
     <property name="geometry">
      <rect>
-      <x>344</x>
-      <y>1015</y>
+      <x>370</x>
+      <y>990</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -1076,8 +1076,8 @@ color: white;</string>
    <widget class="QLabel" name="solenoid">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>1100</y>
+      <x>84</x>
+      <y>1090</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -1105,8 +1105,8 @@ color: white;</string>
    <widget class="QLabel" name="front_tensioner">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>1100</y>
+      <x>253</x>
+      <y>1090</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -1134,8 +1134,8 @@ color: white;</string>
    <widget class="QLabel" name="rear_tensioner">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>1100</y>
+      <x>440</x>
+      <y>1090</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -1163,8 +1163,8 @@ color: white;</string>
    <widget class="QLabel" name="FP_isolater">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>290</y>
+      <x>100</x>
+      <y>334</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -1192,8 +1192,8 @@ color: white;</string>
    <widget class="QLabel" name="RP_isolater">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>669</y>
+      <x>100</x>
+      <y>690</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -1218,468 +1218,28 @@ color: white;</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="FP_cv1">
+   <widget class="QPushButton" name="moreCellsButton">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>355</y>
-      <width>111</width>
-      <height>31</height>
+      <x>1390</x>
+      <y>990</y>
+      <width>151</width>
+      <height>61</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Roboto</family>
-      <pointsize>12</pointsize>
+      <pointsize>9</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background: #ef0f0f;
-border-radius: 10;
-color: white;</string>
+     <string notr="true">color: white; border:3px solid #f3ca15;border-radius: 10;</string>
     </property>
     <property name="text">
-     <string>0000</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="FP_cv2">
-    <property name="geometry">
-     <rect>
-      <x>200</x>
-      <y>355</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: #ef0f0f;
-border-radius: 10;
-color: white;</string>
-    </property>
-    <property name="text">
-     <string>0000</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="FP_cv3">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>355</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: #ef0f0f;
-border-radius: 10;
-color: white;</string>
-    </property>
-    <property name="text">
-     <string>0000</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="FP_cv4">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>355</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: #ef0f0f;
-border-radius: 10;
-color: white;</string>
-    </property>
-    <property name="text">
-     <string>0000</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="FP_cv6">
-    <property name="geometry">
-     <rect>
-      <x>200</x>
-      <y>393</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: #ef0f0f;
-border-radius: 10;
-color: white;</string>
-    </property>
-    <property name="text">
-     <string>0000</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="FP_cv7">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>393</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: #ef0f0f;
-border-radius: 10;
-color: white;</string>
-    </property>
-    <property name="text">
-     <string>0000</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="FP_cv8">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>393</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: #ef0f0f;
-border-radius: 10;
-color: white;</string>
-    </property>
-    <property name="text">
-     <string>0000</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="FP_cv5">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>393</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: #ef0f0f;
-border-radius: 10;
-color: white;</string>
-    </property>
-    <property name="text">
-     <string>0000</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="RP_cv2">
-    <property name="geometry">
-     <rect>
-      <x>200</x>
-      <y>737</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: #ef0f0f;
-border-radius: 10;
-color: white;</string>
-    </property>
-    <property name="text">
-     <string>0000</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="RP_cv3">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>737</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: #ef0f0f;
-border-radius: 10;
-color: white;</string>
-    </property>
-    <property name="text">
-     <string>0000</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="RP_cv4">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>737</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: #ef0f0f;
-border-radius: 10;
-color: white;</string>
-    </property>
-    <property name="text">
-     <string>0000</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="RP_cv5">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>776</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: #ef0f0f;
-border-radius: 10;
-color: white;</string>
-    </property>
-    <property name="text">
-     <string>0000</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="RP_cv6">
-    <property name="geometry">
-     <rect>
-      <x>200</x>
-      <y>776</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: #ef0f0f;
-border-radius: 10;
-color: white;</string>
-    </property>
-    <property name="text">
-     <string>0000</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="RP_cv1">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>737</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: #ef0f0f;
-border-radius: 10;
-color: white;</string>
-    </property>
-    <property name="text">
-     <string>0000</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="RP_cv8">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>776</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: #ef0f0f;
-border-radius: 10;
-color: white;</string>
-    </property>
-    <property name="text">
-     <string>0000</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="RP_cv7">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>776</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto</family>
-      <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: #ef0f0f;
-border-radius: 10;
-color: white;</string>
-    </property>
-    <property name="text">
-     <string>0000</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <string>BATTERY CELLS</string>
     </property>
    </widget>
    <zorder>screenImage</zorder>
@@ -1728,22 +1288,7 @@ color: white;</string>
    <zorder>rear_tensioner</zorder>
    <zorder>FP_isolater</zorder>
    <zorder>RP_isolater</zorder>
-   <zorder>FP_cv1</zorder>
-   <zorder>FP_cv2</zorder>
-   <zorder>FP_cv3</zorder>
-   <zorder>FP_cv4</zorder>
-   <zorder>FP_cv6</zorder>
-   <zorder>FP_cv7</zorder>
-   <zorder>FP_cv8</zorder>
-   <zorder>FP_cv5</zorder>
-   <zorder>RP_cv2</zorder>
-   <zorder>RP_cv3</zorder>
-   <zorder>RP_cv4</zorder>
-   <zorder>RP_cv5</zorder>
-   <zorder>RP_cv6</zorder>
-   <zorder>RP_cv1</zorder>
-   <zorder>RP_cv8</zorder>
-   <zorder>RP_cv7</zorder>
+   <zorder>moreCellsButton</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
