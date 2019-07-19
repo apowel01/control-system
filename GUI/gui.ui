@@ -175,7 +175,7 @@ background: transparent;
 </string>
     </property>
     <property name="text">
-     <string>0M</string>
+     <string>0CM</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>

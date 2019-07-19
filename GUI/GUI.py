@@ -40,13 +40,13 @@ class GUI1(QMainWindow):
         #Used to allow GUI to be draggable
         self.oldPos = self.pos()
 
-    def mousePressEvent(self, event):
-        self.oldPos = event.globalPos()
+    # def mousePressEvent(self, event):
+    #     self.oldPos = event.globalPos()
 
-    def mouseMoveEvent(self, event):
-        delta = QPoint (event.globalPos() - self.oldPos)
-        self.move(self.x() + delta.x(), self.y() + delta.y())
-        self.oldPos = event.globalPos()
+    # def mouseMoveEvent(self, event):
+    #     delta = QPoint (event.globalPos() - self.oldPos)
+    #     self.move(self.x() + delta.x(), self.y() + delta.y())
+    #     self.oldPos = event.globalPos()
 
     '''GUI UPDATE FUNCTIONS'''
 
@@ -96,6 +96,45 @@ class GUI1(QMainWindow):
             self.errors_label.setText(message) 
             self.errors_label.setStyleSheet("QLabel {color: red; background: transparent;}");
 
+class cells_window(QMainWindow):
+    def __init__(self, parent):
+        super(cells_window, self).__init__(parent)
+        loadUi('cells.ui',self)
+
+        self.FP_cells = [0]*20
+        self.RP_cells = [0]*20
+
+        self.FP_text = [self.FP_cv1,self.FP_cv2,self.FP_cv3,self.FP_cv4,self.FP_cv5,self.FP_cv6,self.FP_cv7,self.FP_cv8,self.FP_cv9,self.FP_cv10,self.FP_cv11,self.FP_cv12,self.FP_cv13,self.FP_cv14,self.FP_cv15,self.FP_cv16,self.FP_cv17,self.FP_cv18,self.FP_cv19,self.FP_cv20]
+        self.RP_text = [self.RP_cv1,self.RP_cv2,self.RP_cv3,self.RP_cv4,self.RP_cv5,self.RP_cv6,self.RP_cv7,self.RP_cv8,self.RP_cv9,self.RP_cv10,self.RP_cv11,self.RP_cv12,self.RP_cv13,self.RP_cv14,self.RP_cv15,self.RP_cv16,self.RP_cv17,self.RP_cv18,self.RP_cv19,self.RP_cv20]
+        
+        self.setWindowTitle('Cal Poly Hyperloop')
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.move(1050, 0)
+
+
+        self.hide.clicked.connect(self.on_hide)
+
+    def on_hide(self):
+        self.close()
+        # for cell in range(len(batteryCells)):
+
+    def update_cells(self):
+        for cell in range(len(self.FP_cells)):
+            text = "{0:.2f}".format(self.FP_cells[cell])
+            self.FP_text[cell].setText(text+" V")
+            if 2 < self.FP_cells[cell] < 3.6:
+                self.FP_text[cell].setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
+            else:
+                self.FP_text[cell].setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
+
+        for cell in range(len(self.FP_cells)):
+            text = "{0:.2f}".format(self.RP_cells[cell])
+            self.RP_text[cell].setText(text+" V")
+            if 2 < self.RP_cells[cell] < 3.6:
+                self.RP_text[cell].setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
+            else:
+                self.RP_text[cell].setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
+
 class GUI2(QMainWindow):
     def __init__(self):
         super(GUI2, self).__init__()
@@ -123,8 +162,8 @@ class GUI2(QMainWindow):
         #PNEUMATICS (RANGES)
         self.brakesPressure_minRange = 240;
         self.brakesPressure_maxRange = 250;
-        self.tensionerPressure_minRange = 50;
-        self.tensionerPressure_maxRange = 150;
+        self.tensionerPressure_minRange = 80;
+        self.tensionerPressure_maxRange = 90;
         self.breaksAirTank_minRange = 0;
         self.breaksAirTank_maxRange = 130;
         self.tensionerAirTank_minRange = 0;
@@ -153,14 +192,14 @@ class GUI2(QMainWindow):
         self.FP_highTemp_Value = 0;
         self.FP_minCell_value = 0;
         self.FP_maxCell_value = 0;
-        self.FP_cell1 = 0;
-        self.FP_cell2 = 0;
-        self.FP_cell3 = 0;
-        self.FP_cell4 = 0;
-        self.FP_cell5 = 0;
-        self.FP_cell6 = 0;
-        self.FP_cell7 = 0;
-        self.FP_cell8 = 0;
+        # self.FP_cell1 = 0;
+        # self.FP_cell2 = 0;
+        # self.FP_cell3 = 0;
+        # self.FP_cell4 = 0;
+        # self.FP_cell5 = 0;
+        # self.FP_cell6 = 0;
+        # self.FP_cell7 = 0;
+        # self.FP_cell8 = 0;
         self.FP_isolator_value=0;
 
         #REAR PACK
@@ -172,14 +211,14 @@ class GUI2(QMainWindow):
         self.RP_highTemp_Value = 0;        
         self.RP_minCell_value = 0;
         self.RP_maxCell_value = 0;
-        self.RP_cell1 = 0;
-        self.RP_cell2 = 0;
-        self.RP_cell3 = 0;
-        self.RP_cell4 = 0;
-        self.RP_cell5 = 0;
-        self.RP_cell6 = 0;
-        self.RP_cell7 = 0;
-        self.RP_cell8 = 0;
+        # self.RP_cell1 = 0;
+        # self.RP_cell2 = 0;
+        # self.RP_cell3 = 0;
+        # self.RP_cell4 = 0;
+        # self.RP_cell5 = 0;
+        # self.RP_cell6 = 0;
+        # self.RP_cell7 = 0;
+        # self.RP_cell8 = 0;
         self.RP_isolator_value=1;
 
         #PNEUMATICS
@@ -216,13 +255,20 @@ class GUI2(QMainWindow):
         #Used to allow GUI to be draggable
         self.oldPos = self.pos()
 
-    def mousePressEvent(self, event):
-        self.oldPos = event.globalPos()
+        self.moreCellsButton.clicked.connect(self.on_cellButton)
+        self.cellsWindow = cells_window(self)
+        self.cellsWindow.close()
+    def on_cellButton(self):
+        self.cellsWindow.show() 
 
-    def mouseMoveEvent(self, event):
-        delta = QPoint (event.globalPos() - self.oldPos)
-        self.move(self.x() + delta.x(), self.y() + delta.y())
-        self.oldPos = event.globalPos()
+    # def mousePressEvent(self, event):
+    #     self.oldPos = event.globalPos()
+
+    # def mouseMoveEvent(self, event):
+    #     delta = QPoint (event.globalPos() - self.oldPos)
+    #     #print(delta)
+    #     self.move(self.x() + delta.x(), self.y() + delta.y())
+    #     self.oldPos = event.globalPos()
 
 
     '''GUI UPDATE FUNCTIONS'''
@@ -236,14 +282,6 @@ class GUI2(QMainWindow):
         highTemp_text = "{0:.2f}".format(self.FP_highTemp_Value) 
         minCell_text = "{0:.2f}".format(self.FP_minCell_value) 
         maxCell_text = "{0:.2f}".format(self.FP_maxCell_value)
-        cell1_text = "{0:.2f}".format(self.FP_cell1)
-        cell2_text = "{0:.2f}".format(self.FP_cell2)
-        cell3_text = "{0:.2f}".format(self.FP_cell3)
-        cell4_text = "{0:.2f}".format(self.FP_cell4)
-        cell5_text = "{0:.2f}".format(self.FP_cell5)
-        cell6_text = "{0:.2f}".format(self.FP_cell6)
-        cell7_text = "{0:.2f}".format(self.FP_cell7)
-        cell8_text = "{0:.2f}".format(self.FP_cell8)
         isolator_text = "{0:.2f}".format(self.FP_isolator_value)
 
 
@@ -255,71 +293,56 @@ class GUI2(QMainWindow):
         self.FP_highTemp.setText(highTemp_text+" C°")            
         self.FP_minCell.setText(minCell_text+" V")
         self.FP_maxCell.setText(maxCell_text+" V")
-        self.FP_cv1.setText(cell1_text+" V")
-        self.FP_cv2.setText(cell2_text+" V")
-        self.FP_cv3.setText(cell3_text+" V")
-        self.FP_cv4.setText(cell4_text+" V")
-        self.FP_cv5.setText(cell5_text+" V")
-        self.FP_cv6.setText(cell6_text+" V")
-        self.FP_cv7.setText(cell7_text+" V")
-        self.FP_cv8.setText(cell8_text+" V")
-        self.FP_isolater.setText(isolator_text)
+        self.FP_isolater.setText(isolator_text+" V")
 
-        if self.chargeState_minRange < self.FP_state_value < self.chargeState_maxRange:
+        if self.chargeState_minRange <= self.FP_state_value <= self.chargeState_maxRange:
             self.FP_state.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
             self.FP_state.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
-        if self.volt_minRange < self.FP_volt_value < self.volt_maxRange:
+        if self.volt_minRange <= self.FP_volt_value <= self.volt_maxRange:
             self.FP_podSquare.setStyleSheet("QLabel { background-color : #00a34f;}");
             self.FP_volt.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
             self.FP_podSquare.setStyleSheet("QLabel { background-color : #9d0b0f;}");
             self.FP_volt.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
-        if self.curr_minRange < self.FP_curr_value < self.curr_maxRange:
+        if self.curr_minRange <= self.FP_curr_value <= self.curr_maxRange:
             self.FP_curr.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
             self.FP_curr.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
-        if self.Temp_minRange < self.FP_lowTemp_Value < self.Temp_maxRange:
+        if self.Temp_minRange <= self.FP_lowTemp_Value <= self.Temp_maxRange:
             self.FP_lowTemp.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
             self.FP_lowTemp.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
         
-        if self.Temp_minRange < self.FP_avgTemp_Value < self.Temp_maxRange:
+        if self.Temp_minRange <= self.FP_avgTemp_Value <= self.Temp_maxRange:
             self.FP_avgTemp.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
             self.FP_avgTemp.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
         
-        if self.Temp_minRange < self.FP_highTemp_Value < self.Temp_maxRange:
+        if self.Temp_minRange <= self.FP_highTemp_Value <= self.Temp_maxRange:
             self.FP_highTemp.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
             self.FP_highTemp.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
         
-        if self.minCell_minRange < self.FP_minCell_value < self.minCell_maxRange:
+        if self.minCell_minRange <= self.FP_minCell_value <= self.minCell_maxRange:
             self.FP_minCell.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
             self.FP_minCell.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
-        if self.maxCell_minRange < self.FP_maxCell_value < self.maxCell_maxRange:
+        if self.maxCell_minRange <= self.FP_maxCell_value <= self.maxCell_maxRange:
             self.FP_maxCell.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
             self.FP_maxCell.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
-        batteryCells = [self.FP_cell1,self.FP_cell2,self.FP_cell3,self.FP_cell4,self.FP_cell5,self.FP_cell6,self.FP_cell7,self.FP_cell8]
-        cellsText = [self.FP_cv1, self.FP_cv2, self.FP_cv3, self.FP_cv4, self.FP_cv5, self.FP_cv6, self.FP_cv7, self.FP_cv8]
-   
-        for cell in range(len(batteryCells)):
-            if self.minCell_minRange < batteryCells[cell] < self.maxCell_maxRange:
-                cellsText[cell].setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-            else:
-                cellsText[cell].setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-
-        if self.FP_isolator_value==1:
+        if 4<=self.FP_isolator_value <=5:
             self.FP_isolater.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
             self.FP_isolater.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
+
+        self.cellsWindow.update_cells()
 
     def update_rearPack_label(self):
         state_text = "{0:.2f}".format(self.RP_state_value) 
@@ -330,14 +353,6 @@ class GUI2(QMainWindow):
         highTemp_text = "{0:.2f}".format(self.RP_highTemp_Value)
         minCell_text = "{0:.2f}".format(self.RP_minCell_value) 
         maxCell_text = "{0:.2f}".format(self.RP_maxCell_value)
-        cell1_text = "{0:.2f}".format(self.RP_cell1)
-        cell2_text = "{0:.2f}".format(self.RP_cell2)
-        cell3_text = "{0:.2f}".format(self.RP_cell3)
-        cell4_text = "{0:.2f}".format(self.RP_cell4)
-        cell5_text = "{0:.2f}".format(self.RP_cell5)
-        cell6_text = "{0:.2f}".format(self.RP_cell6)
-        cell7_text = "{0:.2f}".format(self.RP_cell7)
-        cell8_text = "{0:.2f}".format(self.RP_cell8)
         isolator_text = "{0:.2f}".format(self.RP_isolator_value)
 
         self.RP_state.setText(state_text+"")
@@ -348,68 +363,51 @@ class GUI2(QMainWindow):
         self.RP_highTemp.setText(highTemp_text+" C°")         
         self.RP_minCell.setText(minCell_text+" V")
         self.RP_maxCell.setText(maxCell_text+" V")
-        self.RP_cv1.setText(cell1_text+" V")
-        self.RP_cv2.setText(cell2_text+" V")
-        self.RP_cv3.setText(cell3_text+" V")
-        self.RP_cv4.setText(cell4_text+" V")
-        self.RP_cv5.setText(cell5_text+" V")
-        self.RP_cv6.setText(cell6_text+" V")
-        self.RP_cv7.setText(cell7_text+" V")
-        self.RP_cv8.setText(cell8_text+" V")
-        self.RP_isolater.setText(isolator_text)
+        self.RP_isolater.setText(isolator_text+" V")
 
-        if self.chargeState_minRange < self.RP_state_value < self.chargeState_maxRange:
+        if self.chargeState_minRange <= self.RP_state_value <= self.chargeState_maxRange:
             self.RP_state.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
             self.RP_state.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
-        if self.volt_minRange < self.RP_volt_value < self.volt_maxRange:
+        if self.volt_minRange <= self.RP_volt_value <= self.volt_maxRange:
             self.RP_podSquare.setStyleSheet("QLabel { background-color : #00a34f;}");
             self.RP_volt.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
             self.RP_podSquare.setStyleSheet("QLabel { background-color : #9d0b0f;}");
             self.RP_volt.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
-        if self.curr_minRange < self.RP_curr_value < self.curr_maxRange:
+        if self.curr_minRange <= self.RP_curr_value <= self.curr_maxRange:
             self.RP_curr.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
             self.RP_curr.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
-        if self.Temp_minRange < self.RP_lowTemp_Value < self.Temp_maxRange:
+        if self.Temp_minRange <= self.RP_lowTemp_Value <= self.Temp_maxRange:
             self.RP_lowTemp.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
             self.RP_lowTemp.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
         
-        if self.Temp_minRange < self.RP_avgTemp_Value < self.Temp_maxRange:
+        if self.Temp_minRange <= self.RP_avgTemp_Value <= self.Temp_maxRange:
             self.RP_avgTemp.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
             self.RP_avgTemp.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
         
-        if self.Temp_minRange < self.RP_highTemp_Value < self.Temp_maxRange:
+        if self.Temp_minRange <= self.RP_highTemp_Value <= self.Temp_maxRange:
             self.RP_highTemp.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
             self.RP_highTemp.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
         
-        if self.minCell_minRange < self.RP_minCell_value < self.minCell_maxRange:
+        if self.minCell_minRange <= self.RP_minCell_value <= self.minCell_maxRange:
             self.RP_minCell.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
             self.RP_minCell.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
-        if self.maxCell_minRange < self.RP_maxCell_value < self.maxCell_maxRange:
+        if self.maxCell_minRange <= self.RP_maxCell_value <= self.maxCell_maxRange:
             self.RP_maxCell.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
             self.RP_maxCell.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
 
-        batteryCells = [self.RP_cell1,self.RP_cell2,self.RP_cell3,self.RP_cell4,self.RP_cell5,self.RP_cell6,self.RP_cell7,self.RP_cell8]
-        cellsText = [self.RP_cv1, self.RP_cv2, self.RP_cv3, self.RP_cv4, self.RP_cv5, self.RP_cv6, self.RP_cv7, self.RP_cv8]
-   
-        for cell in range(len(batteryCells)):
-            if self.minCell_minRange < batteryCells[cell] < self.maxCell_maxRange:
-                cellsText[cell].setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
-            else:
-                cellsText[cell].setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
-        
-        if self.RP_isolator_value==1:
+        if 4 <= self.RP_isolator_value<=5:
             self.RP_isolater.setStyleSheet("QLabel { background-color : #39b54a; border-radius: 10px; color:white;}");
         else:
             self.RP_isolater.setStyleSheet("QLabel { background-color : #ef0f0f; border-radius: 10px; color:white;}");
@@ -560,103 +558,363 @@ def update_labels():
     #   "pack3_Amp": 33\
     # }'\
 
-    RECIEVED_JSON = s.recv(1024)   #UNCOMMENT
-    print(RECIEVED_JSON)   #UNCOMMENT
-    recieved = '{'+RECIEVED_JSON.decode().split('}{')[-1].strip('{')   #UNCOMMENT
-    print(recieved)   #UNCOMMENT
+    RECIEVED_JSON = s.recv(6000)
+    recieved = '{'+RECIEVED_JSON.decode().split('}{')[-1].strip('{')
 
     try:
-        data = recieved   #UNCOMMENT
-        print("DATA _______________________: ",data)   #UNCOMMENT
-        json_parsed = json.loads(data)   #UNCOMMENT
-
+        data = recieved
+        print("************************************************************************")
+        print("************************************************************************")
+        print("************************************************************************")
+        print("************************************************************************")
+        print("************************************************************************")
+        print(data)
+        print("************************************************************************")
+        print("************************************************************************")
+        print("************************************************************************")
+        print("************************************************************************")
+        print("************************************************************************")
+        json_parsed = json.loads(data)
 
         '''UPDATE DATA _SCREEN 1'''
         widget1.state = json_parsed["state"]
-        # widget1.acceleration = json_parsed["acceleration"]
-        widget1.speed = json_parsed["velocity"]
-        widget1.distance = json_parsed["position"]
-        # widget1.max_battery_temp = json_parsed["max_battery_temp"]
-        # widget1.vibration = json_parsed["vibration"]
-        # widget1.voltage12 = json_parsed["voltage12V"]
-        # widget1.packVolt1 = json_parsed["pack1_volt"]
-        # widget1.packVolt2 = json_parsed["pack2_volt"]
-        # widget1.packVolt3 = json_parsed["pack3_volt"]
-        # widget1.packAmp3 = json_parsed["pack1_Amp"]
-        # widget1.packAmp2 = json_parsed["pack2_Amp"]
-        # widget1.packAmp1 = json_parsed["pack3_Amp"]
-        
-
-
-
+        widget1.acceleration = float(json_parsed["location"]["acceleration"])
+        widget1.speed =  int(json_parsed["location"]["velocity"])
+        widget1.distance =  int(json_parsed["location"]["position"])
 
         '''UPDATE DATA _SCREEN 2'''
         #FRONT PACK
-        widget2.FP_state_value += .1;
-        widget2.FP_volt_value += .1;
-        widget2.FP_curr_value += .1;
-        widget2.FP_lowTemp_Value +=.1
-        widget2.FP_avgTemp_Value +=.2
-        widget2.FP_highTemp_Value +=.3
-        widget2.FP_minCell_value += .1;
-        widget2.FP_maxCell_value += .1;
+        try:
+            widget2.FP_state_value = float(json_parsed["1307"]["state of charge"])
+        except:
+            widget2.FP_state_value = -999
+        try:
+            widget2.FP_volt_value = float(json_parsed["1305"]["instant voltage"])
+        except:
+            widget2.FP_volt_value = -999
+        try:
+            widget2.FP_curr_value = float(json_parsed["1305"]["current"])
+        except:
+            widget2.FP_curr_value = -999        
+        try:
+            widget2.FP_lowTemp_Value = float(json_parsed["1307"]["min temp"])
+        except:
+            widget2.FP_lowTemp_Value = -999
+        try:
+            widget2.FP_avgTemp_Value = float(json_parsed["1307"]["avg temp"])
+        except:
+            widget2.FP_avgTemp_Value = -999
+        try:
+            widget2.FP_highTemp_Value = float(json_parsed["1307"]["max temp"])
+        except:
+            widget2.FP_highTemp_Value = -999
+        try:
+            widget2.FP_minCell_value = float(json_parsed["1305"]["min v"])
+        except:
+            widget2.FP_minCell_value = -999
+        try:
+            widget2.FP_maxCell_value = float(json_parsed["1305"]["max v"])
+        except:
+            widget2.FP_maxCell_value = -999
+        try:
+            widget2.FP_isolator_value = float(json_parsed["1307"]["isolater"])
+        except:
+            widget2.FP_isolator_value = -999
 
-        widget2.FP_cell1 += .1
-        widget2.FP_cell2 += .2
-        widget2.FP_cell3 += .3
-        widget2.FP_cell4 += .4
-        widget2.FP_cell5 += .5
-        widget2.FP_cell6 += .6
-        widget2.FP_cell7 += .7
-        widget2.FP_cell8 += .8
-
-        widget2.FP_isolator_value = 1
+        # widget2.FP_cell1 += .1
+        # widget2.FP_cell2 += .2
+        # widget2.FP_cell3 += .3
+        # widget2.FP_cell4 += .4
+        # widget2.FP_cell5 += .5
+        # widget2.FP_cell6 += .6
+        # widget2.FP_cell7 += .7
+        # widget2.FP_cell8 += .8
 
         #REAR PACK
-        widget2.RP_state_value += .1;
-        widget2.RP_volt_value += .1;
-        widget2.RP_curr_value += .1;
-        widget2.RP_lowTemp_Value +=.1
-        widget2.RP_avgTemp_Value +=.2
-        widget2.RP_highTemp_Value +=.3    
-        widget2.RP_minCell_value += .1;
-        widget2.RP_maxCell_value += .1;
+        try:
+            widget2.RP_state_value = float(json_parsed["1339"]["state of charge"])
+        except:
+            widget2.RP_state_value = -999
+        try:
+            widget2.RP_volt_value = float(json_parsed["1337"]["instant voltage"])
+        except:
+            widget2.RP_volt_value = -999
+        try:
+            widget2.RP_curr_value = float(json_parsed["1337"]["current"])
+        except:
+            widget2.RP_curr_value = -999
+        try:
+            widget2.RP_lowTemp_Value = float(json_parsed["1339"]["min temp"])
+        except:
+            widget2.RP_lowTemp_Value = -999
+        try:
+            widget2.RP_avgTemp_Value = float(json_parsed["1339"]["avg temp"])
+        except:
+            widget2.RP_avgTemp_Value = -999
+        try:
+            widget2.RP_highTemp_Value = float(json_parsed["1339"]["max temp"])
+        except:
+            widget2.RP_highTemp_Value = -999
+        try:
+            widget2.RP_minCell_value = float(json_parsed["1337"]["min v"])
+        except:
+            widget2.RP_minCell_value = -999
+        try:
+            widget2.RP_maxCell_value = float(json_parsed["1337"]["max v"])
+        except:
+            idget2.RP_maxCell_value = -999
+        try:
+            widget2.RP_isolator_value = float(json_parsed["1339"]["isolater"])
+        except:
+            widget2.RP_isolator_value = -999
 
-        widget2.RP_cell1 += .1
-        widget2.RP_cell2 += .2
-        widget2.RP_cell3 += .3
-        widget2.RP_cell4 += .4
-        widget2.RP_cell5 += .5
-        widget2.RP_cell6 += .6
-        widget2.RP_cell7 += .7
-        widget2.RP_cell8 += .8
+        # widget2.RP_cell1 += .1
+        # widget2.RP_cell2 += .2
+        # widget2.RP_cell3 += .3
+        # widget2.RP_cell4 += .4
+        # widget2.RP_cell5 += .5
+        # widget2.RP_cell6 += .6
+        # widget2.RP_cell7 += .7
+        # widget2.RP_cell8 += .8
 
-        widget2.RP_isolator_value = 1
+        
 
         #PNEUMATICS
-        widget2.brakes_pressure_value += .1;
-        widget2.tensioner_pressure_value += .1;
-        widget2.brakes_airTank_temp_value += .1;
-        widget2.tensioner_airTank_temp_value += .1;
-        widget2.solenoid_temp_value += .1;
-        widget2.frontTensioner__temp_value += .2;
-        widget2.rearTensioner__temp_value += .3;
-
+        try:
+            widget2.brakes_pressure_value = float(json_parsed["522"]["pressure"])
+        except:
+            widget2.brakes_pressure_value = -999
+        try:
+            widget2.tensioner_pressure_value = float(json_parsed["778"]["pressure"])
+        except:
+            widget2.tensioner_pressure_value = -999
+        try:
+            widget2.brakes_airTank_temp_value = float(json_parsed["522"]["tank temp"])
+        except:
+            widget2.brakes_airTank_temp_value = -999
+        try:
+            widget2.tensioner_airTank_temp_value = float(json_parsed["778"]["tank temp"])
+        except:
+            widget2.tensioner_airTank_temp_value = -999
+        try:
+            widget2.solenoid_temp_value = float(json_parsed["778"]["solenoid temp"])
+        except:
+            widget2.solenoid_temp_value = -999
+        try:
+            widget2.frontTensioner__temp_value = float(json_parsed["778"]["front pneumatic temp"])
+        except:
+            widget2.frontTensioner__temp_value = -999
+        try:
+            widget2.rearTensioner__temp_value = float(json_parsed["779"]["back pneumatic temp"])
+        except:
+            widget2.rearTensioner__temp_value = -999
+        
         #12V Battery
-        widget2.battery_actual_value += .1;
+        try:
+            widget2.battery_actual_value = float(json_parsed["1338"]["controls voltage"])
+        except:
+            widget2.battery_actual_value = -999
 
         #motors
-        widget2.TL_rpm_value += .1;
-        widget2.BL_rpm_value += .1;
-        widget2.TR_rpm_value += .1;
-        widget2.BR_rpm_value += .1;
-        widget2.TL_temp_value += .1;
-        widget2.BL_temp_value += .1;
-        widget2.TR_temp_value += .1;
-        widget2.BR_temp_value += .1;
+        try:
+            widget2.TL_rpm_value = float(json_parsed["297"]["rpm"])
+        except:
+            widget2.TL_rpm_value = -999
+        try:
+            widget2.BL_rpm_value = float(json_parsed["361"]["rpm"])
+        except:
+            widget2.BL_rpm_value = -999
+        try:
+            widget2.TR_rpm_value = float(json_parsed["281"]["rpm"])
+        except:
+            widget2.TR_rpm_value = -999
+        try:
+            widget2.BR_rpm_value = float(json_parsed["345"]["rpm"])
+        except:
+            widget2.BR_rpm_value = -999
+        try:
+            widget2.TL_temp_value = float(json_parsed["297"]["temp"])
+        except:
+            widget2.TL_temp_value = -999
+        try:
+            widget2.BL_temp_value = float(json_parsed["361"]["temp"])
+        except:
+            widget2.BL_temp_value = -999
+        try:
+            widget2.TR_temp_value = float(json_parsed["281"]["temp"])
+        except:
+            widget2.TR_temp_value = -999
+        try:
+            widget2.BR_temp_value = float(json_parsed["345"]["temp"])
+        except:
+            widget2.BR_temp_value = -999
 
+        #cells
+        
+        try:
+            widget2.cellsWindow.FP_cells[0] = float(json_parsed["1308"]["1"])
+        except:
+            widget2.cellsWindow.FP_cells[0] =-999
+        try:
+            widget2.cellsWindow.FP_cells[1] =float(json_parsed["1308"]["2"])
+        except:
+            widget2.cellsWindow.FP_cells[1] =-999
+        try:
+            widget2.cellsWindow.FP_cells[2] =float(json_parsed["1308"]["3"])
+        except:
+            widget2.cellsWindow.FP_cells[2] =-999
+        try:
+            widget2.cellsWindow.FP_cells[3] =float(json_parsed["1308"]["4"])
+        except:
+            widget2.cellsWindow.FP_cells[3] =-999
+        try:
+            widget2.cellsWindow.FP_cells[4] =float(json_parsed["1308"]["5"])
+        except:
+            widget2.cellsWindow.FP_cells[4] =-999
+        try:
+            widget2.cellsWindow.FP_cells[5] =float(json_parsed["1308"]["6"])
+        except:
+            widget2.cellsWindow.FP_cells[5] =-999
+        try:
+            widget2.cellsWindow.FP_cells[6] =float(json_parsed["1308"]["7"])
+        except:
+            widget2.cellsWindow.FP_cells[6] =-999
+        try:
+            widget2.cellsWindow.FP_cells[7] =float(json_parsed["1308"]["8"])
+        except:
+            widget2.cellsWindow.FP_cells[7] =-999
+        try:
+            widget2.cellsWindow.FP_cells[8] =float(json_parsed["1308"]["9"])
+        except:
+            widget2.cellsWindow.FP_cells[8] =-999
+        try:
+            widget2.cellsWindow.FP_cells[9] =float(json_parsed["1308"]["10"])
+        except:
+            widget2.cellsWindow.FP_cells[9] =-999
+        try:
+            widget2.cellsWindow.FP_cells[10] =float(json_parsed["1308"]["11"])
+        except:
+            widget2.cellsWindow.FP_cells[10] =-999
+        try:
+            widget2.cellsWindow.FP_cells[11] =float(json_parsed["1308"]["12"])
+        except:
+            widget2.cellsWindow.FP_cells[11] =-999
+        try:
+            widget2.cellsWindow.FP_cells[12] =float(json_parsed["1308"]["13"])
+        except:
+            widget2.cellsWindow.FP_cells[12] =-999
+        try:
+            widget2.cellsWindow.FP_cells[13] =float(json_parsed["1308"]["14"])
+        except:
+            widget2.cellsWindow.FP_cells[13] =-999
+        try:
+            widget2.cellsWindow.FP_cells[14] =float(json_parsed["1308"]["15"])
+        except:
+            widget2.cellsWindow.FP_cells[14] =-999
+        try:
+            widget2.cellsWindow.FP_cells[15] =float(json_parsed["1308"]["16"])
+        except:
+            widget2.cellsWindow.FP_cells[15] =-999
+        try:
+            widget2.cellsWindow.FP_cells[16] =float(json_parsed["1308"]["17"])
+        except:
+            widget2.cellsWindow.FP_cells[16] =-999
+        try:
+            widget2.cellsWindow.FP_cells[17] =float(json_parsed["1308"]["18"])
+        except:
+            widget2.cellsWindow.FP_cells[17] =-999
+        try:
+            widget2.cellsWindow.FP_cells[18] =float(json_parsed["1308"]["19"])
+        except:
+            widget2.cellsWindow.FP_cells[18] =-999
+        try:
+            widget2.cellsWindow.FP_cells[19] =float(json_parsed["1308"]["20"])
+        except:
+            widget2.cellsWindow.FP_cells[19] =-999
+        
+        '''SECOND PACK CELLS'''
+        try:
+            widget2.cellsWindow.RP_cells[0] =float(json_parsed["1340"]["1"])
+        except:
+            widget2.cellsWindow.RP_cells[0] = -999
+        try:
+            widget2.cellsWindow.RP_cells[1] =float(json_parsed["1340"]["2"])
+        except:
+            widget2.cellsWindow.RP_cells[1] = -999
+        try:
+            widget2.cellsWindow.RP_cells[2] =float(json_parsed["1340"]["3"])
+        except:
+            widget2.cellsWindow.RP_cells[2] = -999
+        try:
+            widget2.cellsWindow.RP_cells[3] =float(json_parsed["1340"]["4"])
+        except:
+            widget2.cellsWindow.RP_cells[3] = -999
+        try:
+            widget2.cellsWindow.RP_cells[4] =float(json_parsed["1340"]["5"])
+        except:
+            widget2.cellsWindow.RP_cells[4] = -999
+        try:
+            widget2.cellsWindow.RP_cells[5] =float(json_parsed["1340"]["6"])
+        except:
+            widget2.cellsWindow.RP_cells[5] = -999
+        try:
+            widget2.cellsWindow.RP_cells[6] =float(json_parsed["1340"]["7"])
+        except:
+            widget2.cellsWindow.RP_cells[6] = -999
+        try:
+            widget2.cellsWindow.RP_cells[7] =float(json_parsed["1340"]["8"])
+        except:
+            widget2.cellsWindow.RP_cells[7] = -999
+        try:
+            widget2.cellsWindow.RP_cells[8] =float(json_parsed["1340"]["9"])
+        except:
+            widget2.cellsWindow.RP_cells[8] = -999
+        try:
+            widget2.cellsWindow.RP_cells[9] =float(json_parsed["1340"]["10"])
+        except:
+            widget2.cellsWindow.RP_cells[9] = -999
+        try:
+            widget2.cellsWindow.RP_cells[10] =float(json_parsed["1340"]["11"])
+        except:
+            widget2.cellsWindow.RP_cells[10] = -999
+        try:
+            widget2.cellsWindow.RP_cells[11] =float(json_parsed["1340"]["12"])
+        except:
+            widget2.cellsWindow.RP_cells[11] = -999
+        try:
+            widget2.cellsWindow.RP_cells[12] =float(json_parsed["1340"]["13"])
+        except:
+            widget2.cellsWindow.RP_cells[12] = -999
+        try:
+            widget2.cellsWindow.RP_cells[13] =float(json_parsed["1340"]["14"])
+        except:
+            widget2.cellsWindow.RP_cells[13] = -999
+        try:
+            widget2.cellsWindow.RP_cells[14] =float(json_parsed["1340"]["15"])
+        except:
+            widget2.cellsWindow.RP_cells[14] = -999
+        try:
+            widget2.cellsWindow.RP_cells[15] =float(json_parsed["1340"]["16"])
+        except:
+            widget2.cellsWindow.RP_cells[15] = -999
+        try:
+            widget2.cellsWindow.RP_cells[16] =float(json_parsed["1340"]["17"])
+        except:
+            widget2.cellsWindow.RP_cells[16] = -999
+        try:
+            widget2.cellsWindow.RP_cells[17] =float(json_parsed["1340"]["18"])
+        except:
+            widget2.cellsWindow.RP_cells[17] = -999
+        try:
+            widget2.cellsWindow.RP_cells[18] =float(json_parsed["1340"]["19"])
+        except:
+            widget2.cellsWindow.RP_cells[18] = -999
+        try:
+            widget2.cellsWindow.RP_cells[19] =float(json_parsed["1340"]["20"])
+        except:
+            widget2.cellsWindow.RP_cells[19] = -999
 
-
+        print("workingg!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         '''UPDATE GUI _SCREEN 1'''
         widget1.update_speedLabel()
         widget1.update_distance()
