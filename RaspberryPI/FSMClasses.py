@@ -261,15 +261,18 @@ class Braking(State):
 	# Input: Telemetry check frequency [Hz]
 	async def braking(self, freq):
 		while True:
-			if telemDict['location']['position'] >= self.crawlDist and telemDict['location']['velocity'] <= self.stoppedVel:
-				pod.trigger('crawling')
-			elif telemDict['location']['position'] <= self.crawlDist and telemDict['location']['velocity'] <= self.stoppedVel:
-				pod.trigger('safe_to_approach')
+			if telemDict['location']['position'] <= self.crawlDist and telemDict['location']['velocity'] <= self.stoppedVel:
+				return pod.trigger('crawling')
+			elif telemDict['location']['position'] >= self.crawlDist and telemDict['location']['velocity'] <= self.stoppedVel:
+				return pod.trigger('safe_to_approach')
 
 			await self.asyncio.sleep(1/freq)
 
 # State 6: Crawling
 class Crawling(State):
+	import asyncio
+
+	crawlDist = 1.25*100000 - 30.48*100 # (total tube distance - 100ft)
 
 	def entry(self):
 		global brakes # Grab the global brakes variable
@@ -282,6 +285,8 @@ class Crawling(State):
 			batteries.enable() # Enables batteries
 			tensioners.enable() # Engages tensioners
 			motors.setSpeed(10) # Set speed
+
+			self.asyncio.create_task(self.crawling(10))
 		except:
 			return Fault()
 
@@ -292,6 +297,16 @@ class Crawling(State):
 		elif event == 'fault':
 			return Fault()
 		return self
+
+	# Checks telemetry to ensure we should continue crawling
+	# Input: Telemetry check frequency [Hz]
+	async def crawling(self, freq):
+		while True:
+			print(f"CRAWLING (dist to end: {1.25*100000 - telemDict['location']['position']})")
+			if telemDict['location']['position'] >= self.crawlDist:
+				return pod.trigger('braking')
+			
+			await self.asyncio.sleep(1/freq)
 
 # State 7: Startup
 class Startup(State):
