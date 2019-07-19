@@ -133,6 +133,12 @@ class ReadyToLaunch(State):
 
 # State 3: Launching
 class Launching(State):
+	import asyncio
+
+	# Maximum velocity before coasting [cm/s]
+	maxVelocity = 185*100 # [cm/s]
+	# Max propulsive distance down tube (1.25km - 1763ft) [cm]
+	maxDistance = 71300 # [cm]
 
 	def entry(self):
 		global brakes # Grab the global brakes variable
@@ -145,6 +151,8 @@ class Launching(State):
 			batteries.enable() # Enables batteries
 			tensioners.enable() # Engages tensioners
 			motors.maxTorqueAll() # Set motors to 100%
+
+			self.asyncio.create_task(self.goForLaunch(10))
 		except:
 			return Fault()
 
@@ -162,11 +170,19 @@ class Launching(State):
 		return self
 
 	# Checks telemetry to ensure we're go for launch
-	def goForLaunch(self):
-		global brakes # Grab the global brakes variable
+	# Input: Telemetry check frequency [Hz]
+	async def goForLaunch(self, freq):
+		while True:
+			if telemDict['location']['velocity'] >= self.maxVelocity:
+				return pod.trigger('coasting')
+			elif telemDict['location']['position'] >= self.maxDistance:
+				return pod.trigger('braking')
+
+			await self.asyncio.sleep(1/freq)
 
 # State 4: Coasting
 class Coasting(State):
+	import asyncio
 
 	def entry(self):
 		global brakes # Grab the global brakes variable
@@ -192,6 +208,11 @@ class Coasting(State):
 
 # State 5: Braking
 class Braking(State):
+	import asyncio
+
+	crawlDist = 1.25*100000 - 30.48*1000 # (total tube distance - 100ft)
+	# Max velocity considered to be "stopped" [cm/s]
+	stoppedVel = 0.5
 
 	def entry(self):
 		global brakes # Grab the global brakes variable
@@ -204,6 +225,8 @@ class Braking(State):
 			batteries.enable() # Enables batteries
 			tensioners.enable() # Engages tensioners
 			motors.disableAll() # Set motors to 0%
+
+			self.asyncio.create_task(self.braking(10))
 		except:
 			return Fault()
 
@@ -219,6 +242,17 @@ class Braking(State):
 			return Fault()
 
 		return self
+
+	# Checks telemetry to ensure we should continue braking
+	# Input: Telemetry check frequency [Hz]
+	async def braking(self, freq):
+		while True:
+			if telemDict['location']['position'] >= self.crawlDist and telemDict['location']['velocity'] <= self.stoppedVel:
+				pod.trigger('crawling')
+			elif telemDict['location']['position'] <= self.crawlDist and telemDict['location']['velocity'] <= self.stoppedVel:
+				pod.trigger('safe_to_approach')
+
+			await self.asyncio.sleep(1/freq)
 
 # State 6: Crawling
 class Crawling(State):

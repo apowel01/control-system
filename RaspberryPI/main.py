@@ -2,6 +2,10 @@
 #### The FSM for the Raspberry Pi Control System ####
 
 # Imports
+# -- So all modules have access to telemetry dictionary
+import builtins
+builtins.telemDict = dict() # Init telem dict
+# --
 import os
 import time
 import can
@@ -10,9 +14,8 @@ import asyncio # Used for asynchronous functions
 import socket # Used for sending data to SpaceX
 import struct # Used for forming the data packet
 from FSMClasses import FSM # Grabs the FSM object
-	
-startTime = time.time()
 
+startTime = time.time()
 
 # Dictionary which translates our state strings to corresponding integers
 stateDict = {	
@@ -49,7 +52,7 @@ os.system("sudo ifconfig can0 txqueuelen 1000")
 
 
 # New telemetry dictionary
-telemDict = {
+builtins.telemDict = {
 	'state': None,
 	281 or 'FR Motor': {
 		'name': 	'FR Motor data',
@@ -429,6 +432,7 @@ async def updatePosition(freq = 5):
 		global lastBand_1
 		global lastBand_2
 		global firstCanMessage
+
 		timeoutcount = 0
 		timeouttime = 0.5
 		motortimeoutcount = 0
@@ -547,8 +551,8 @@ async def updatePosition(freq = 5):
 
 		await asyncio.sleep(1/freq)
 
-
 async def updateTelemDict(freq = 5):
+
 	while True:
 		# try:
 			# timer = time.time()
@@ -653,10 +657,16 @@ async def tlm_server(host, port):
 
 # Process network commands
 async def processNetCmds(reader, writer):
-	global pod # Grab global pod object
 
 	# List of possible commands
-	cmds = {'state': {'set': '', 'current': ''}}
+	cmds = {
+		'state': {'set': '', 'current': ''},
+		'tlmset': None,
+		'cancel': None,
+		'abort': None,
+		'fault': None,
+		'stop': None
+		}
 
 	while True:
 		data = await reader.read(1024) # Max number of bytes to read
@@ -690,6 +700,16 @@ async def processNetCmds(reader, writer):
 						output = f"Setting state failed: {e}"
 				elif cmd[1] == 'current':
 					output = f"Current state: {pod.state}"
+			elif cmd[0] == 'tlmset':
+				if len(cmd) == 4:
+					try:
+						telemDict[cmd[1]][cmd[2]] = int(cmd[3])
+					except Exception as e:
+						raise
+			# Assume abort message
+			else:
+				pod.trigger('fault')
+				output = f"Current state: {pod.state}"
 		else:
 			output = f"Invalid command: {' '.join(cmd)}"
 
@@ -700,7 +720,6 @@ async def processNetCmds(reader, writer):
 
 # Broascast telemetry for telemetry server
 async def broadcastTlm(reader, writer, freq = 5):
-	global pod # Grab global pod object
 	# Init telemetry dictionary
 	global telemDict
 	print("Broadcasting telemetry")
@@ -723,14 +742,12 @@ async def broadcastTlm(reader, writer, freq = 5):
 
 	writer.close()
 
-
 async def printing(freq = .1):
 	global telemDict
 	while True:
 		print("Printing")
 		print(telemDict[281]['rpm'])
 		await asyncio.sleep(1/freq)
-
 
 # Process CAN-based telemetry
 # Input: Processing frequency [Hz]
@@ -799,13 +816,10 @@ async def processTelem(freq = 5, can_read_freq = 10):
 
 		# Clean-up
 
-
 async def CAN_out(freq = 5):
-	# global stateDict # Grab the state dictionary
-	# global pod # Grab pod object
-	# global telemetry
+	global stateDict # Grab the state dictionary # Grab pod object
+	
 	while True:
-		print(stateDict[str(pod.state)])
 		if (stateDict[str(pod.state)] == 3):
 			message = can.Message(arbitration_id=257, data=[0, 0, 0, 0, 0, 0, 0, 0], extended_id=False)
 			can0.send(message)
@@ -822,8 +836,7 @@ async def CAN_out(freq = 5):
 # Coroutine for sending telemetry to SpaceX
 # Input: Transmit frequency [Hz]
 async def spacex_tlm(freq = 50):
-	global stateDict # Grab the state dictionary
-	global pod # Grab pod object
+	global stateDict # Grab the state dictionary # Grab pod object
 	global telemDict
 
 	server_ip = "192.168.0.7" # SpaceX telemetry machine
@@ -889,81 +902,9 @@ async def spacex_tlm(freq = 50):
 		# Sleep for 1/freq secs before sending another packet
 		await asyncio.sleep(1/freq)
 
-
-async def state_transistion(freq = 5):
-	global stateDict
-	global pod
-	global telemetry
-	global id_dict
-	while True:
-
-		# try:
-		# 	if (telemDict[281]['temp'] > motor_temp_fault or 
-		# 		telemDict[297]['temp'] > motor_temp_fault or 
-		# 		telemDict[313]['temp'] > motor_temp_fault or 
-		# 		telemDict[329]['temp'] > motor_temp_fault or 
-		# 		telemDict[345]['temp'] > motor_temp_fault or 
-		# 		telemDict[361]['temp'] > motor_temp_fault or 
-		# 		telemDict[1305]['max batt temp'] > max_batt_temp or 
-		# 		telemDict[1321]['max batt temp'] > max_batt_temp or 
-		# 		telemDict[1337]['max batt temp'] > max_batt_temp or 
-		# 		telemDict[1305]['max v'] > max_V or 
-		# 		telemDict[1321]['max v'] > max_V or 
-		# 		telemDict[1337]['max v'] > max_V or 
-		# 		telemDict[1305]['min v'] < min_V or 
-		# 		telemDict[1321]['min v'] < min_V or 
-		# 		telemDict[1337]['min v'] < min_V or 
-		# 		((telemDict[281]['rpm'] > 0 or 
-		# 		telemDict[297]['rpm'] > 0 or 
-		# 		telemDict[313]['rpm'] > 0 or 
-		# 		telemDict[329]['rpm'] > 0 or 
-		# 		telemDict[345]['rpm'] > 0 or 
-		# 		telemDict[361]['rpm'] > 0) and 
-		# 		(telemDict[537]['reed'] == True or 
-		# 		telemDict[553]['reed'] == True or 
-		# 		telemDict[569]['reed'] == True or 
-		# 		telemDict[585]['reed'] == True or 
-		# 		telemDict[601]['reed'] == True or 
-		# 		telemDict[617]['reed'] == True)) or 
-		# 		telemDict[1305]['current'] > max_Amp or  
-		# 		telemDict[1321]['current'] > max_Amp or  
-		# 		telemDict[1337]['current'] > max_Amp):# or TelemCommand == 'Fault'):
-		# 		pod.trigger('fault')
-		# except Exception as e:
-		# 	print(f"Caught exception: {e}")
-
-
-		if ((stateDict[str(pod.state)] == 'launching') & (telemDict['location']['velocity'] >= 185)):
-			pod.trigger('coasting')
-		elif ((stateDict[str(pod.state)] == 'launching') & (telemDict['location']['position'] >= 3520)):
-			pod.trigger('braking')
-
-		if ((stateDict[str(pod.state)] == 'coasting') & (telemDict['location']['position'] >= 3520)):
-			pod.trigger('braking')
-
-		if ((stateDict[str(pod.state)] == 'braking') & (telemDict['location']['position'] >= 5180 & telemDict['location']['velocity'] <= 0.5)):
-			pod.trigger('crawling')
-		elif ((stateDict[str(pod.state)] == 'braking') & (telemDict['location']['position'] <= 5180 & telemDict['location']['velocity'] <= 0.5)):
-			pod.trigger(SafeToApproach)
-
-		if ((stateDict[str(pod.state)] == 'crawling') & (telemDict['location']['position'] >= 5180)):
-			pod.trigger('braking')
-
-		# Need to add loss of comms fault, pressure faults
-
-		# Sleep for 1/freq secs before sending another packet
-		await asyncio.sleep(1/freq)
-
-
-# # Pings SpaceX to ensure communication
-# async def ping(freq = 4):
-# 	# fill in with ping pong
-# 	await asyncio.sleep(1/freq)
-
 # Instantiate the FSM as pod & drop into Startup
 async def init_pod():
-	global pod
-	pod = FSM()
+	builtins.pod = FSM()
 
 async def main():
 	IP = "192.168.0.6" # Pi's IP address
@@ -971,23 +912,12 @@ async def main():
 	print(f"Host name: {socket.gethostname()}")
 	print(f"IP address: {IP}")
 
-	# file = open("/home/pi/data_log.csv", "a")
-	# file_open = True
-	# i=0
-	# if os.stat("/home/pi/data_log.csv").st_size == 0:
- #		file.write("All CAN data \n")
-
-
-
-
-
 	# Gather asynchronous coroutines
 	await asyncio.gather(
 		init_pod(),
 		cmd_server(IP, 5000),
 		tlm_server(IP, 5001),
 		spacex_tlm(),
-		state_transistion(),
 		updateTelemDict(),
 		processTelem(),
 		# CAN_out(),		   
@@ -996,11 +926,5 @@ async def main():
 		# processNetCmds()
 	)
 
+# Run controls loop
 asyncio.run(main())
-
-
-# # Get the default event loop
-# loop = asyncio.get_event_loop()
-# # Run until main coroutine finishes
-# loop.run_until_complete(async_read_CAN)
-# loop.close()
