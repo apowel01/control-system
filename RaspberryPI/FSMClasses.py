@@ -184,6 +184,9 @@ class Launching(State):
 class Coasting(State):
 	import asyncio
 
+	# Max propulsive distance down tube (1.25km - 1763ft) [cm]
+	maxDistance = 71300 # [cm]
+
 	def entry(self):
 		global brakes # Grab the global brakes variable
 		global motors # Grab the global motors variable
@@ -195,6 +198,8 @@ class Coasting(State):
 			batteries.enable() # Enables batteries
 			tensioners.enable() # Engages tensioners
 			motors.disableAll() # Set motors to 0%
+
+			self.asyncio.create_task(self.coasting(10))
 		except:
 			return Fault()
 
@@ -205,6 +210,15 @@ class Coasting(State):
 		elif event == 'fault':
 			return Fault()
 		return self
+
+	# Checks telemetry to ensure we're go to caost
+	# Input: Telemetry check frequency [Hz]
+	async def coasting(self, freq):
+		while True:
+			if telemDict['location']['position'] >= self.maxDistance:
+				return pod.trigger('braking')
+
+			await self.asyncio.sleep(1/freq)
 
 # State 5: Braking
 class Braking(State):
