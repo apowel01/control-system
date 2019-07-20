@@ -561,7 +561,8 @@ async def updateTelemDict(freq = 5):
 				if telemDict[i]['data'] != None:
 					telemDict[i]['rpm'] = (telemDict[i]['data'][1] << 8) + telemDict[i]['data'][2]
 					telemDict[i]['volt'] = (telemDict[i]['data'][3] << 8) + telemDict[i]['data'][4]
-					telemDict[i]['temp'] = (telemDict[i]['data'][5] << 8) + telemDict[i]['data'][6]
+					# !-- Using front-right motor temp for all motor temps! --!
+					telemDict[i]['temp'] = (telemDict[281]['data'][5] << 8) + telemDict[281]['data'][6]
 					telemDict[i]['throttle'] = telemDict[i]['data'][7]
 					
 			brake_id = [537, 553, 601, 617]
