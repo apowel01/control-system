@@ -84,9 +84,9 @@ MCP_CAN CAN(SPI_CS_PIN);
 
 void setup() {
   Serial1.begin(115200);
-  while (!Serial1) {
-    ; // wait for serial port to connect.
-  }
+  delay(1000);
+  Serial.begin(115200);
+  delay(1000);
 
   // Setting up motor stuff
   motorL.attach(motorPinL);
@@ -315,6 +315,7 @@ void loop() {
   int c = 0;
   
   // Request a distance.
+    if (Serial1.available()>0) {
   Serial1.write('d');
   
   // Wait for distance response.
@@ -324,7 +325,7 @@ void loop() {
     
     resultBuffer[bufferIndex++] = c;
   }
-
+    }
   // Process response into distance value.
   resultBuffer[bufferIndex - 2] = 0;
   float distance = atof(resultBuffer);
@@ -367,10 +368,11 @@ void loop() {
     voltageR = (analogRead(voltagePinR) / 1023.0) * 5 * ((Rsmall + Rbig) / Rsmall) * 1.0255;
     int Rsmall2;
     int Rbig2;
-    Rsmall2 = Rsmall;
-    Rbig2 = Rbig;
+    Rsmall2 = 1000;
+    Rbig2 = 3300;
     float controlBattVoltage;
-    controlBattVoltage = (analogRead(controlBattVoltPin) / 1023.0) * 5 * ((Rsmall2 + Rbig2) / Rsmall2) * 1.0255;
+    controlBattVoltage = (analogRead(controlBattVoltPin) / 1023.0) * 5 * ((Rsmall2 + Rbig2) / Rsmall2);
+//    Serial.print(controlBattVoltage);
 //    currentR = current_acq("R");
 //    powerR = voltageR * currentR;
     tempR = temp_acq(tempPinR);
@@ -412,7 +414,8 @@ void loop() {
 
     //Sending Tensioner Temp Packet
     stmp[6] = highByte((int) tensBackPneuTemp);
-    stmp[7] = lowByte((int) tensBackPneuTemp);   
+    stmp[7] = lowByte((int) tensBackPneuTemp); 
+    CAN.sendMsgBuf(0x30b, 0, 8, stmp);  
    // Serial.print(stmp);
 
     //Sending Brake Reed Switch Data

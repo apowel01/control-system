@@ -40,7 +40,9 @@ int tensionerPressPin =     69;   //A15     *
 int brakeAirTankTempPin =   55;   //A1      * 
 int tensAirTankTempPin =    56;   //A2      * 
 int tensSolenoidTempPin =   57;   //A3      * 
-int tensFrontPneuTempPin =  68;   //A4      * 
+int tensFrontPneuTempPin =  58;   //A4      * 
+
+int LIDARPin = 59; //59                //A5
 
 // Setting up Hall Sensor stuff
 //The R pins on the board
@@ -89,9 +91,9 @@ MCP_CAN CAN(SPI_CS_PIN);
 
 void setup() {
   Serial1.begin(115200);
-  while (!Serial1) {
-    ; // wait for serial port to connect.
-  }
+  delay(1000);
+  Serial.begin(115200);
+  delay(1000);
 
   // Setting up motor stuff
   motorL.attach(motorPinL);
@@ -127,6 +129,8 @@ void setup() {
   pinMode(tensAirTankTempPin, INPUT);
   pinMode(tensSolenoidTempPin, INPUT);
   pinMode(tensFrontPneuTempPin, INPUT);
+
+  pinMode(LIDARPin,INPUT);
 
   //Set the R pins to LOW to start counting
   digitalWrite(pin22, LOW);
@@ -318,26 +322,33 @@ void loop() {
   }
 
   
-  //LIDAR SENSING
-  char resultBuffer[8];
-  int bufferIndex = 0;
-  int c = 0;
-  
-  // Request a distance.
-  Serial1.write('d');
-  
-  // Wait for distance response.
-  while(c != '\n') {
-    while (!Serial1.available());
-    c = Serial1.read();
-    
-    resultBuffer[bufferIndex++] = c;
-  }
-
-  // Process response into distance value.
-  resultBuffer[bufferIndex - 2] = 0;
-  float distance = atof(resultBuffer);
-
+//  //LIDAR SENSING
+//  char resultBuffer[8];
+//  int bufferIndex = 0;
+//  int c = 0;
+//   // if (Serial1.available()>0) {
+//  // Request a distance.
+//  Serial1.write('d');
+////  Serial.print('d');
+//  
+//  // Wait for distance response.
+//  while(c != '\n') {
+////    Serial.print('e');
+//    while (!Serial1.available());
+////    Serial.print('f');
+//    
+//    c = Serial1.read();
+////    Serial.print(c);
+//    resultBuffer[bufferIndex++] = c;
+//  }
+//   // }
+//  // Process response into distance value.
+//  resultBuffer[bufferIndex - 2] = 0;
+//  float distance = atof(resultBuffer);
+  float reading = analogRead(LIDARPin);
+  float distance = analogRead(LIDARPin)*.0049/3.3*130;
+//  Serial.println(reading);
+  Serial.println(distance);  
   //Message Sending, with Timer1 delay
   
   if (needtosendsensor)
@@ -352,7 +363,7 @@ void loop() {
     stmp[5] = 0;    
     stmp[6] = highByte((int) distance);
     stmp[7] = lowByte((int) distance);
-//    Serial.print(stmp);    
+ //   Serial.print(distance);    
     CAN.sendMsgBuf(0x419, 0, 8, stmp);
     
     //Sending Band Sensor Data
@@ -468,7 +479,7 @@ void loop() {
 //    Serial.print(stmp);
     CAN.sendMsgBuf(0x319, 0, 8, stmp);
     stmp[7] = digitalRead(tensionerReedPinL);
-//    Serial.print(stmp);
+    Serial.print(stmp[7]);
     CAN.sendMsgBuf(0x329, 0, 8, stmp);
 
     
