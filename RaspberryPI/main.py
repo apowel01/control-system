@@ -2,6 +2,10 @@
 #### The FSM for the Raspberry Pi Control System ####
 
 # Imports
+# -- So all modules have access to telemetry dictionary
+import builtins
+builtins.telemDict = dict() # Init telem dict
+# --
 import os
 import time
 import can
@@ -10,9 +14,8 @@ import asyncio # Used for asynchronous functions
 import socket # Used for sending data to SpaceX
 import struct # Used for forming the data packet
 from FSMClasses import FSM # Grabs the FSM object
-	
-startTime = time.time()
 
+startTime = time.time()
 
 # Dictionary which translates our state strings to corresponding integers
 stateDict = {	
@@ -49,7 +52,8 @@ os.system("sudo ifconfig can0 txqueuelen 1000")
 
 
 # New telemetry dictionary
-telemDict = {
+builtins.telemDict = {
+	'state': None,
 	281 or 'FR Motor': {
 		'name': 	'FR Motor data',
 		'data': 	None,
@@ -170,7 +174,7 @@ telemDict = {
 		'time': 	None,
 		'time delta' :		None,
 		'tank temp': None,
-		'front pneumatic temp': None,
+		'front tensioner temp': None,
 		'solenoid temp': None,
 		'pressure': None
 		},
@@ -179,7 +183,7 @@ telemDict = {
 		'data': 	None,
 		'time': 	None,
 		'time delta' :		None,
-		'back pneumatic temp': None
+		'back tensioner temp': None
 		},
 	793 or 'FR Tensioner': {
 		'name': 'FR Tensioner data',
@@ -242,21 +246,21 @@ telemDict = {
 		'data': 			None,
 		'time': 			None,
 		'time delta' :		None,
-		'state of charge':	None,
-		'instant voltage':	0,
-		'max temp' :   		0,
-		'min temp' :		None,
+		'instant voltage':	None,
 		'max v' : 			None,
 		'min v' :			None,
-		'current' : 		0,
+		'current' : 		None
 		},
 	1307 or 'F BMS 2': {
 		'name': 'F BMS 2 data',
 		'data': 			None,
 		'time': 			None,
 		'time delta' :		None,
+		'state of charge' :	None,
+		'min temp' :		None,
+		'max temp' :		None,
 		'avg temp' :        None, #Here and below needs to be added to data translation and network packets (ID will change)
-		'isolater' :        None, #"Isolation ADC"
+		'isolater' :        None #"Isolation ADC"
 		},
 	1308 or 'F BMS Cells': {
 		'name': 'F BMS Cells data',
@@ -282,7 +286,7 @@ telemDict = {
 		17 			:        None,
 		18 			:        None,
 		19 			:        None,
-		20 			:        None,
+		20 			:        None
 		},
 	# 1321 or 'M BMS': {
 	# 	'name': 'M BMS data',
@@ -299,21 +303,21 @@ telemDict = {
 		'data': 			None,
 		'time': 			None,
 		'time delta' :		None,
-		'state of charge':	None,
 		'instant voltage':	None,
-		'max temp' :   		None,
-		'min temp' :		None,
 		'max v' : 			None,
 		'min v' :			None,
-		'current' : 		None,
+		'current' : 		None
 		},
 	1339 or 'R BMS 2': {
 		'name': 'F BMS 2 data',
 		'data': 			None,
 		'time': 			None,
 		'time delta' :		None,
+		'state of charge' :	None,
+		'min temp' :		None,
+		'max temp' :		None,
 		'avg temp' :        None, #Here and below needs to be added to data translation and network packets (ID will change)
-		'isolater' :        None, #"Isolation ADC"
+		'isolater' :        None #"Isolation ADC"
 		},
 	1340 or 'R BMS Cells': {
 		'name': 'F BMS Cells data',
@@ -339,7 +343,7 @@ telemDict = {
 		17 			:        None,
 		18 			:        None,
 		19 			:        None,
-		20 			:        None,
+		20 			:        None
 		},
 	# 1322 or 'M BMS Arduino': {
 	# 	'name': 'M BMS Arduino data',
@@ -351,7 +355,7 @@ telemDict = {
 	#   'charge enable': 	None
 	# 	},
 	1306 or 'F BMS Arduino': {
-		'name': 'R BMS Arduino data',
+		'name': 'F BMS Arduino data',
 		'data': 			None,
 		'time': 			None,
 		'time delta' :		None,
@@ -366,7 +370,8 @@ telemDict = {
 		'time delta' :		None,
 		'health' :  		None,
 		'discharge enable':	None,
-		'charge enable': 	None
+		'charge enable': 	None,
+		'controls voltage': None
 		},
 	1050 or 'Right Band': {
 		'name': 'Right Band Data',
@@ -375,7 +380,7 @@ telemDict = {
 		'time delta' :		None,
 		'count': 			None
 		},
-	1051 or 'Left Band': {
+	1066 or 'Left Band': {
 		'name': 'Left Band Data',
 		'data': 			None,
 		'time': 			None,
@@ -427,6 +432,7 @@ async def updatePosition(freq = 5):
 		global lastBand_1
 		global lastBand_2
 		global firstCanMessage
+
 		timeoutcount = 0
 		timeouttime = 0.5
 		motortimeoutcount = 0
@@ -545,8 +551,8 @@ async def updatePosition(freq = 5):
 
 		await asyncio.sleep(1/freq)
 
-
 async def updateTelemDict(freq = 5):
+
 	while True:
 		# try:
 			# timer = time.time()
@@ -582,35 +588,36 @@ async def updateTelemDict(freq = 5):
 			for i in all_tensioner_id1:
 				if telemDict[i]['data'] != None:
 					telemDict[i]['tank temp'] = (telemDict[i]['data'][4] << 8) + telemDict[i]['data'][5] 
-					telemDict[i]['front pneumatic temp'] = (telemDict[i]['data'][2] << 8) + telemDict[i]['data'][3] 
-					telemDict[i]['front solenoid temp'] = (telemDict[i]['data'][0] << 8) + telemDict[i]['data'][1] 
+					telemDict[i]['front tensioner temp'] = (telemDict[i]['data'][2] << 8) + telemDict[i]['data'][3] 
+					telemDict[i]['solenoid temp'] = (telemDict[i]['data'][0] << 8) + telemDict[i]['data'][1] 
 
 			all_tensioner_id2 = [779]
 			for i in all_tensioner_id2:
 				if telemDict[i]['data'] != None:
-					telemDict[i]['back pneumatic temp'] = (telemDict[i]['data'][6] << 8) + telemDict[i]['data'][7] 
+					telemDict[i]['back tensioner temp'] = (telemDict[i]['data'][6] << 8) + telemDict[i]['data'][7] 
 
 			BMS_id1 = [1305,1337]
 			for i in BMS_id1:
 				if telemDict[i]['data'] != None:
-					telemDict[i]['current'] = telemDict[i]['data'][0]
-					telemDict[i]['instant voltage'] = telemDict[i]['data'][1]
-					telemDict[i]['state of charge'] = telemDict[i]['data'][2]
-					telemDict[i]['max temp'] = telemDict[i]['data'][3]   	
-					telemDict[i]['min temp'] = telemDict[i]['data'][4]
-					telemDict[i]['max v'] = telemDict[i]['data'][5] 
-					telemDict[i]['min v'] = telemDict[i]['data'][6] 
+					telemDict[i]['current'] = ((telemDict[i]['data'][0] << 8) + telemDict[i]['data'][1])*.1 #amps
+					telemDict[i]['instant voltage'] = ((telemDict[i]['data'][2] << 8) + telemDict[i]['data'][3])*.1 #volts
+					telemDict[i]['min v'] = ((telemDict[i]['data'][4] << 8) + telemDict[i]['data'][5])*.0001 #volts		 
+					telemDict[i]['max v'] = ((telemDict[i]['data'][6] << 8) + telemDict[i]['data'][7])*.0001 #volts
 
 			BMS_id2 = [1307,1339]
 			for i in BMS_id2:
 				if telemDict[i]['data'] != None:
-					telemDict[i]['isolater'] = telemDict[i]['data'][0]
-					telemDict[i]['avg temp'] = telemDict[i]['data'][1]
+					telemDict[i]['isolater'] = ((telemDict[i]['data'][0] << 8) + telemDict[i]['data'][1])*.001 #volts
+					telemDict[i]['state of charge'] = telemDict[i]['data'][2]*.5 #percent
+					telemDict[i]['max temp'] = telemDict[i]['data'][4] #deg C 
+					telemDict[i]['min temp'] = telemDict[i]['data'][3] #deg C
+					telemDict[i]['avg temp'] = telemDict[i]['data'][5] #deg C
+
 
 			BMS_id3 = [1308,1340]
 			for i in BMS_id3:
 				if telemDict[i]['data'] != None:
-					telemDict[i][int(telemDict[i]['data'][0])] = (telemDict[i]['data'][1] << 8) + telemDict[i]['data'][2]
+					telemDict[i][int(telemDict[i]['data'][0]+1)] = ((telemDict[i]['data'][1] << 8) + telemDict[i]['data'][2])*.0001
 
 			BMS_arduino_id = [1306,1338]
 			for i in BMS_arduino_id:
@@ -623,12 +630,12 @@ async def updateTelemDict(freq = 5):
 				if telemDict[i]['data'] != None:		
 					telemDict[i]['controls voltage'] = (telemDict[i]['data'][4] << 8) + telemDict[i]['data'][5]
 
-			if (telemDict[1049]['data'] != None) or (telemDict[1065]['data'] != None) or (telemDict[1050]['data'] != None) or (telemDict[1051]['data'] != None):
+			if (telemDict[1049]['data'] != None) and (telemDict[1065]['data'] != None) and (telemDict[1050]['data'] != None) and (telemDict[1066]['data'] != None):
 				telemDict[1049]['distance'] = (telemDict[1049]['data'][6] << 8) + telemDict[1049]['data'][7]
 				telemDict[1065]['distance'] = (telemDict[1065]['data'][6] << 8) + telemDict[1065]['data'][7]
 
 				telemDict[1050]['count'] = (telemDict[1050]['data'][6] << 8) + telemDict[1050]['data'][7]
-				telemDict[1051]['count'] = (telemDict[1051]['data'][6] << 8) + telemDict[1051]['data'][7]
+				telemDict[1066]['count'] = (telemDict[1066]['data'][6] << 8) + telemDict[1066]['data'][7]
 			# print("****************************")
 			# print(time.time() - timer)
 			# print("****************************")
@@ -650,10 +657,16 @@ async def tlm_server(host, port):
 
 # Process network commands
 async def processNetCmds(reader, writer):
-	global pod # Grab global pod object
 
 	# List of possible commands
-	cmds = {'state': {'set': '', 'current': ''}}
+	cmds = {
+		'state': {'set': '', 'current': ''},
+		'tlmset': None,
+		'cancel': None,
+		'abort': None,
+		'fault': None,
+		'stop': None
+		}
 
 	while True:
 		data = await reader.read(1024) # Max number of bytes to read
@@ -664,7 +677,7 @@ async def processNetCmds(reader, writer):
 			# Try decoding data, otherwise ignore it
 			cmd = data.decode('utf8').rstrip().lower().split(" ")
 		except Exception as e:
-			print(f"Caught exception: {e}")
+			print(f"Caught exception processing network commands: {e}")
 			continue
 
 		output = '' # Init the output
@@ -687,6 +700,16 @@ async def processNetCmds(reader, writer):
 						output = f"Setting state failed: {e}"
 				elif cmd[1] == 'current':
 					output = f"Current state: {pod.state}"
+			elif cmd[0] == 'tlmset':
+				if len(cmd) == 4:
+					try:
+						telemDict[cmd[1]][cmd[2]] = int(cmd[3])
+					except Exception as e:
+						raise
+			# Assume abort message
+			else:
+				pod.trigger('fault')
+				output = f"Current state: {pod.state}"
 		else:
 			output = f"Invalid command: {' '.join(cmd)}"
 
@@ -697,11 +720,9 @@ async def processNetCmds(reader, writer):
 
 # Broascast telemetry for telemetry server
 async def broadcastTlm(reader, writer, freq = 5):
-	global pod # Grab global pod object
 	# Init telemetry dictionary
 	global telemDict
-	print("\n\nBroadcast telemetry\n\n")
-	telemDict['state'] = str(pod.state)
+	print("Broadcasting telemetry")
 
 	# Primary process loop
 	while True:
@@ -710,10 +731,10 @@ async def broadcastTlm(reader, writer, freq = 5):
 			break
 		
 		telemDict['state'] = str(pod.state)
-		if str(pod.state) == 'Launching' or str(pod.state) == 'Coasting' or str(pod.state) == 'Braking':
-			telemDict['distance'] = telemDict['distance'] + 1 # Sample data
+		# if str(pod.state) == 'Launching' or str(pod.state) == 'Coasting' or str(pod.state) == 'Braking':
+		# 	telemDict['distance'] = telemDict['distance'] + 1 # Sample data
 
-		 # Serialize dictionary as json (ignoring unserializable data)
+		 # Serialize dictionary as xjson (ignoring unserializable data)
 		output = json.dumps(telemDict, default=lambda o: '')
 		writer.write(output.encode('utf8'))
 
@@ -721,14 +742,12 @@ async def broadcastTlm(reader, writer, freq = 5):
 
 	writer.close()
 
-
 async def printing(freq = .1):
 	global telemDict
 	while True:
 		print("Printing")
 		print(telemDict[281]['rpm'])
 		await asyncio.sleep(1/freq)
-
 
 # Process CAN-based telemetry
 # Input: Processing frequency [Hz]
@@ -789,22 +808,18 @@ async def processTelem(freq = 5, can_read_freq = 10):
 					telemDict[msg.arbitration_id]['time delta'] = msg.timestamp - telemDict[msg.arbitration_id]['time']
 
 			except Exception as e:
-				print(f"Caught exception: {e}")
+				print(f"Caught exception processing telemetry: {e}")
 				continue
 		# Wait for last message to arrive
 		await reader.get_message()
-		print('Done!')
 		await asyncio.sleep(1/freq)
 
 		# Clean-up
 
-
 async def CAN_out(freq = 5):
-	# global stateDict # Grab the state dictionary
-	# global pod # Grab pod object
-	# global telemetry
+	global stateDict # Grab the state dictionary # Grab pod object
+	
 	while True:
-		print(stateDict[str(pod.state)])
 		if (stateDict[str(pod.state)] == 3):
 			message = can.Message(arbitration_id=257, data=[0, 0, 0, 0, 0, 0, 0, 0], extended_id=False)
 			can0.send(message)
@@ -821,11 +836,8 @@ async def CAN_out(freq = 5):
 # Coroutine for sending telemetry to SpaceX
 # Input: Transmit frequency [Hz]
 async def spacex_tlm(freq = 50):
-	global stateDict # Grab the state dictionary
-	global pod # Grab pod object
+	global stateDict # Grab the state dictionary # Grab pod object
 	global telemDict
-
-	print(type(telemDict))
 
 	server_ip = "192.168.0.7" # SpaceX telemetry machine
 	server_port = 3000
@@ -860,7 +872,7 @@ async def spacex_tlm(freq = 50):
 		#								optional
 		# stripe_count			uint32 	Count of optical navigation stripes detected in
 		#								the tube. Optional
-		packet = struct.pack(">BB7iI", team_id, status, int(telemDict['location']['acceleration']), int(telemDict['location']['position']), int(telemDict['location']['velocity']), int(telemDict[1305]['instant voltage']), int(telemDict[1305]['current']), int(telemDict[1305]['max temp']), 0, int(position) // 3048)
+		packet = struct.pack(">BB7iI", team_id, status, int(telemDict['location']['acceleration']), int(telemDict['location']['position']), int(telemDict['location']['velocity']), 0, 0, 0, 0, 0)
 		spacexTlmSocket.sendto(packet, (server_ip, server_port))
 		#-------NEW PACKETS--------
 		# packet = struct.pack(">BB7iI", team_id, status, int(accelerations[-1][0]), int(positions[-1][0]), int(velocities[-1][0]), 0, 0, 0, 0, int(position) // 3048)
@@ -881,90 +893,18 @@ async def spacex_tlm(freq = 50):
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
 		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict['R BMS']['cell 3 v']), int(telemDict['cell 4 v']['isolater']), int(telemDict['R BMS']['cell 5 v']), int(telemDict['R BMS']['cell 6 v']), int(telemDict['R BMS']['cell 7 v']), int(telemDict['R BMS']['cell 8 v']), int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
-		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict['All Brakes']['pressure']), int(telemDict['All Tensioner 1']['pressure']), int(telemDict['All Brakes']['tank temp']), int(telemDict['All Tensioner 1']['tank temp']), int(telemDict['All Tensioner 1']['solenoid temp']), int(telemDict['All Tensioner 1']['front pneumatic temp']), int(position) // 3048)
+		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict['All Brakes']['pressure']), int(telemDict['All Tensioner 1']['pressure']), int(telemDict['All Brakes']['tank temp']), int(telemDict['All Tensioner 1']['tank temp']), int(telemDict['All Tensioner 1']['solenoid temp']), int(telemDict['All Tensioner 1']['front tensioner temp']), int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
-		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict['All Tensioner 2']['back pneumatic temp']), 0, 0, 0, 0, 0, int(position) // 3048)
+		# packet = struct.pack(">BB7iI", team_id, status, int(telemDict['All Tensioner 2']['back tensioner temp']), 0, 0, 0, 0, 0, int(position) // 3048)
 		# spacexTlmSocket.sendto(packet, (server_ip, server_port))
 		#-------------------NEED TO RESTRUCTURE PACKETS
 		
 		# Sleep for 1/freq secs before sending another packet
 		await asyncio.sleep(1/freq)
 
-
-async def state_transistion(freq = 5):
-	global stateDict
-	global pod
-	global telemetry
-	global id_dict
-	while True:
-
-		# try:
-		# 	if (telemDict[281]['temp'] > motor_temp_fault or 
-		# 		telemDict[297]['temp'] > motor_temp_fault or 
-		# 		telemDict[313]['temp'] > motor_temp_fault or 
-		# 		telemDict[329]['temp'] > motor_temp_fault or 
-		# 		telemDict[345]['temp'] > motor_temp_fault or 
-		# 		telemDict[361]['temp'] > motor_temp_fault or 
-		# 		telemDict[1305]['max batt temp'] > max_batt_temp or 
-		# 		telemDict[1321]['max batt temp'] > max_batt_temp or 
-		# 		telemDict[1337]['max batt temp'] > max_batt_temp or 
-		# 		telemDict[1305]['max v'] > max_V or 
-		# 		telemDict[1321]['max v'] > max_V or 
-		# 		telemDict[1337]['max v'] > max_V or 
-		# 		telemDict[1305]['min v'] < min_V or 
-		# 		telemDict[1321]['min v'] < min_V or 
-		# 		telemDict[1337]['min v'] < min_V or 
-		# 		((telemDict[281]['rpm'] > 0 or 
-		# 		telemDict[297]['rpm'] > 0 or 
-		# 		telemDict[313]['rpm'] > 0 or 
-		# 		telemDict[329]['rpm'] > 0 or 
-		# 		telemDict[345]['rpm'] > 0 or 
-		# 		telemDict[361]['rpm'] > 0) and 
-		# 		(telemDict[537]['reed'] == True or 
-		# 		telemDict[553]['reed'] == True or 
-		# 		telemDict[569]['reed'] == True or 
-		# 		telemDict[585]['reed'] == True or 
-		# 		telemDict[601]['reed'] == True or 
-		# 		telemDict[617]['reed'] == True)) or 
-		# 		telemDict[1305]['current'] > max_Amp or  
-		# 		telemDict[1321]['current'] > max_Amp or  
-		# 		telemDict[1337]['current'] > max_Amp):# or TelemCommand == 'Fault'):
-		# 		pod.trigger('fault')
-		# except Exception as e:
-		# 	print(f"Caught exception: {e}")
-
-
-		if ((stateDict[str(pod.state)] == 'launching') & (telemDict['location']['velocity'] >= 185)):
-			pod.trigger('coasting')
-		elif ((stateDict[str(pod.state)] == 'launching') & (telemDict['location']['position'] >= 3520)):
-			pod.trigger('braking')
-
-		if ((stateDict[str(pod.state)] == 'coasting') & (telemDict['location']['position'] >= 3520)):
-			pod.trigger('braking')
-
-		if ((stateDict[str(pod.state)] == 'braking') & (telemDict['location']['position'] >= 5180 & telemDict['location']['velocity'] <= 0.5)):
-			pod.trigger('crawling')
-		elif ((stateDict[str(pod.state)] == 'braking') & (telemDict['location']['position'] <= 5180 & telemDict['location']['velocity'] <= 0.5)):
-			pod.trigger(SafeToApproach)
-
-		if ((stateDict[str(pod.state)] == 'crawling') & (telemDict['location']['position'] >= 5180)):
-			pod.trigger('braking')
-
-		# Need to add loss of comms fault, pressure faults
-
-		# Sleep for 1/freq secs before sending another packet
-		await asyncio.sleep(1/freq)
-
-
-# # Pings SpaceX to ensure communication
-# async def ping(freq = 4):
-# 	# fill in with ping pong
-# 	await asyncio.sleep(1/freq)
-
 # Instantiate the FSM as pod & drop into Startup
 async def init_pod():
-	global pod
-	pod = FSM()
+	builtins.pod = FSM()
 
 async def main():
 	IP = "192.168.0.6" # Pi's IP address
@@ -972,23 +912,12 @@ async def main():
 	print(f"Host name: {socket.gethostname()}")
 	print(f"IP address: {IP}")
 
-	# file = open("/home/pi/data_log.csv", "a")
-	# file_open = True
-	# i=0
-	# if os.stat("/home/pi/data_log.csv").st_size == 0:
- #		file.write("All CAN data \n")
-
-
-
-
-
 	# Gather asynchronous coroutines
 	await asyncio.gather(
 		init_pod(),
 		cmd_server(IP, 5000),
 		tlm_server(IP, 5001),
 		spacex_tlm(),
-		state_transistion(),
 		updateTelemDict(),
 		processTelem(),
 		# CAN_out(),		   
@@ -997,11 +926,5 @@ async def main():
 		# processNetCmds()
 	)
 
+# Run controls loop
 asyncio.run(main())
-
-
-# # Get the default event loop
-# loop = asyncio.get_event_loop()
-# # Run until main coroutine finishes
-# loop.run_until_complete(async_read_CAN)
-# loop.close()
