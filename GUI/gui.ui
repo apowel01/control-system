@@ -275,7 +275,7 @@ background: transparent;
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label_9">
+   <widget class="QLabel" name="mps">
     <property name="geometry">
      <rect>
       <x>740</x>
@@ -450,7 +450,7 @@ background: transparent;</string>
    <zorder>distanceLabel</zorder>
    <zorder>errors_label</zorder>
    <zorder>mph</zorder>
-   <zorder>label_9</zorder>
+   <zorder>mps</zorder>
    <zorder>accele</zorder>
    <zorder>stateLabel</zorder>
    <zorder>label_7</zorder>

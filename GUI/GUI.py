@@ -63,7 +63,12 @@ class GUI1(QMainWindow):
             self.progressBar.resize(progressRatio+50, 80);
 
     def update_speedLabel(self):
-        self.speedLabel.setText(str(self.speed))    
+        if widget1.state.upper() == "READYTOLAUNCH":
+            self.speedLabel.setText("T-"+str(self.speed))
+            self.mps.hide() #hide M/S
+        else:
+            self.speedLabel.setText(str(self.speed))
+            self.mps.show()
 
     def update_accelerationLabel(self):
         accelerationText = "{0:.3f}".format(self.acceleration)
@@ -539,24 +544,6 @@ widget1.startTimer = time.time()
 def update_labels():
     global connected
     global s
-    '''RECIEVE ALL DATA HERE
-    NOTE: currently just simulating data chagnes
-    '''
-    # RECIEVED_JSON = '{\
-    #   "state": "ACCELERATING",\
-    #   "acceleration": 5,\
-    #   "speed": 30,\
-    #   "distance": 10,\
-    #   "max_battery_temp": 35,\
-    #   "vibration": 22,\
-    #   "voltage12V": 22,\
-    #   "pack1_volt": 11,\
-    #   "pack2_volt": 22,\
-    #   "pack3_volt": 33,\
-    #   "pack1_Amp": 11,\
-    #   "pack2_Amp": 22,\
-    #   "pack3_Amp": 33\
-    # }'\
 
     RECIEVED_JSON = s.recv(6000)
     recieved = '{'+RECIEVED_JSON.decode().split('}{')[-1].strip('{')
@@ -579,7 +566,7 @@ def update_labels():
         '''UPDATE DATA _SCREEN 1'''
         widget1.state = json_parsed["state"]
         widget1.acceleration = float(json_parsed["location"]["acceleration"])
-        widget1.speed =  int(json_parsed["location"]["velocity"])
+        widget1.speed =  int(json_parsed["location"]["velocity"])//100
         widget1.distance =  int(json_parsed["location"]["position"])
 
         '''UPDATE DATA _SCREEN 2'''
@@ -621,14 +608,6 @@ def update_labels():
         except:
             widget2.FP_isolator_value = -999
 
-        # widget2.FP_cell1 += .1
-        # widget2.FP_cell2 += .2
-        # widget2.FP_cell3 += .3
-        # widget2.FP_cell4 += .4
-        # widget2.FP_cell5 += .5
-        # widget2.FP_cell6 += .6
-        # widget2.FP_cell7 += .7
-        # widget2.FP_cell8 += .8
 
         #REAR PACK
         try:
@@ -662,22 +641,12 @@ def update_labels():
         try:
             widget2.RP_maxCell_value = float(json_parsed["1337"]["max v"])
         except:
-            idget2.RP_maxCell_value = -999
+            widget2.RP_maxCell_value = -999
         try:
             widget2.RP_isolator_value = float(json_parsed["1339"]["isolater"])
         except:
             widget2.RP_isolator_value = -999
 
-        # widget2.RP_cell1 += .1
-        # widget2.RP_cell2 += .2
-        # widget2.RP_cell3 += .3
-        # widget2.RP_cell4 += .4
-        # widget2.RP_cell5 += .5
-        # widget2.RP_cell6 += .6
-        # widget2.RP_cell7 += .7
-        # widget2.RP_cell8 += .8
-
-        
 
         #PNEUMATICS
         try:
@@ -749,8 +718,7 @@ def update_labels():
         except:
             widget2.BR_temp_value = -999
 
-        #cells
-        
+        #cells        
         try:
             widget2.cellsWindow.FP_cells[0] = float(json_parsed["1308"]["1"])
         except:
@@ -914,7 +882,7 @@ def update_labels():
         except:
             widget2.cellsWindow.RP_cells[19] = -999
 
-        print("workingg!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
         '''UPDATE GUI _SCREEN 1'''
         widget1.update_speedLabel()
         widget1.update_distance()
@@ -927,12 +895,15 @@ def update_labels():
         widget2.update_pneumatics_label()
         widget2.update_12Vbattery_label()
         widget2.update_motors_label()
-        widget2.update_error_label("")
+        
 
         if widget1.state.upper() == "LAUNCHING" or widget1.launched_yet:
             widget1.start_timer()
             widget1.launched_yet = True
         elif not widget1.launched_yet:
+            if widget1.state.upper() == "READYTOLAUNCH":
+                # widget1.speed = json_parsed[][] #ADD timer data
+                pass
             widget1.clear_timer()
     except Exception as e:
         print(e)
@@ -944,9 +915,10 @@ def update_labels():
             s = socket.socket()
             while not connected:
                 try:
-                    widget2.update_error_label("") 
                     s.connect(('192.168.0.6', 5001))
                     connected = True
+                    widget2.update_error_label("")
+                    widget2.update_error_label("")
                 except socket.error:
                     widget1.update_error_label("RECONECTING...")
                     widget2.update_error_label("RECONECTING...")
